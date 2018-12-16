@@ -1,118 +1,93 @@
 ﻿$().ready(function () {
-
-    var points = [],
-        msg_el = document.getElementById('msg'),
-        url_osrm_nearest = '//router.project-osrm.org/nearest/v1/driving/',
-        url_osrm_route = '//router.project-osrm.org/route/v1/driving/',
-        icon_url = '//cdn.rawgit.com/openlayers/ol3/master/examples/data/icon.png',
-        vectorSource = new ol.source.Vector(),
-        vectorLayer = new ol.layer.Vector({
-            source: vectorSource
-        }),
-        styles = {
-            route: new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    width: 6, color: [40, 40, 40, 0.8]
-                })
-            }),
-            icon: new ol.style.Style({
-                image: new ol.style.Icon({
-                    anchor: [0.5, 1],
-                    src: icon_url
-                })
-            })
-        };
-
-    var vectorLayer = new ol.layer.Vector({
-        source: vectorSource
-    });
-    var map = new ol.Map({
-        target: 'map',
-        layers: [
-            new ol.layer.Tile({
-                source: new ol.source.OSM()
-            }),
-            vectorLayer
-        ],
-        view: new ol.View({
-            center: ol.proj.fromLonLat([37.41, 8.82]),
-            zoom: 4
-        })
-    });
-
-    map.on('click', function (evt) {
-        utils.getNearest(evt.coordinate).then(function (coord_street) {
-            var last_point = points[points.length - 1];
-            var points_length = points.push(coord_street);
-
-            utils.createFeature(coord_street);
-
-            if (points_length < 2) {
-                msg_el.innerHTML = 'Click to add another point';
-                return;
-            }
-
-            //get the route
-            var point1 = last_point.join();
-            var point2 = coord_street.join();
-
-            fetch(url_osrm_route + point1 + ';' + point2).then(function (r) {
-                return r.json();
-            }).then(function (json) {
-                if (json.code !== 'Ok') {
-                    msg_el.innerHTML = 'No route found.';
-                    return;
-                }
-                msg_el.innerHTML = 'Route added';
-                //points.length = 0;
-                utils.createRoute(json.routes[0].geometry);
-            });
-        });
-    });
-
-
-
-    var utils = {
-        getNearest: function (coord) {
-            var coord4326 = utils.to4326(coord);
-            return new Promise(function (resolve, reject) {
-                //make sure the coord is on street
-                fetch(url_osrm_nearest + coord4326.join()).then(function (response) {
-                    // Convert to JSON
-                    return response.json();
-                }).then(function (json) {
-                    if (json.code === 'Ok') resolve(json.waypoints[0].location);
-                    else reject();
-                });
-            });
-        },
-        createFeature: function (coord) {
-            var feature = new ol.Feature({
-                type: 'place',
-                geometry: new ol.geom.Point(ol.proj.fromLonLat(coord))
-            });
-            feature.setStyle(styles.icon);
-            vectorSource.addFeature(feature);
-        },
-        createRoute: function (polyline) {
-            // route is ol.geom.LineString
-            var route = new ol.format.Polyline({
-                factor: 1e5
-            }).readGeometry(polyline, {
-                dataProjection: 'EPSG:4326',
-                featureProjection: 'EPSG:3857'
-            });
-            var feature = new ol.Feature({
-                type: 'route',
-                geometry: route
-            });
-            feature.setStyle(styles.route);
-            vectorSource.addFeature(feature);
-        },
-        to4326: function (coord) {
-            return ol.proj.transform([
-                parseFloat(coord[0]), parseFloat(coord[1])
-            ], 'EPSG:3857', 'EPSG:4326');
-        }
-    };
+    var vrp = new VrpHelper('map',
+        'http://89.70.244.118:27017/styles/osm-bright/style.json',
+        'http://89.70.244.118:27018',
+        [52.237049, 21.017532],
+        13);
 });
+
+class VrpHelper {
+    constructor(mapContainer, mapServer, graphHopperServer, initialView, initialZoom) {
+        this.map = L.map(mapContainer).setView(initialView, initialZoom);
+        L.mapboxGL({
+            style: mapServer,
+            accessToken: 'no-token'
+        }).addTo(this.map);
+
+        L.Routing.control({
+            router: L.Routing.graphHopper(undefined, {
+                serviceUrl: graphHopperServer
+            })
+        }).addTo(this.map);
+
+        var packages = [];
+        var couriers = [];
+        var warehouses = [];
+
+        this.map.on('click', event => this.OnMapClick(event));
+        //    L.Routing.control({
+        //        waypoints: [
+        //            L.latLng(lastPoint),
+        //            L.latLng(e.latlng)
+        //        ]
+        //    }).addTo(map);
+        //    L.marker(e.latlng)
+        //        .bindPopup("Lat: " + e.latlng.lat + ", Long: " + e.latlng.lng)
+        //        .addTo(map)
+        //        .openPopup();
+        //    lastPoint = e.latlng;
+        //});
+    }
+
+    OnMapClick(event) {
+        this.PlaceMarker(event.latlng, $("input[name='pointType']:checked").val());
+    }
+
+    PlaceMarker(latLng, type) {
+        var marker;
+        switch (type) {
+            case "warehouse":
+                marker = L.marker(latLng, { icon: VrpLibrary.warehouseIcon })
+                    .bindPopup("Warehouse at Lat: " + latLng.lat + ", Long: " + latLng.lng);
+                break;
+            case "courier":
+                marker = L.marker(latLng, { icon: VrpLibrary.courierIcon })
+                    .bindPopup("Courier at Lat: " + latLng.lat + ", Long: " + latLng.lng);
+                break;
+            case "package":
+                marker = L.marker(latLng, { icon: VrpLibrary.packageIcon })
+                    .bindPopup("Package at Lat: " + latLng.lat + ", Long: " + latLng.lng);
+                break;
+            default:
+                return;
+        }
+        marker.addTo(this.map).openPopup();
+    }
+}
+
+class VrpLibrary {
+    static get warehouseIcon() {
+        return L.icon({
+            iconUrl: 'icons/warehouse.ico',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20]
+        });
+    }
+    static get courierIcon() {
+        return L.icon({
+            iconUrl: 'icons/courier.ico',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20]
+        });
+    }
+    static get packageIcon() {
+        return L.icon({
+            iconUrl: 'icons/package.ico',
+            iconSize: [20, 20],
+            iconAnchor: [10, 10],
+            popupAnchor: [0, -10]
+        });
+    }
+}
