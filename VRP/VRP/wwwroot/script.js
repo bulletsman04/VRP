@@ -4,6 +4,7 @@
         'http://89.70.244.118:27018',
         [52.237049, 21.017532],
         13);
+    $('#applyButton').on('click', event => vrp.SendData());
 });
 
 class VrpHelper {
@@ -20,9 +21,9 @@ class VrpHelper {
             })
         }).addTo(this.map);
 
-        var packages = [];
-        var couriers = [];
-        var warehouses = [];
+        this.packages = [];
+        this.couriers = [];
+        this.warehouses = [];
 
         this.map.on('click', event => this.OnMapClick(event));
         //    L.Routing.control({
@@ -49,19 +50,41 @@ class VrpHelper {
             case "warehouse":
                 marker = L.marker(latLng, { icon: VrpLibrary.warehouseIcon })
                     .bindPopup("Warehouse at Lat: " + latLng.lat + ", Long: " + latLng.lng);
+                this.warehouses.push(latLng);
                 break;
             case "courier":
                 marker = L.marker(latLng, { icon: VrpLibrary.courierIcon })
                     .bindPopup("Courier at Lat: " + latLng.lat + ", Long: " + latLng.lng);
+                this.couriers.push(latLng);
                 break;
             case "package":
                 marker = L.marker(latLng, { icon: VrpLibrary.packageIcon })
                     .bindPopup("Package at Lat: " + latLng.lat + ", Long: " + latLng.lng);
+                this.packages.push(latLng);
                 break;
             default:
                 return;
         }
         marker.addTo(this.map).openPopup();
+    }
+
+    SendData() {
+        $.ajax({
+            type: 'POST',
+            url: 'api/vrp',
+            data: JSON.stringify({
+                Warehouses: this.warehouses,
+                Couriers: this.couriers,
+                Packages: this.packages
+            }),
+            contentType: 'application/json',
+            success: function(result) {
+                alert("udalo sie");
+            },
+            error: function(error) {
+                alert("buu");
+            }
+        });
     }
 }
 
