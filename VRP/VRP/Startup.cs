@@ -41,7 +41,6 @@ namespace VRP
             }
 
             app.UseStaticFiles();
-            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

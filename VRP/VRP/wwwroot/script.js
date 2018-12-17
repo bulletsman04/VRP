@@ -5,6 +5,7 @@
         [52.237049, 21.017532],
         13);
     $('#applyButton').on('click', event => vrp.SendData());
+    vrp.GetData();
 });
 
 class VrpHelper {
@@ -83,6 +84,75 @@ class VrpHelper {
             },
             error: function(error) {
                 alert("buu");
+            }
+        });
+    }
+
+    GetData() {
+        this.GetWarehouses();
+        this.GetCouriers();
+        this.GetPackages();
+    }
+
+    GetWarehouses() {
+        var vpr = this;
+        $.ajax({
+            type: 'GET',
+            url: 'api/vrp/getWarehouses',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (result) {
+                result.forEach(warehouse => {
+                    vpr.warehouses.push(warehouse);
+                    L.marker(warehouse.Location.coordinates, { icon: VrpLibrary.warehouseIcon })
+                        .bindPopup("Package at Lat: " + warehouse.Location.coordinates[0] + ", Long: " + warehouse.Location.coordinates[1])
+                        .addTo(vpr.map);
+                });
+            },
+            error: function (error) {
+                alert("buu warehouses");
+            }
+        });
+    }
+
+    GetCouriers() {
+        var vpr = this;
+        $.ajax({
+            type: 'GET',
+            url: 'api/vrp/getCouriers',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (result) {
+                result.forEach(courier => {
+                    vpr.couriers.push(courier);
+                    L.marker(courier.Location.coordinates, { icon: VrpLibrary.courierIcon })
+                        .bindPopup("Package at Lat: " + courier.Location.coordinates[0] + ", Long: " + courier.Location.coordinates[1])
+                        .addTo(vpr.map);
+                });
+            },
+            error: function (error) {
+                var err = eval("(" + error.responseText + ")");
+                alert(err.Message);            }
+        });
+    }
+
+    GetPackages() {
+        var vpr = this;
+        $.ajax({
+            type: 'GET',
+            url: 'api/vrp/getPackages',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (result) {
+                result.forEach(pack => {
+                    vpr.packages.push(pack);
+                    L.marker(pack.Location.coordinates, { icon: VrpLibrary.packageIcon })
+                        .bindPopup("Package at Lat: " + pack.Location.coordinates[0] + ", Long: " + pack.Location.coordinates[1])
+                        .addTo(vpr.map);
+                });
+            },
+            error: function (error) {
+                alert("buu packages");
             }
         });
     }

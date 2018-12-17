@@ -1,6 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
+using Newtonsoft.Json;
 using VRP.Context;
 using VRP.Model;
 
@@ -11,6 +18,24 @@ namespace VRP.Controllers
     public class VrpController : ControllerBase, IDisposable
     {
         public VrpGisDbContext Db { get; set; } = new VrpGisDbContext();
+
+        [NonAction]
+        public string Json(object value)
+        {
+            JsonSerializer serializer = GeoJsonSerializer.Create();
+            var json = new StringWriter();
+            serializer.Serialize(json, value);
+            return json.ToString();
+        }
+
+        [HttpGet, Route("getWarehouses")]
+        public string GetWarehouses() => Json(Db.Warehouses);
+
+        [HttpGet, Route("getCouriers")]
+        public IEnumerable<Courier> GetCouriers() => Db.Couriers.ToList();
+
+        [HttpGet, Route("getPackages")]
+        public string GetPackages() => Json(Db.Packages);
 
         [HttpPost]
         public void Post([FromBody] Collections input)
