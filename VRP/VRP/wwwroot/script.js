@@ -1,6 +1,6 @@
 ﻿$().ready(function () {
     var vrp = new VrpHelper('map',
-        'http://192.168.99.100:32778/styles/osm-bright.json',
+        'http://192.168.99.100:32778/styles/osm-bright/style.json',
         'http://192.168.99.100:32777',
         [52.237049, 21.017532],
         13);
