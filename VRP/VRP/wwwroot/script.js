@@ -1,6 +1,6 @@
 ﻿$().ready(function () {
     var vrp = new VrpHelper('map',
-        'http://192.168.99.100:32778/styles/osm-bright/style.json',
+        'http://192.168.99.100:32779/styles/osm-bright/style.json',
         'http://192.168.99.100:32777',
         [52.237049, 21.017532],
         13);
@@ -104,8 +104,8 @@ class VrpHelper {
             success: function (result) {
                 result.forEach(warehouse => {
                     vpr.warehouses.push(warehouse);
-                    L.marker(warehouse.Location.coordinates, { icon: VrpLibrary.warehouseIcon })
-                        .bindPopup("Package at Lat: " + warehouse.Location.coordinates[0] + ", Long: " + warehouse.Location.coordinates[1])
+                    L.marker({ lat: warehouse.Lat, lng: warehouse.Lng}, { icon: VrpLibrary.warehouseIcon })
+                        .bindPopup("Package at Lat: " + warehouse.Lat + ", Long: " + warehouse.Lng)
                         .addTo(vpr.map);
                 });
             },
@@ -125,8 +125,8 @@ class VrpHelper {
             success: function (result) {
                 result.forEach(courier => {
                     vpr.couriers.push(courier);
-                    L.marker(courier.Location.coordinates, { icon: VrpLibrary.courierIcon })
-                        .bindPopup("Package at Lat: " + courier.Location.coordinates[0] + ", Long: " + courier.Location.coordinates[1])
+                    L.marker({ lat: courier.Lat, lng: courier.Lng }, { icon: VrpLibrary.courierIcon })
+                        .bindPopup("Package at Lat: " + courier.Lat + ", Long: " + courier.Lng)
                         .addTo(vpr.map);
                 });
             },
@@ -146,8 +146,8 @@ class VrpHelper {
             success: function (result) {
                 result.forEach(pack => {
                     vpr.packages.push(pack);
-                    L.marker(pack.Location.coordinates, { icon: VrpLibrary.packageIcon })
-                        .bindPopup("Package at Lat: " + pack.Location.coordinates[0] + ", Long: " + pack.Location.coordinates[1])
+                    L.marker({ lat: pack.Lat, lng: pack.Lng }, { icon: VrpLibrary.packageIcon })
+                        .bindPopup("Package at Lat: " + pack.Lat + ", Long: " + pack.Lng)
                         .addTo(vpr.map);
                 });
             },

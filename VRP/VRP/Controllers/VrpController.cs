@@ -22,10 +22,8 @@ namespace VRP.Controllers
         [NonAction]
         public string Json(object value)
         {
-            JsonSerializer serializer = GeoJsonSerializer.Create();
-            var json = new StringWriter();
-            serializer.Serialize(json, value);
-            return json.ToString();
+            var json = JsonConvert.SerializeObject(value);
+            return json;
         }
 
         [HttpGet, Route("getWarehouses")]
@@ -41,12 +39,35 @@ namespace VRP.Controllers
         public void Post([FromBody] Collections input)
         {
             foreach (var warehouse in input.Warehouses)
-                Db.Warehouses.Add(new Warehouse {Location = new Point(warehouse.Lat, warehouse.Lng)});
+            {
+                Warehouse addedWarehouse = new Warehouse {Location = new Point(warehouse.Lat, warehouse.Lng)};
+                if (Db.Warehouses.Find(addedWarehouse) != null)
+                {
+                    Db.Warehouses.Add(addedWarehouse);
+                }
+            }
+
             foreach (var courier in input.Couriers)
-                Db.Couriers.Add(new Courier { Location = new Point(courier.Lat, courier.Lng) });
+            {
+                Courier addedCourier = new Courier { Location = new Point(courier.Lat, courier.Lng) };
+                if (Db.Couriers.Find(addedCourier) != null)
+                {
+                    Db.Couriers.Add(addedCourier);
+                }
+            }
             foreach (var package in input.Packages)
-                Db.Packages.Add(new Package { Location = new Point(package.Lat, package.Lng) });
+            {
+                Package addedPackage = new Package { Location = new Point(package.Lat, package.Lng) };
+                if (Db.Packages.Find(addedPackage) != null)
+                {
+                    Db.Packages.Add(addedPackage);
+                }
+            }
+
+
             Db.SaveChanges();
+           
+            
         }
 
         public void Dispose()
