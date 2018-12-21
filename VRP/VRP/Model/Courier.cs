@@ -5,10 +5,8 @@ using NetTopologySuite.Geometries;
 namespace VRP.Model
 {
     [Table("Couriers")]
-    public class Courier
+    public class Courier: MapElement
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public Point Location { get; set; }
+        
     }
 }

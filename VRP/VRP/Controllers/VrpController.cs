@@ -9,6 +9,7 @@ using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Newtonsoft.Json;
 using VRP.Context;
+using VRP.Functionality;
 using VRP.Model;
 
 namespace VRP.Controllers
@@ -22,10 +23,8 @@ namespace VRP.Controllers
         [NonAction]
         public string Json(object value)
         {
-            JsonSerializer serializer = GeoJsonSerializer.Create();
-            var json = new StringWriter();
-            serializer.Serialize(json, value);
-            return json.ToString();
+            var json = JsonConvert.SerializeObject(value);
+            return json;
         }
 
         [HttpGet, Route("getWarehouses")]
@@ -41,20 +40,52 @@ namespace VRP.Controllers
         public void Post([FromBody] Collections input)
         {
             foreach (var warehouse in input.Warehouses)
-                Db.Warehouses.Add(new Warehouse {Location = new Point(warehouse.Lat, warehouse.Lng)});
+            {
+                Warehouse addedWarehouse = new Warehouse {Location = new Point(warehouse.Lat, warehouse.Lng)};
+                if (Db.Warehouses.FirstOrDefault((item) => item.Location == addedWarehouse.Location) == null)
+                {
+                    Db.Warehouses.Add(addedWarehouse);
+                }
+            }
+
             foreach (var courier in input.Couriers)
-                Db.Couriers.Add(new Courier { Location = new Point(courier.Lat, courier.Lng) });
+            {
+                Courier addedCourier = new Courier { Location = new Point(courier.Lat, courier.Lng) };
+                if (Db.Couriers.FirstOrDefault((item) => item.Location == addedCourier.Location) == null)
+                {
+                    Db.Couriers.Add(addedCourier);
+                }
+            }
             foreach (var package in input.Packages)
-                Db.Packages.Add(new Package { Location = new Point(package.Lat, package.Lng) });
+            {
+                Package addedPackage = new Package { Location = new Point(package.Lat, package.Lng) };
+                if (Db.Packages.FirstOrDefault((item) => item.Location == addedPackage.Location) == null)
+                {
+                    Db.Packages.Add(addedPackage);
+                }
+            }
+
+
             Db.SaveChanges();
+           
+            
         }
 
-        //[HttpPost, Route("calculateRoutes")]
-        //public List<List<int>> CalculateRoutes([FromBody] List<int> input)
-        //{
+        [HttpPost, Route("calculateRoutes")]
+        public List<List<int>> CalculateRoutes([FromBody] DistancesInfo data)
+        {
+            NaiveMultipleTspSolver solver = new NaiveMultipleTspSolver(data.Fields);
+            int[] couriers = new int[data.Fields.GetLength(0)-data.CourierId];
 
-        //    return null;
-        //}
+            for (int i = 0; i < couriers.Length; i++)
+            {
+                couriers[i] = data.CourierId + i;
+            }
+
+            var routes = solver.Solve(couriers);
+
+            return routes;
+        }
 
         public void Dispose()
         {

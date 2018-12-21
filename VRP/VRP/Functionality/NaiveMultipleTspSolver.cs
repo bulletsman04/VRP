@@ -4,10 +4,10 @@ namespace VRP.Functionality
 {
     public class NaiveMultipleTspSolver
     {
-        private float[,] Graph { get; }
+        private float[][] Graph { get; }
         private bool[] UsedPackages { get; set; }
         private int UsedPackagesCount { get; set; }
-        public NaiveMultipleTspSolver(float[,] graph)
+        public NaiveMultipleTspSolver(float[][] graph)
         {
             Graph = graph;
         }
@@ -46,10 +46,10 @@ namespace VRP.Functionality
         {
             float min = float.MaxValue;
             int minIndex = -1;
-            for(int i = 0; i < Graph.GetLength(0); i++)
-                if (i != row && !UsedPackages[i] && Graph[i, row] < min)
+            for(int i = 0; i < Graph[0].GetLength(0); i++)
+                if (i != row && !UsedPackages[i] && Graph[row][i] < min)
                 {
-                    min = Graph[i, row];
+                    min = Graph[row][i];
                     minIndex = i;
                 }
 
