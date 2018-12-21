@@ -1,7 +1,7 @@
 ﻿$().ready(function () {
     var vrp = new VrpHelper('map',
-        'http://192.168.99.100:32779/styles/osm-bright/style.json',
-        'http://192.168.99.100:32781/route',
+        'http://192.168.99.100:32769/styles/osm-bright/style.json',
+        'http://192.168.99.100:32768/route',
         [52.237049, 21.017532],
         13);
     $('#applyButton').on('click', event => vrp.SendData());
@@ -25,6 +25,9 @@ class VrpHelper {
             })
         
         });
+
+        this.routingControllers = [[], []];
+        this.routingControllersCount = 0;
 
         this.packages = [];
         this.couriers = [];
@@ -249,6 +252,12 @@ class VrpHelper {
                 })
 
             }).addTo(this.map);
+            this.routingControllers[0].push(controller);
+            this.routingControllers[1].push(true);
+
+
+
+           // controller.hide();
             var coordinates = [];
             var courier = this.couriers[i];
             coordinates.push(L.latLng([courier.Lat, courier.Lng]));
@@ -258,7 +267,8 @@ class VrpHelper {
                
                 coordinates.push(L.latLng([packageC.Lat, packageC.Lng]));
             }
-            coordinates.push(L.latLng([courier.Lat, courier.Lng]));
+            // Back to home
+           // coordinates.push(L.latLng([courier.Lat, courier.Lng]));
 
             controller.setWaypoints(coordinates);
             var router = controller.getRouter();
@@ -272,11 +282,34 @@ class VrpHelper {
 
                 });
             });
-            promise.then();
+            promise.then(this.addRemovingButton());
         }
+
         
+
     }
 
+    addRemovingButton() {
+        var button = document.createElement("button");
+        button.innerHTML = "Add/remove route";
+        button.addEventListener('click', this.addRemoveController.bind(this, this.routingControllersCount));
+        this.routingControllersCount++;
+        $("#settings").append(button);
+    }
+
+    addRemoveController(index) {
+        var controller = this.routingControllers[0][index];
+        var isShown = this.routingControllers[1][index];
+
+        if (isShown) {
+            this.map.removeControl(controller);
+            this.routingControllers[1][index] = false;
+        } else {
+            controller.addTo(this.map);
+            this.routingControllers[1][index] = true;
+        }
+
+    }
 
       async GetDistanceBetweenPoints(latLng1, latLng2) {
         var coordinates = [];
