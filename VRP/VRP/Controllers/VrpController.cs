@@ -41,7 +41,7 @@ namespace VRP.Controllers
             foreach (var warehouse in input.Warehouses)
             {
                 Warehouse addedWarehouse = new Warehouse {Location = new Point(warehouse.Lat, warehouse.Lng)};
-                if (Db.Warehouses.Find(addedWarehouse) != null)
+                if (Db.Warehouses.FirstOrDefault((item) => item.Location == addedWarehouse.Location) == null)
                 {
                     Db.Warehouses.Add(addedWarehouse);
                 }
@@ -50,7 +50,7 @@ namespace VRP.Controllers
             foreach (var courier in input.Couriers)
             {
                 Courier addedCourier = new Courier { Location = new Point(courier.Lat, courier.Lng) };
-                if (Db.Couriers.Find(addedCourier) != null)
+                if (Db.Couriers.FirstOrDefault((item) => item.Location == addedCourier.Location) == null)
                 {
                     Db.Couriers.Add(addedCourier);
                 }
@@ -58,7 +58,7 @@ namespace VRP.Controllers
             foreach (var package in input.Packages)
             {
                 Package addedPackage = new Package { Location = new Point(package.Lat, package.Lng) };
-                if (Db.Packages.Find(addedPackage) != null)
+                if (Db.Packages.FirstOrDefault((item) => item.Location == addedPackage.Location) == null)
                 {
                     Db.Packages.Add(addedPackage);
                 }

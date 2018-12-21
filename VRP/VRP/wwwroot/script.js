@@ -1,10 +1,12 @@
 ﻿$().ready(function () {
     var vrp = new VrpHelper('map',
         'http://192.168.99.100:32779/styles/osm-bright/style.json',
-        'http://192.168.99.100:32777',
+        'http://192.168.99.100:32781/route',
         [52.237049, 21.017532],
         13);
     $('#applyButton').on('click', event => vrp.SendData());
+    $('#calculateButton').on('click', event => vrp.CalculateRoutes());
+
     vrp.GetData();
 });
 
@@ -16,10 +18,12 @@ class VrpHelper {
             accessToken: 'no-token'
         }).addTo(this.map);
 
-        L.Routing.control({
+        this.Server = graphHopperServer;
+        this.Controller = L.Routing.control({
             router: L.Routing.graphHopper(undefined, {
                 serviceUrl: graphHopperServer
             })
+        
         }).addTo(this.map);
 
         this.packages = [];
@@ -156,6 +160,91 @@ class VrpHelper {
             }
         });
     }
+
+     async CalculateRoutes() {
+
+    
+
+        var packages = this.packages;
+        var couriers = this.couriers;
+
+        var packagesLength = packages.length;
+        var couriersLength = couriers.length;
+
+        // Which are rows and which columns?
+         var distances = [];
+
+        for (var i = 0; i < packagesLength + couriersLength; i++) {
+            distances.push([packagesLength]);
+        }
+
+        for (var i = 0; i < packages.length; i++) {
+            var package1 = packages[i];
+            for (var j = i; j < packages.length; j++) {
+                var package2 = packages[j];
+
+                var distance = 0;
+
+                // ask graphhopper for dist between two packages
+                distance = await  this.GetDistanceBetweenPoints(
+                    { latLng: L.latLng([package1.Lat, package1.Lng]) },
+                      { latLng: L.latLng([package2.Lat, package2.Lng]) })
+                      
+
+                distances[i][j] = distance;
+                distances[j][i] = distance;
+
+
+            }
+        }
+
+
+        for (var i = 0; i < couriers.length; i++) {
+            var courier = couriers[i];
+            for (var j = 0; j < packages.length; j++) {
+                var packageC = packages[j];
+
+                var distance = 0;
+
+                // ask graphhopper for dist between courier and package
+                distance = await this.GetDistanceBetweenPoints(
+                    { latLng: L.latLng([courier.Lat, courier.Lng]) },
+                    { latLng: L.latLng([packageC.Lat, packageC.Lng]) });
+
+                distances[packagesLength + i][j] = distance;
+
+
+            }
+        }
+
+
+        // Send POST to controller with double array and just packagesLength + 1 ?
+
+
+    }
+
+      async GetDistanceBetweenPoints(latLng1, latLng2) {
+        var coordinates = [];
+        coordinates.push(latLng1);
+        coordinates.push(latLng2);
+   
+        var router = this.Controller.getRouter();
+          var distance = 1;
+
+         var promise = new Promise((resolve, reject) => {
+             router.route(coordinates, (err, routes) => {
+
+                 if (routes !== undefined) {
+                     resolve(routes[0].summary.totalDistance / 1000);
+                 }
+
+             });
+          });
+          distance = await promise;
+
+         return distance;
+
+     }
 }
 
 class VrpLibrary {
