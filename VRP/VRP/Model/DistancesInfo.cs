@@ -8,6 +8,6 @@ namespace VRP.Model
     public class DistancesInfo
     {
         public float[][] Fields { get; set; }
-        public float CourierId { get; set; }
+        public int CourierId { get; set; }
     }
 }

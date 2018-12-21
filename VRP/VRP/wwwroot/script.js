@@ -24,7 +24,7 @@ class VrpHelper {
                 serviceUrl: graphHopperServer
             })
         
-        }).addTo(this.map);
+        });
 
         this.packages = [];
         this.couriers = [];
@@ -219,8 +219,11 @@ class VrpHelper {
 
          var myarguments = {};
          myarguments.Fields = distances;
-         myarguments.CourierId = packagesLength + 1;
+         myarguments.CourierId = packagesLength;
         // Send POST to controller with double array and just packagesLength + 1 ?
+
+         // ToDo: to change
+         var vrpHelper = this;
          $.ajax({
              type: 'POST',
              url: 'api/vrp/calculateRoutes',
@@ -229,6 +232,7 @@ class VrpHelper {
              dataType: "json",
              success: function (result) {
                  alert("udalo sie");
+                 vrpHelper.ShowRoutes(result);
              },
              error: function (error) {
                  alert("buu");
@@ -236,6 +240,43 @@ class VrpHelper {
          });
 
     }
+
+    ShowRoutes(result) {
+        for (var i = 0; i < result.length; i++) {
+            var controller = L.Routing.control({
+                router: L.Routing.graphHopper(undefined, {
+                    serviceUrl: this.Server
+                })
+
+            }).addTo(this.map);
+            var coordinates = [];
+            var courier = this.couriers[i];
+            coordinates.push(L.latLng([courier.Lat, courier.Lng]));
+            var points = result[i];
+            for (var j = 0; j < points.length; j++) {
+                var packageC = this.packages[points[j]];
+               
+                coordinates.push(L.latLng([packageC.Lat, packageC.Lng]));
+            }
+            coordinates.push(L.latLng([courier.Lat, courier.Lng]));
+
+            controller.setWaypoints(coordinates);
+            var router = controller.getRouter();
+
+            var promise = new Promise((resolve, reject) => {
+                router.route(coordinates, (err, routes) => {
+
+                    if (routes !== undefined) {
+                        resolve(routes[0].summary.totalDistance / 1000);
+                    }
+
+                });
+            });
+            promise.then();
+        }
+        
+    }
+
 
       async GetDistanceBetweenPoints(latLng1, latLng2) {
         var coordinates = [];

@@ -9,6 +9,7 @@ using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Newtonsoft.Json;
 using VRP.Context;
+using VRP.Functionality;
 using VRP.Model;
 
 namespace VRP.Controllers
@@ -71,10 +72,21 @@ namespace VRP.Controllers
         }
 
         [HttpPost, Route("calculateRoutes")]
-        public List<List<int>> CalculateRoutes([FromBody] DistancesInfo info)
+        public List<List<int>> CalculateRoutes([FromBody] DistancesInfo data)
         {
-          
-            return null;
+
+
+          NaiveMultipleTspSolver solver = new NaiveMultipleTspSolver(data.Fields);
+            int[] couriers = new int[data.Fields.GetLength(0)-data.CourierId];
+
+            for (int i = 0; i < couriers.Length; i++)
+            {
+                couriers[i] = data.CourierId + i;
+            }
+
+            var routes = solver.Solve(couriers);
+
+            return routes;
         }
 
         public void Dispose()
