@@ -172,10 +172,10 @@ class VrpHelper {
         var couriersLength = couriers.length;
 
         // Which are rows and which columns?
-         var distances = [];
+         var distances = new Array(packagesLength + couriersLength);
 
         for (var i = 0; i < packagesLength + couriersLength; i++) {
-            distances.push([packagesLength]);
+            distances[i] = new Array(packagesLength);
         }
 
         for (var i = 0; i < packages.length; i++) {
@@ -217,9 +217,23 @@ class VrpHelper {
             }
         }
 
-
+         var myarguments = {};
+         myarguments.Fields = distances;
+         myarguments.CourierId = packagesLength + 1;
         // Send POST to controller with double array and just packagesLength + 1 ?
-
+         $.ajax({
+             type: 'POST',
+             url: 'api/vrp/calculateRoutes',
+             data: JSON.stringify(myarguments),
+             contentType: 'application/json',
+             dataType: "json",
+             success: function (result) {
+                 alert("udalo sie");
+             },
+             error: function (error) {
+                 alert("buu");
+             }
+         });
 
     }
 

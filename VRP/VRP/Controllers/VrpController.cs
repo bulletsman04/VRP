@@ -70,12 +70,12 @@ namespace VRP.Controllers
             
         }
 
-        //[HttpPost, Route("calculateRoutes")]
-        //public List<List<int>> CalculateRoutes([FromBody] List<int> input)
-        //{
-
-        //    return null;
-        //}
+        [HttpPost, Route("calculateRoutes")]
+        public List<List<int>> CalculateRoutes([FromBody] DistancesInfo info)
+        {
+          
+            return null;
+        }
 
         public void Dispose()
         {
