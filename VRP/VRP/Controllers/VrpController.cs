@@ -74,9 +74,7 @@ namespace VRP.Controllers
         [HttpPost, Route("calculateRoutes")]
         public List<List<int>> CalculateRoutes([FromBody] DistancesInfo data)
         {
-
-
-          NaiveMultipleTspSolver solver = new NaiveMultipleTspSolver(data.Fields);
+            NaiveMultipleTspSolver solver = new NaiveMultipleTspSolver(data.Fields);
             int[] couriers = new int[data.Fields.GetLength(0)-data.CourierId];
 
             for (int i = 0; i < couriers.Length; i++)

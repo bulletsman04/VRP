@@ -14,7 +14,6 @@ namespace VRP.Model
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [JsonConverter(typeof(PointConverter))]
         public Point Location { get; set; }
     }
 }
