@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title></title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-reboot.css"/>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-grid.css"/>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="main.css"/>
+    <link rel="stylesheet" href="bootstrap_custom.css"/>
+
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="bootstrap/js/bootstrap.js"></script>
+
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1 class="web-title">Vehicle Routing Problem</h1>
+        </div>
+        <div class="settings"></div>
+        <div class="item-list">
+            <nav>
+                <div class="nav nav-pills nav-justified" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#warehouses" role="tab" aria-controls="nav-home" aria-selected="true">Warehouses</a>
+                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#couriers" role="tab" aria-controls="nav-profile" aria-selected="false">Couriers</a>
+                    <a class="nav-item nav-link  active" id="nav-contact-tab" data-toggle="tab" href="#packages" role="tab" aria-controls="nav-contact" aria-selected="false">Packages</a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade " id="warehouses" role="tabpanel" aria-labelledby="nav-home-tab">
+                    ..
+                </div>
+                <div class="tab-pane fade" id="couriers" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    
+                </div>
+                <div class="tab-content-scrollable tab-pane fade show active" id="packages" role="tabpanel" aria-labelledby="nav-contact-tab">
+                    <template id="package-template">
+                        <div id="package" class="package">
+                            <img alt="ikona paczki" class="package-icon" src="Icons/paczka_ikona.png" />
+                            <span id="package-name" class="package-info"></span><br />
+                            <span id="package-x" class="package-info"></span>
+                            <span id="package-y" class="package-info"></span><br />
+                            <img class="small-icon" src="Icons/edit.svg" id="edit" />
+                            <img class="small-icon" src="Icons/remove.png" id="remove"/>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+        <div class="map">
+
+        </div>
+
+    </div>
+    <script src="mocks.js"></script>
+</body>
+</html>

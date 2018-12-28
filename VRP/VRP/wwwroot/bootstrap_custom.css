@@ -1,0 +1,25 @@
+﻿.nav-pills .nav-link.active, .nav-pills .nav-item.show .nav-link {
+    color: var(--tabs_font_active);
+    background-color: var(--light_green);
+    /*border: 1px solid;*/
+    border-color: var(--main_borders) var(--main_borders) #fff var(--main_borders);
+}
+
+.nav-link {
+    color: var(--tabs_font_inactive);
+    background-color: var(--dark_green);
+}
+
+.nav-link:hover {
+    color: var(--tabs_font_active);
+}
+
+.nav-pills .nav-link {
+    border-radius: 0;
+}
+
+.tab-content
+{
+    /* ToDo: There is some kind of problem with that when trying to set overflow
+        height:100%;*/
+}
