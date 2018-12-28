@@ -84,15 +84,12 @@ html,body {
     }
 
 .package-info {
-    margin: 2px 0;
-    display: inline-block;
+    
 }
 
 .package-icon {
-    width: 30%;
+    width: 100%;
     height: 90px;
-    float: left;
-    margin-right: 5px;
     border: 1px solid black;
 }
 
@@ -115,8 +112,8 @@ html,body {
 
 .vertical-center-header1 {
     height: 100%;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 7px;
+    padding-bottom: 7px;
 }
 
 .add-element-text {
@@ -129,10 +126,19 @@ input[type=radio] {
 }
 
 
-/* ToDo: Better ? 
-.searchbox-column {
+ /*ToDo: Better ?*/
+.no-left-padding-col {
+    padding-left: 0;
+}
+
+.packages-info span {
+    margin: 0 3px;
+}
+
+.packages-info .row > div {
+    padding-left: 0;
     padding-right: 0;
-}*/
+}
 
 
 

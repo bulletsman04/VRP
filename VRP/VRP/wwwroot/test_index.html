@@ -11,6 +11,18 @@
 
     <script src="jquery-3.3.1.min.js"></script>
     <script src="bootstrap/js/bootstrap.js"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" />
+    <link rel='stylesheet' href="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/0.50.0/mapbox-gl.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/mapbox-gl-leaflet@0.0.3/leaflet-mapbox-gl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/0.50.0/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/graphhopper-js-api-client/dist/graphhopper-client.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="lrm-graphhopper-1.2.0.js"></script>
 
 </head>
 <body>
@@ -25,16 +37,20 @@
                         <input type="text" class=" form-control" placeholder="enter place name" id="searchbox">
                     </div>
                 </div>
-                <div class="vertical-center-header1 text-center  col-sm-4">
+                <div class="vertical-center-header1 text-center  col-sm-3">
                     <span class="add-element-text">Add: </span>
                     <input type="radio" id="warehouseType" name="pointType" value="warehouse" />
                     <label for="warehouseType">Warehouse</label>
                     <input type="radio" id="packageType" name="pointType" value="package" />
                     <label for="packageType">Package</label>
                 </div>
+                <div class=" col-sm-1 no-left-padding-col">
+                    <button class="btn" id="applyButton">Apply</button>
+
+                </div>
                 <div class=" col-sm-4">
-                    <button class="btn">Calculate routes</button>
-                    <button class="btn">Start simulation</button>
+                    <button class="btn" id="calculateButton">Calculate routes</button>
+                    <button class="btn" id="startSimulation">Start simulation</button>
 
                 </div>
             </div>
@@ -56,23 +72,63 @@
                 </div>
                 <div class="tab-content-scrollable tab-pane fade show active" id="packages" role="tabpanel" aria-labelledby="nav-contact-tab">
                     <template id="package-template">
-                        <div id="package" class="package">
-                            <img alt="ikona paczki" class="package-icon" src="Icons/paczka_ikona.png" />
-                            <span id="package-name" class="package-info"></span><br />
-                            <span id="package-x" class="package-info"></span>
-                            <span id="package-y" class="package-info"></span><br />
-                            <img class="small-icon" src="Icons/edit.svg" id="edit" />
-                            <img class="small-icon" src="Icons/remove.png" id="remove"/>
+                        <div id="package" class="container package">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <h5 id="package-name" class=""></h5>
+                                </div>
+                                <div class="col-sm-2">
+                                   <img class="small-icon" src="Icons/edit.svg" id="edit" />
+                                    <img class="small-icon" src="Icons/remove.png" id="remove" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <img alt="ikona paczki" class="package-icon" src="Icons/paczka_ikona.png" />
+                                </div>
+                                <div class="col-sm-8 packages-info">
+                                    <div class="row">
+                                        <div class="col-sm-5 ">
+                                            <span>Position:</span>
+                                            <span id="package-x" class="package-info"></span>,<span id="package-y" class="package-info"></span>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <span>Place: </span>
+                                            <span id="place-name" class="package-info"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row ">
+                                        <div class="col-sm-12 ">
+                                            <span>Warehouse:</span>
+                                            <span id="package-warehouse" class="package-info"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <span>Courier:</span>
+                                            <span id="package-courier" class="package-info"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span>Route:</span>
+                                    <span id="package-route" class="package-info"></span>
+                                </div>
+                            </div>
+                            
                         </div>
                     </template>
                 </div>
             </div>
         </div>
-        <div class="map">
+        <div id="map" class="map">
 
         </div>
 
     </div>
-    <script src="mocks.js"></script>
+<script src="mocks.js"></script>
+<script src='script.js'></script>
 </body>
 </html>
