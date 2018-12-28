@@ -106,8 +106,33 @@ html,body {
         cursor: pointer;
     }
 
+/* ToDo: Better way? align-content-center ? */
+.vertical-center-header {
+    height: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.vertical-center-header1 {
+    height: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.add-element-text {
+    margin: 0 7px 0 0;
+    font-weight: bold;
+}
+
+input[type=radio] {
+    margin: 0 0 0 7px;
+}
 
 
+/* ToDo: Better ? 
+.searchbox-column {
+    padding-right: 0;
+}*/
 
 
 

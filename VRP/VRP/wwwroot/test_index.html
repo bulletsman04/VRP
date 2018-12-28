@@ -18,7 +18,27 @@
         <div class="header">
             <h1 class="web-title">Vehicle Routing Problem</h1>
         </div>
-        <div class="settings"></div>
+        <div class="container settings">
+            <div class="row vertical-center-header ">
+                <div class="col-sm-4">
+                    <div class="form-group ">
+                        <input type="text" class=" form-control" placeholder="enter place name" id="searchbox">
+                    </div>
+                </div>
+                <div class="vertical-center-header1 text-center  col-sm-4">
+                    <span class="add-element-text">Add: </span>
+                    <input type="radio" id="warehouseType" name="pointType" value="warehouse" />
+                    <label for="warehouseType">Warehouse</label>
+                    <input type="radio" id="packageType" name="pointType" value="package" />
+                    <label for="packageType">Package</label>
+                </div>
+                <div class=" col-sm-4">
+                    <button class="btn">Calculate routes</button>
+                    <button class="btn">Start simulation</button>
+
+                </div>
+            </div>
+        </div>
         <div class="item-list">
             <nav>
                 <div class="nav nav-pills nav-justified" id="nav-tab" role="tablist">
