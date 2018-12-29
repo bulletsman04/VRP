@@ -13,9 +13,16 @@
 .nav-link:hover {
     color: var(--tabs_font_active);
 }
+.nav-pills .nav-link.active:not(:last-of-type) {
+    border-right: 0.1px solid white;
+}
 
 .nav-pills .nav-link {
     border-radius: 0;
+}
+
+.nav-pills a:not(:last-of-type) {
+    border-right: 0.1px solid white;
 }
 
 .form-control {
@@ -27,7 +34,11 @@
     color: var(--tabs_font_active);
 }
 
-
+.settings .btn {
+    padding-right: 8px;
+    padding-left: 8px;
+    font-size: 11pt;
+}
 .tab-content
 {
     /* ToDo: There is some kind of problem with that when trying to set overflow
