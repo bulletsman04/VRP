@@ -19,7 +19,7 @@
 }
 
 .form-control {
-    border: 1px solid var(--dark_green)
+    border: 1px solid var(--input_borders)
 }
 
 .btn {
