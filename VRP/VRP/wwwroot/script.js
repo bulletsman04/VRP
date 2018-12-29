@@ -194,12 +194,32 @@ class VrpHelper {
                     L.marker({ lat: pack.Lat, lng: pack.Lng }, { icon: VrpLibrary.packageIcon })
                         .bindPopup("Package at Lat: " + pack.Lat + ", Long: " + pack.Lng)
                         .addTo(vpr.map);
+                    vpr.AddPackageToList(pack);
                 });
             },
             error: function(error) {
                 alert("buu packages");
             }
         });
+    }
+
+     AddPackageToList(item) {
+
+         item.name = "package1";
+
+        var clone = $("#package-template").clone();
+        var content = clone.prop('content');
+        var pack = $(content).find("#package");
+        pack.attr("id", "package" + item.id);
+        $(content).find("#package-name").html(item.name);
+        $(content).find("#package-x").html(item.Lng.toString().substring(0,6));
+         $(content).find("#package-y").html(item.Lat.toString().substring(0,6));
+        //$(content).find("#edit").click(packageManager.editItem.bind(packageManager, item.id));
+        $(content).find("#edit").attr("id", "edit" + item.id);
+        //$(content).find("#remove").click(packageManager.removeItem.bind(packageManager, item.id));
+        $(content).find("#remove").attr("id", "remove" + item.id);
+        $("#packages").append(pack);
+
     }
 
     async CalculateRoutes() {
