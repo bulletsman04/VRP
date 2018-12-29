@@ -59,9 +59,9 @@ class VrpHelper {
         var marker;
         switch (type) {
         case "warehouse":
-            marker = L.marker(latLng, { icon: VrpLibrary.warehouseIcon })
-                .bindPopup("Warehouse at Lat: " + latLng.lat + ", Long: " + latLng.lng);
-            this.warehouses.push(latLng);
+                marker = L.marker(latLng, { icon: VrpLibrary.warehouseIcon });
+            this.AddElementsForm(marker,latLng)
+            //this.warehouses.push(latLng);
             break;
         case "courier":
             marker = L.marker(latLng, { icon: VrpLibrary.courierIcon })
@@ -77,6 +77,25 @@ class VrpHelper {
             return;
         }
         marker.addTo(this.map).openPopup();
+    }
+
+    async AddElementsForm(marker, latLng) {
+        var item = new Object;
+        item.id = 1;
+        item.name = "paczka1";
+        item.x = 5;
+        item.y = 10;
+
+        var clone = $("#form-template").clone();
+        var content = clone.prop('content');
+
+        var form = content.firstElementChild;
+        
+        await marker.bindPopup($(form).html(), { minWidth: 300, autoPanPaddingBottomRight: (0, 0) });
+
+        $(".leaflet-popup-content").find("#added-X").val(latLng.lat);
+        $(".leaflet-popup-content").find("#added-Y").val(latLng.lng);
+
     }
 
     SendData() {
