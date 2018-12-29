@@ -71,18 +71,18 @@ class VrpHelper {
         switch (type) {
         case "warehouse":
                 marker = L.marker(latLng, { icon: VrpLibrary.warehouseIcon });
-            this.AddElementsForm(marker, element, this.warehouses,type);
+            this.AddElementsForm(marker, element, this.warehouses,type,"add");
             break;
         case "package":
             marker = L.marker(latLng, { icon: VrpLibrary.packageIcon });
-            this.AddElementsForm(marker, element, this.packages, type);
+            this.AddElementsForm(marker, element, this.packages, type, "add");
             break;
         default:
             return;
         }
     }
 
-    async AddElementsForm(marker, element,elements, type) {
+    async AddElementsForm(marker, element,elements, type, mode) {
   
         var clone = $("#form-template").clone();
         var content = clone.prop('content');
@@ -102,16 +102,41 @@ class VrpHelper {
             $(".leaflet-popup-content").find("#couriers-form-group").remove();
         }
 
-        $(".leaflet-popup-content").find("#elements-form-btn").on('click', this.addElement.bind(this, element, elements, marker, type));
+        if (mode === "add") {
+            $(".leaflet-popup-content").find("#elements-form-btn")
+                .on('click', this.AddElement.bind(this, element, elements, marker, type));
+        }
+        else if (mode === "edit") {
+            $(".leaflet-popup-content").find("#added-name").val(element.name);
+            $(".leaflet-popup-content").find("#elements-form-btn")
+                .on('click', this.EditElement.bind(this, element, elements, marker, type));
+        }
+
 
     }
 
-    addElement(element, elements, marker, type) {
+    AddElement(element, elements, marker, type) {
+        // ToDo: probably needed counter becouse of removing problems - also dictionaries insted of arrays of elements
+        element.localId = elements.length;
+        element.name = $(".leaflet-popup-content").find("#added-name").val();
         elements.push(element);
         this.CurrentMarker = null;
         marker.closePopup();
-        marker.on('click', event => SendData());
+        marker.on('click', this.AddElementsForm.bind(this,marker, element, elements, type, "edit"));
         this.AddPackageToList(element);
+    }
+
+    EditElement(element, elements, marker, type) {
+        element.name = $(".leaflet-popup-content").find("#added-name").val();
+        element.Lat = $(".leaflet-popup-content").find("#added-X").val();
+        element.Lng = $(".leaflet-popup-content").find("#added-Y").val();
+        elements[element.localId] = element;
+        // ToDo: repeated code
+        this.CurrentMarker = null;
+        marker.closePopup();
+        marker.on('click', this.AddElementsForm.bind(this, marker, element, elements, type, "edit"));
+
+        // ToDo: Change items info in packages, werehouses and couriers lists 
     }
 
     SendData() {
@@ -206,7 +231,7 @@ class VrpHelper {
 
      AddPackageToList(item) {
 
-         item.name = "package1";
+       
 
         var clone = $("#package-template").clone();
         var content = clone.prop('content');
