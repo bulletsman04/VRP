@@ -18,6 +18,11 @@ html,body {
     height: 100%;
 }
 
+body {
+    min-width: 1610px;
+    margin: 0 auto;
+}
+
 .main-container {
     height: 100%;
     display: grid;

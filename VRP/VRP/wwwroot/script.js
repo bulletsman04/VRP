@@ -1,7 +1,7 @@
 ﻿$().ready(function() {
     var vrp = new VrpHelper('map',
-         'http://89.70.244.118:27017/styles/osm-bright/style.json',
-        'http://89.70.244.118:27018/route',
+         'http://192.168.99.100:32769/styles/osm-bright/style.json',
+        'http://192.168.99.100:32776/route',
         [52.237049, 21.017532],
         13);
     $('#applyButton').on('click', event => vrp.SendData());
@@ -55,42 +55,35 @@ class VrpHelper {
 
     OnMapClick(event) {
         // ToDo: Better remove whole popup
-        $(".leaflet-popup-content").remove();
+     
         if (this.CurrentMarker !== null) {
             this.map.removeLayer(this.CurrentMarker);
+            this.CurrentMarker.closePopup();
         }
         this.PlaceMarker(event.latlng, $("input[name='pointType']:checked").val());
     }
 
     PlaceMarker(latLng, type) {
         var marker;
+        var element = new Object();
+        element.Lat = latLng.lat;
+        element.Lng = latLng.lng;
         switch (type) {
         case "warehouse":
                 marker = L.marker(latLng, { icon: VrpLibrary.warehouseIcon });
-            this.AddElementsForm(marker, latLng, this.warehouses);
-            break;
-        case "courier":
-            marker = L.marker(latLng, { icon: VrpLibrary.courierIcon })
-                .bindPopup("Courier at Lat: " + latLng.lat + ", Long: " + latLng.lng);
-            this.couriers.push(latLng);
+            this.AddElementsForm(marker, element, this.warehouses,type);
             break;
         case "package":
-            marker = L.marker(latLng, { icon: VrpLibrary.packageIcon })
-                .bindPopup("Package at Lat: " + latLng.lat + ", Long: " + latLng.lng);
-            this.packages.push(latLng);
+            marker = L.marker(latLng, { icon: VrpLibrary.packageIcon });
+            this.AddElementsForm(marker, element, this.packages, type);
             break;
         default:
             return;
         }
     }
 
-    async AddElementsForm(marker, latLng,elements) {
-        var item = new Object;
-        item.id = 1;
-        item.name = "paczka1";
-        item.x = 5;
-        item.y = 10;
-
+    async AddElementsForm(marker, element,elements, type) {
+  
         var clone = $("#form-template").clone();
         var content = clone.prop('content');
 
@@ -99,18 +92,26 @@ class VrpHelper {
         await marker.bindPopup($(form).html(), { minWidth: 300, autoPanPaddingBottomRight: (0, 0) });
 
         marker.addTo(this.map).openPopup();
+        marker.on('popupclose', event => marker.unbindPopup());
+
         this.CurrentMarker = marker;
-        $(".leaflet-popup-content").find("#added-X").val(latLng.lat);
-        $(".leaflet-popup-content").find("#added-Y").val(latLng.lng);
-        var submit = document.getElementsByClassName("leaflet-popup-content");
-        submit[0].addEventListener('click', this.addElement.bind(this, latLng, elements, marker));
-        // WTF??? $(".leaflet-popup-content").find(".leaflet-popup-content").on('click', this.addElement.bind(this, latLng, elements, marker));
+        $(".leaflet-popup-content").find("#added-X").val(element.Lat);
+        $(".leaflet-popup-content").find("#added-Y").val(element.Lng);
+
+        if (type === "package") {
+            $(".leaflet-popup-content").find("#couriers-form-group").remove();
+        }
+
+        $(".leaflet-popup-content").find("#elements-form-btn").on('click', this.addElement.bind(this, element, elements, marker, type));
 
     }
 
-    addElement(latLng, elements, marker) {
-        elements.push(latLng);
+    addElement(element, elements, marker, type) {
+        elements.push(element);
         this.CurrentMarker = null;
+        marker.closePopup();
+        marker.on('click', event => SendData());
+        this.AddPackageToList(element);
     }
 
     SendData() {
