@@ -28,6 +28,8 @@ class VrpHelper {
 
         });
 
+        this.CurrentMarker = null;
+
         this.routingControllers = [[], []];
         this.routingControllersCount = 0;
 
@@ -52,6 +54,11 @@ class VrpHelper {
     }
 
     OnMapClick(event) {
+        // ToDo: Better remove whole popup
+        $(".leaflet-popup-content").remove();
+        if (this.CurrentMarker !== null) {
+            this.map.removeLayer(this.CurrentMarker);
+        }
         this.PlaceMarker(event.latlng, $("input[name='pointType']:checked").val());
     }
 
@@ -60,8 +67,7 @@ class VrpHelper {
         switch (type) {
         case "warehouse":
                 marker = L.marker(latLng, { icon: VrpLibrary.warehouseIcon });
-            this.AddElementsForm(marker,latLng)
-            //this.warehouses.push(latLng);
+            this.AddElementsForm(marker, latLng, this.warehouses);
             break;
         case "courier":
             marker = L.marker(latLng, { icon: VrpLibrary.courierIcon })
@@ -76,10 +82,9 @@ class VrpHelper {
         default:
             return;
         }
-        marker.addTo(this.map).openPopup();
     }
 
-    async AddElementsForm(marker, latLng) {
+    async AddElementsForm(marker, latLng,elements) {
         var item = new Object;
         item.id = 1;
         item.name = "paczka1";
@@ -93,9 +98,19 @@ class VrpHelper {
         
         await marker.bindPopup($(form).html(), { minWidth: 300, autoPanPaddingBottomRight: (0, 0) });
 
+        marker.addTo(this.map).openPopup();
+        this.CurrentMarker = marker;
         $(".leaflet-popup-content").find("#added-X").val(latLng.lat);
         $(".leaflet-popup-content").find("#added-Y").val(latLng.lng);
+        var submit = document.getElementsByClassName("leaflet-popup-content");
+        submit[0].addEventListener('click', this.addElement.bind(this, latLng, elements, marker));
+        // WTF??? $(".leaflet-popup-content").find(".leaflet-popup-content").on('click', this.addElement.bind(this, latLng, elements, marker));
 
+    }
+
+    addElement(latLng, elements, marker) {
+        elements.push(latLng);
+        this.CurrentMarker = null;
     }
 
     SendData() {
