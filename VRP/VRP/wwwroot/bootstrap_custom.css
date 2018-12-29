@@ -18,6 +18,14 @@
     border-radius: 0;
 }
 
+.form-control {
+    border: 1px solid var(--dark_green)
+}
+
+.btn {
+    background-color: var(--light_green);
+    color: var(--tabs_font_active);
+}
 
 
 .tab-content
