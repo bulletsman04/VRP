@@ -176,6 +176,11 @@ input[type=radio] {
     padding-left: 0;
 }
 
+.no-padding-col {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .packages-info span {
     margin: 0 3px;
 }

@@ -5,6 +5,7 @@
         [52.237049, 21.017532],
         13);
     $('#applyButton').on('click', event => vrp.SendData());
+    $('#clearButton').on('click', event => vrp.ClearElements());
     $('#calculateButton').on('click', event => vrp.CalculateRoutes());
 
     vrp.GetData();
@@ -417,6 +418,23 @@ class VrpHelper {
 
 
     }
+
+
+    ClearElements() {
+
+        this.CouriersMaxid = 0;
+        this.PackagesMaxid = 0;
+        this.WarehousesMaxid = 0;
+
+        Object.values(this.warehouses).forEach(element => {
+            this.RemoveWarehouse(element);
+        });
+
+        Object.values(this.packages).forEach(element => {
+            this.RemovePackage(element);
+        });
+    }
+
 
     addRemovingButton() {
         var button = document.createElement("button");
