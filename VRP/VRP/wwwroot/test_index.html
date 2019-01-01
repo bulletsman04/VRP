@@ -39,7 +39,7 @@
                 </div>
                 <div class="vertical-center-header1 text-center  col-sm-4">
                     <span class="add-element-text">Add: </span>
-                    <input type="radio" id="warehouseType" name="pointType" value="warehouse" />
+                    <input type="radio" checked="checked" id="warehouseType" name="pointType" value="warehouse" />
                     <label for="warehouseType">Warehouse</label>
                     <input type="radio" id="packageType" name="pointType" value="package" />
                     <label for="packageType">Package</label>
@@ -58,19 +58,72 @@
         <div class="item-list">
             <nav>
                 <div class="nav nav-pills nav-justified" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" href="#warehouses" role="tab" aria-controls="nav-home" aria-selected="true">Warehouses</a>
+                    <a class="nav-item nav-link  active" id="nav-home-tab" data-toggle="tab" href="#warehouses" role="tab" aria-controls="nav-home" aria-selected="true">Warehouses</a>
                     <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#couriers" role="tab" aria-controls="nav-profile" aria-selected="false">Couriers</a>
-                    <a class="nav-item nav-link  active" id="nav-contact-tab" data-toggle="tab" href="#packages" role="tab" aria-controls="nav-contact" aria-selected="false">Packages</a>
+                    <a class="nav-item nav-link " id="nav-contact-tab" data-toggle="tab" href="#packages" role="tab" aria-controls="nav-contact" aria-selected="false">Packages</a>
                 </div>
             </nav>
             <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade " id="warehouses" role="tabpanel" aria-labelledby="nav-home-tab">
-                    ..
+
+                <div class=" tab-content-scrollable tab-pane fade  show active" id="warehouses" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <template id="warehouse-template">
+                        <div id="warehouse" class="container package">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h5 id="warehouse-name" class=""></h5>
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <img class="small-icon float-right" src="Icons/remove.png" id="remove"/>
+                                    <img class="small-icon float-right" src="Icons/indicator.svg" id="center"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5 package-icon-container">
+                                    <img alt="ikona paczki" class="package-icon" src="Icons/warehouse.svg"/>
+                                </div>
+                                <div class="col-sm-7 packages-info">
+
+                                    <div class="row ">
+                                        <div class="col-sm-12 ">
+                                            <span>Position:</span>
+                                            <span id="warehouse-x" class="package-info"></span>,<span id="warehouse-y" class="package-info"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row ">
+                                        <div class="col-sm-12 ">
+                                            <span>Place: </span>
+                                            <span id="warehouse-place-name" class="package-info"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row ">
+                                        <div class="col-sm-12 ">
+                                            <span>Couriers number:</span>
+                                            <span id="warehouse-couriers-number" class="package-info"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <span>Packages number:</span>
+                                            <span id="warehouse-packages-number" class="package-info"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span>Couriers:</span>
+                                    <span id="warehouse-couriers" class="package-info"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
                 </div>
                 <div class="tab-pane fade" id="couriers" role="tabpanel" aria-labelledby="nav-profile-tab">
-                    
+
                 </div>
-                <div class="tab-content-scrollable tab-pane fade show active" id="packages" role="tabpanel" aria-labelledby="nav-contact-tab">
+                <div class="tab-content-scrollable tab-pane fade" id="packages" role="tabpanel" aria-labelledby="nav-contact-tab">
                     <template id="package-template">
                         <div id="package" class="container package">
                             <div class="row">
@@ -79,22 +132,22 @@
                                 </div>
                                 <div class="col-sm-6">
 
-                                    <img class="small-icon float-right" src="Icons/remove.png" id="remove" />
-                                    <img class="small-icon float-right" src="Icons/indicator.svg" id="center" />
+                                    <img class="small-icon float-right" src="Icons/remove.png" id="remove"/>
+                                    <img class="small-icon float-right" src="Icons/indicator.svg" id="center"/>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-5 package-icon-container">
-                                    <img alt="ikona paczki" class="package-icon" src="Icons/paczka_ikona.png" />
+                                    <img alt="ikona paczki" class="package-icon" src="Icons/paczka_ikona.png"/>
                                 </div>
                                 <div class="col-sm-7 packages-info">
-                                      
+
                                     <div class="row ">
                                         <div class="col-sm-12 ">
                                             <span>Position:</span>
                                             <span id="package-x" class="package-info"></span>,<span id="package-y" class="package-info"></span>
                                         </div>
-                                    </div>   
+                                    </div>
                                     <div class="row ">
                                         <div class="col-sm-12 ">
                                             <span>Place: </span>
@@ -121,7 +174,7 @@
                                     <span id="package-route" class="package-info"></span>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </template>
                 </div>

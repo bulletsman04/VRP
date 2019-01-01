@@ -61,13 +61,13 @@ class VrpHelper {
         switch (type) {
         case "warehouse":
             marker = VrpLibrary.warehouseMarker(this, element);
-            element.Id = this.WarehousesMaxid++;
+            element.Id = this.WarehousesMaxid + 1;
             this.AddElementsForm(marker, element, this.warehouses, type);
             element.Marker.bindPopup(VrpLibrary.warehouseEditForm(element), VrpLibrary.popupStyles).addTo(this.map);
             break;
         case "package":
             marker = VrpLibrary.packageMarker(this, element);
-            element.Id = this.PackagesMaxid++;
+            element.Id = this.PackagesMaxid + 1;
             this.AddElementsForm(marker, element, this.packages, type);
             element.Marker.bindPopup(VrpLibrary.packageEditForm(element), VrpLibrary.popupStyles).addTo(this.map);
             break;
@@ -86,14 +86,14 @@ class VrpHelper {
             });
         this.CurrentMarker = marker;
         $(".leaflet-popup-content").find("#elements-insert-form-btn")
-            .on('click', event => this.AddElement(element, elements, marker));
+            .on('click', event => this.AddElement(element, elements, marker,type));
 
         if (type === "package") {
             $(".leaflet-popup-content").find("#inserted-couriers-form-group").remove();
         }
     }
 
-    AddElement(element, elements, marker) {
+    AddElement(element, elements, marker, type) {
         this.CurrentMarker = null;
         elements[element.Id] = element;
         element.Name = $(".leaflet-popup-content").find("#inserted-name").val();
@@ -101,7 +101,15 @@ class VrpHelper {
         marker.off('popupclose');
         element.Marker.closePopup();
         element.Marker.unbindPopup();
-        this.AddPackageToList(element);
+
+        if (type === "package") {
+            this.AddPackageToList(element);
+            this.PackagesMaxid++;
+        }
+        else if (type === "warehouse") {
+            this.AddWarehouseToList(element);
+            this.WarehousesMaxid++;
+        }
     }
     
     SendData() {
@@ -171,6 +179,7 @@ class VrpHelper {
                     vpr.warehouses[warehouse.Id] = warehouse;
                     warehouse.Marker = VrpLibrary.warehouseMarker(vpr, warehouse);
                     warehouse.Marker.bindPopup(VrpLibrary.warehouseEditForm(warehouse), VrpLibrary.popupStyles).addTo(vpr.map);
+                    vpr.AddWarehouseToList(warehouse);
                 });
             },
             error: function(error) {
@@ -240,19 +249,36 @@ class VrpHelper {
         $("#packages").append(pack);
     }
 
+    AddWarehouseToList(item) {
+        var warehouse = VrpLibrary.warehouseElement;
+        warehouse.attr("id", "warehouse" + item.Id);
+        warehouse.find("#center").on('click', event => this.EditItem(item));
+        warehouse.find("#center").attr("id", "center" + item.Id);
+        warehouse.find("#remove").on('click', event => this.RemoveWarehouse(item));
+        warehouse.find("#remove").attr("id", "remove" + item.Id);
+        VrpLibrary.SetWarehouseToContainer(warehouse, item);
+        $("#warehouses").append(warehouse);
+    }
+
     EditPackageOnList(item) {
         var pack = $("#package" + item.Id);
         VrpLibrary.SetPackageToContainer(pack, item);
     }
 
     EditItem(item) {
-        this.map.setView(new L.LatLng(item.LatLng.Lat, item.LatLng.Lng), 13);
+        this.map.setView(new L.LatLng(item.LatLng.Lat, item.LatLng.Lng), 14);
     }
 
     RemovePackage(pack) {
         this.map.removeLayer(pack.Marker);
         $("#package" + pack.Id).remove();
         delete this.packages[pack.Id];
+    }
+
+    RemoveWarehouse(warehouse) {
+        this.map.removeLayer(warehouse.Marker);
+        $("#warehouse" + warehouse.Id).remove();
+        delete this.warehouses[warehouse.Id];
     }
 
     CalculateRoutes() {
@@ -438,6 +464,7 @@ class VrpLibrary {
             event => {
                 warehouse.LatLng.Lat = event.target.getLatLng().lat;
                 warehouse.LatLng.Lng = event.target.getLatLng().lng;
+                VrpLibrary.SetWarehouseToContainer($("#warehouse" + warehouse.Id), warehouse);
             });
         return marker;
     }
@@ -532,10 +559,23 @@ class VrpLibrary {
         var content = clone.prop('content');
         return $(content).find("#package");
     }
+
+    static get warehouseElement() {
+        var clone = $("#warehouse-template").clone();
+        var content = clone.prop('content');
+        return $(content).find("#warehouse");
+    }
+
     static SetPackageToContainer(container, pack) {
         container.find("#package-name").html(pack.Name);
         container.find("#package-x").html(pack.LatLng.Lng.toString().substring(0, 6));
         container.find("#package-y").html(pack.LatLng.Lat.toString().substring(0, 6));
+    }
+
+    static SetWarehouseToContainer(container, warehouse) {
+        container.find("#warehouse-name").html(warehouse.Name);
+        container.find("#warehouse-x").html(warehouse.LatLng.Lng.toString().substring(0, 6));
+        container.find("#warehouse-y").html(warehouse.LatLng.Lat.toString().substring(0, 6));
     }
 
     static get popupStyles() {
