@@ -9,11 +9,12 @@ using Newtonsoft.Json;
 
 namespace VRP.Model
 {
-    [JsonConverter(typeof(MapElementConverter))]
     public class MapElement
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public Point Location { get; set; }
+        [JsonConverter(typeof(MapElementConverter)), Column("Location")]
+        public Point LatLng { get; set; }
+        public string Name { get; set; }
     }
 }

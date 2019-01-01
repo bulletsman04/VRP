@@ -32,7 +32,7 @@ namespace VRP.Controllers
         public string GetWarehouses() => Json(Db.Warehouses);
 
         [HttpGet, Route("getCouriers")]
-        public IEnumerable<Courier> GetCouriers() => Db.Couriers.ToList();
+        public string GetCouriers() => Json(Db.Couriers);
 
         [HttpGet, Route("getPackages")]
         public string GetPackages() => Json(Db.Packages);
@@ -44,9 +44,9 @@ namespace VRP.Controllers
             Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Couriers\"");
             Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Packages\"");
 
-            Db.AddRange(input.Warehouses.Select(warehouse => new Warehouse { Location = new Point(warehouse.Lat, warehouse.Lng) }));
-            Db.AddRange(input.Couriers.Select(courier => new Courier { Location = new Point(courier.Lat, courier.Lng) }));
-            Db.AddRange(input.Packages.Select(package => new Package { Location = new Point(package.Lat, package.Lng) }));
+            Db.AddRange(input.Warehouses);
+            Db.AddRange(input.Couriers);
+            Db.AddRange(input.Packages);
 
             Db.SaveChanges();
         }

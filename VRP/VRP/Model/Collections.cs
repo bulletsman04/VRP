@@ -5,8 +5,8 @@ namespace VRP.Model
 {
     public class Collections
     {
-        public List<LatLng> Warehouses { get; set; }
-        public List<LatLng> Couriers { get; set; }
-        public List<LatLng> Packages { get; set; }
+        public List<Warehouse> Warehouses { get; set; }
+        public List<Courier> Couriers { get; set; }
+        public List<Package> Packages { get; set; }
     }
 }
