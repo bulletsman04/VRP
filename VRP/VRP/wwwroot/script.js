@@ -36,6 +36,10 @@ class VrpHelper {
         this.packages = {};
         this.couriers = {};
         this.warehouses = {};
+        this.PackagesMaxid = 0;
+        this.CouriersMaxid = 0;
+        this.WarehousesMaxid = 0;
+
 
         this.map.on('click', event => this.OnMapClick(event));
     }
@@ -57,13 +61,13 @@ class VrpHelper {
         switch (type) {
         case "warehouse":
             marker = VrpLibrary.warehouseMarker(this, element);
-            element.Id = Object.values(this.warehouses).length;
+            element.Id = this.WarehousesMaxid++;
             this.AddElementsForm(marker, element, this.warehouses, type);
             element.Marker.bindPopup(VrpLibrary.warehouseEditForm(element), VrpLibrary.popupStyles).addTo(this.map);
             break;
         case "package":
             marker = VrpLibrary.packageMarker(this, element);
-            element.Id = Object.values(this.packages).length;
+            element.Id = this.PackagesMaxid++;
             this.AddElementsForm(marker, element, this.packages, type);
             element.Marker.bindPopup(VrpLibrary.packageEditForm(element), VrpLibrary.popupStyles).addTo(this.map);
             break;
@@ -107,7 +111,7 @@ class VrpHelper {
             data: JSON.stringify({
                 Warehouses: Object.values(this.warehouses).map(warehouse => (
                     {
-                        Id: warehouse.Id,
+                        
                         Name: warehouse.Name,
                         LatLng:
                         {
@@ -117,7 +121,7 @@ class VrpHelper {
                     })),//.map(warehouse => ({Lat: warehouse.LatLng.Lat, Lng: warehouse.LatLng.Lng})),
                 Couriers: Object.values(this.couriers).map(courier => (
                     {
-                        Id: courier.Id,
+                        
                         Name: courier.Name,
                         LatLng:
                         {
@@ -127,7 +131,7 @@ class VrpHelper {
                     })),//.map(courier => ({ Lat: courier.LatLng.Lat, Lng: courier.LatLng.Lng })),
                 Packages: Object.values(this.packages).map(pack => (
                     {
-                        Id: pack.Id,
+                        
                         Name: pack.Name,
                         LatLng:
                         {
@@ -161,6 +165,9 @@ class VrpHelper {
             contentType: 'application/json',
             success: function(result) {
                 result.forEach(warehouse => {
+                    if (warehouse.Id > vpr.WarehousesMaxid) {
+                        vpr.WarehousesMaxid = warehouse.Id;
+                    }
                     vpr.warehouses[warehouse.Id] = warehouse;
                     warehouse.Marker = VrpLibrary.warehouseMarker(vpr, warehouse);
                     warehouse.Marker.bindPopup(VrpLibrary.warehouseEditForm(warehouse), VrpLibrary.popupStyles).addTo(vpr.map);
@@ -181,6 +188,9 @@ class VrpHelper {
             contentType: 'application/json',
             success: function(result) {
                 result.forEach(courier => {
+                    if (courier.Id > vpr.CouriersMaxid) {
+                        vpr.CouriersMaxid = courier.Id;
+                    }
                     vpr.couriers[courier.Id] = courier;
                     courier.Marker = VrpLibrary.courierMarker(vpr, courier);
                     courier.Marker.addTo(vpr.map);
@@ -202,6 +212,11 @@ class VrpHelper {
             contentType: 'application/json',
             success: function(result) {
                 result.forEach(pack => {
+
+                    if (pack.Id > vpr.PackagesMaxid) {
+                        vpr.PackagesMaxid = pack.Id;
+                    }
+
                     vpr.packages[pack.Id] = pack;
                     pack.Marker = VrpLibrary.packageMarker(vpr, pack);
                     pack.Marker.bindPopup(VrpLibrary.packageEditForm(pack), VrpLibrary.popupStyles).addTo(vpr.map);
