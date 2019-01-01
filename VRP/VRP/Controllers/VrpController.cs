@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Newtonsoft.Json;
@@ -39,36 +40,15 @@ namespace VRP.Controllers
         [HttpPost]
         public void Post([FromBody] Collections input)
         {
-            foreach (var warehouse in input.Warehouses)
-            {
-                Warehouse addedWarehouse = new Warehouse {Location = new Point(warehouse.Lat, warehouse.Lng)};
-                if (Db.Warehouses.FirstOrDefault((item) => item.Location == addedWarehouse.Location) == null)
-                {
-                    Db.Warehouses.Add(addedWarehouse);
-                }
-            }
+            Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Warehouses\"");
+            Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Couriers\"");
+            Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Packages\"");
 
-            foreach (var courier in input.Couriers)
-            {
-                Courier addedCourier = new Courier { Location = new Point(courier.Lat, courier.Lng) };
-                if (Db.Couriers.FirstOrDefault((item) => item.Location == addedCourier.Location) == null)
-                {
-                    Db.Couriers.Add(addedCourier);
-                }
-            }
-            foreach (var package in input.Packages)
-            {
-                Package addedPackage = new Package { Location = new Point(package.Lat, package.Lng) };
-                if (Db.Packages.FirstOrDefault((item) => item.Location == addedPackage.Location) == null)
-                {
-                    Db.Packages.Add(addedPackage);
-                }
-            }
-
+            Db.AddRange(input.Warehouses.Select(warehouse => new Warehouse { Location = new Point(warehouse.Lat, warehouse.Lng) }));
+            Db.AddRange(input.Couriers.Select(courier => new Courier { Location = new Point(courier.Lat, courier.Lng) }));
+            Db.AddRange(input.Packages.Select(package => new Package { Location = new Point(package.Lat, package.Lng) }));
 
             Db.SaveChanges();
-           
-            
         }
 
         [HttpPost, Route("calculateRoutes")]

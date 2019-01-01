@@ -12,13 +12,16 @@ namespace VRP.Model
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var mapElement = value as MapElement;
-            var point = mapElement.Location;
-            LatLng latLng = new LatLng()
-            {
-                Lat = point.Coordinates[0].X,
-                Lng = point.Coordinates[0].Y
-            };
-            JObject o = JObject.FromObject(latLng);
+            if(mapElement == null) throw new ArgumentException($"Excepted: MapElement, got: {value.GetType()}");
+            JObject o = JObject.FromObject(
+                new {
+                    Id = mapElement.Id,
+                    LatLng = new LatLng
+                    {
+                        Lat = mapElement.Location.Coordinates[0].X,
+                        Lng = mapElement.Location.Coordinates[0].Y
+                    }
+                });
             
             o.WriteTo(writer);
         }
