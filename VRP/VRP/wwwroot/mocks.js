@@ -23,8 +23,8 @@ function AddMockPackage() {
     $(content).find("#package-name").html(item.name);
     $(content).find("#package-x").html(item.x);
     $(content).find("#package-y").html(item.y);
-    //$(content).find("#edit").click(packageManager.editItem.bind(packageManager, item.id));
-    $(content).find("#edit").attr("id", "edit" + item.id);
+    //$(content).find("#center").click(packageManager.editItem.bind(packageManager, item.id));
+    $(content).find("#center").attr("id", "center" + item.id);
     //$(content).find("#remove").click(packageManager.removeItem.bind(packageManager, item.id));
     $(content).find("#remove").attr("id", "remove" + item.id);
     $("#packages").append(pack);

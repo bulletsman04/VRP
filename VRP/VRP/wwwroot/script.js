@@ -219,8 +219,8 @@ class VrpHelper {
     AddPackageToList(item) {
         var pack = VrpLibrary.packageElement;
         pack.attr("id", "package" + item.Id);
-        pack.find("#edit").on('click', event => this.EditItem(item));
-        pack.find("#edit").attr("id", "edit" + item.Id);
+        pack.find("#center").on('click', event => this.EditItem(item));
+        pack.find("#center").attr("id", "center" + item.Id);
         pack.find("#remove").on('click', event => this.RemovePackage(item));
         pack.find("#remove").attr("id", "remove" + item.Id);
         VrpLibrary.SetPackageToContainer(pack, item);
