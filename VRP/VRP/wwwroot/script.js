@@ -81,8 +81,6 @@ class VrpHelper {
                 this.map.removeLayer(marker);
             });
         this.CurrentMarker = marker;
-        $(".leaflet-popup-content").find("#added-X").val(element.LatLng.Lat);
-        $(".leaflet-popup-content").find("#added-Y").val(element.LatLng.Lng);
         $(".leaflet-popup-content").find("#elements-insert-form-btn")
             .on('click', event => this.AddElement(element, elements, marker));
 
@@ -96,7 +94,7 @@ class VrpHelper {
         elements[element.Id] = element;
         element.Name = $(".leaflet-popup-content").find("#inserted-name").val();
         element.Marker = marker;
-        marker.on('popupclose', event => {});
+        marker.off('popupclose');
         element.Marker.closePopup();
         element.Marker.unbindPopup();
         this.AddPackageToList(element);
