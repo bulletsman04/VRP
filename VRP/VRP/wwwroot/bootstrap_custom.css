@@ -30,8 +30,8 @@
 }
 
 .btn {
-    background-color: var(--light_green);
-    color: var(--tabs_font_active);
+    background-color: var(--dark_green);
+    color: var(--tabs_font_inactive);
 }
 
 .settings .btn {
