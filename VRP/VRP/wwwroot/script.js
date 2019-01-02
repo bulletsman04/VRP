@@ -540,6 +540,7 @@ class VrpLibrary {
         $('body').on('click', '#warehouse-edit-form-btn' + warehouse.Id,
             event => {
                 warehouse.Name = $('#edited-warehouse-name' + warehouse.Id).val();
+                VrpLibrary.SetWarehouseToContainer($('#warehouse' + warehouse.Id), warehouse);
 
                 var popupContent = $(warehouse.Marker.getPopup()._contentNode);
                 popupContent.find('#edited-warehouse-name' + warehouse.Id).attr('value', warehouse.Name);
