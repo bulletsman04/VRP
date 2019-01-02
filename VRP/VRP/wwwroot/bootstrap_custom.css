@@ -39,6 +39,12 @@
     padding-left: 8px;
     font-size: 10pt;
 }
+
+.settings .btn:hover {
+    background-color: var(--light_green);
+    color: var(--tabs_font_active);
+}
+
 .tab-content
 {
     /* ToDo: There is some kind of problem with that when trying to set overflow
