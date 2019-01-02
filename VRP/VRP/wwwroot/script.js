@@ -64,13 +64,11 @@ class VrpHelper {
             marker = VrpLibrary.warehouseMarker(this, element);
             element.Id = this.WarehousesMaxid + 1;
             this.AddElementsForm(marker, element, this.warehouses, type);
-            element.Marker.bindPopup(VrpLibrary.warehouseEditForm(element), VrpLibrary.popupStyles).addTo(this.map);
             break;
         case "package":
             marker = VrpLibrary.packageMarker(this, element);
             element.Id = this.PackagesMaxid + 1;
             this.AddElementsForm(marker, element, this.packages, type);
-            element.Marker.bindPopup(VrpLibrary.packageEditForm(element), VrpLibrary.popupStyles).addTo(this.map);
             break;
         default:
             return;
@@ -106,10 +104,12 @@ class VrpHelper {
         if (type === "package") {
             this.AddPackageToList(element);
             this.PackagesMaxid++;
+            element.Marker.bindPopup(VrpLibrary.packageEditForm(element), VrpLibrary.popupStyles).addTo(this.map);
         }
         else if (type === "warehouse") {
             this.AddWarehouseToList(element);
             this.WarehousesMaxid++;
+            element.Marker.bindPopup(VrpLibrary.warehouseEditForm(element), VrpLibrary.popupStyles).addTo(this.map);
         }
     }
     
