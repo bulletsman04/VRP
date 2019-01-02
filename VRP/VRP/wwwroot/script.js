@@ -1,7 +1,7 @@
 ﻿$().ready(function() {
     var vrp = new VrpHelper('map',
-         'http://89.70.244.118:27017/styles/osm-bright/style.json',
-        'http://89.70.244.118:27018/route',
+         'http://192.168.99.100:32768/styles/osm-bright/style.json',
+        'http://192.168.99.100:32769/route',
         [52.237049, 21.017532],
         13);
     $('#applyButton').on('click', event => vrp.SendData());
