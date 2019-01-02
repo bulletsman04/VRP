@@ -32,25 +32,27 @@
         </div>
         <div class="container-fluid settings">
             <div class="row vertical-center-header ">
-                <div class="col-sm-3">
+                <div class="col-sm-3 searchbox">
                     <div class="form-group ">
                         <input type="text" class=" form-control" placeholder="enter place name" id="searchbox">
                     </div>
                 </div>
-                <div class="vertical-center-header1 text-center  col-sm-4">
+                <div class="vertical-center-header1 text-center  col-sm-4 type-added">
                     <span class="add-element-text">Add: </span>
                     <input type="radio" checked="checked" id="warehouseType" name="pointType" value="warehouse" />
                     <label for="warehouseType">Warehouse</label>
                     <input type="radio" id="packageType" name="pointType" value="package" />
                     <label for="packageType">Package</label>
+                    <input type="radio" id="none" name="pointType" value="none" />
+                    <label for="packageType">None</label>
                 </div>
-                <div class="col-sm-2 no-padding-col">
+                <div class="col-sm-2 no-right-padding-col">
                     <button class="btn" id="applyButton">Apply</button>
                     <button class="btn" id="clearButton">Clear</button>
 
 
                 </div>
-                <div class=" col-sm-3 no-padding-col">
+                <div class=" col-sm-3 ">
                     <button class="btn" id="calculateButton">Show routes</button>
                     <button class="btn" id="startSimulation">Simulate</button>
 

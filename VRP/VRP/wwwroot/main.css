@@ -56,6 +56,19 @@ body {
     grid-area: settings;
     border-width: 0px 0px 1px 1px;
 }
+
+.searchbox {
+    padding-right: 5px;
+}
+.settings label {
+    font-size: 10pt;
+}
+
+.type-added {
+    padding-right: 3px;
+    padding-left: 6px;
+}
+
 .item-list {
     /*background: var(--green);*/
     grid-area: item-list;
@@ -167,13 +180,17 @@ body {
 }
 
 input[type=radio] {
-    margin: 0 0 0 7px;
+    margin: 0 0 0 5px;
 }
 
 
  /*ToDo: Better ?*/
 .no-left-padding-col {
     padding-left: 0;
+}
+
+.no-right-padding-col {
+    padding-right: 0;
 }
 
 .no-padding-col {
