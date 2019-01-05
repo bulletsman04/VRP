@@ -40,9 +40,12 @@ namespace VRP.Controllers
         [HttpPost]
         public void Post([FromBody] Collections input)
         {
-            Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Warehouses\"");
-            Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Couriers\"");
-            Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Packages\"");
+            Db.Warehouses.RemoveRange(Db.Warehouses);
+            Db.Couriers.RemoveRange(Db.Couriers);
+            Db.Packages.RemoveRange(Db.Packages);
+            //Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Packages\"");
+            //Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Couriers\"");
+            //Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Warehouses\"");
 
             Db.AddRange(input.Warehouses);
             Db.AddRange(input.Couriers);

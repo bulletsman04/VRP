@@ -71,15 +71,15 @@
 
                 <div class=" tab-content-scrollable tab-pane fade  show active" id="warehouses" role="tabpanel" aria-labelledby="nav-home-tab">
                     <template id="warehouse-template">
-                        <div id="warehouse" class="container package">
+                        <div class="container map-element">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <h5 id="warehouse-name" class=""></h5>
+                                    <h5 class="name"></h5>
                                 </div>
                                 <div class="col-sm-6">
 
-                                    <img class="small-icon float-right" src="Icons/remove.png" id="remove"/>
-                                    <img class="small-icon float-right" src="Icons/indicator.svg" id="center"/>
+                                    <img class="small-icon float-right remove-btn" src="Icons/remove.png"/>
+                                    <img class="small-icon float-right center-btn" src="Icons/indicator.svg"/>
                                 </div>
                             </div>
                             <div class="row">
@@ -91,31 +91,31 @@
                                     <div class="row ">
                                         <div class="col-sm-12 ">
                                             <span>Position:</span>
-                                            <span id="warehouse-x" class="package-info"></span>,<span id="warehouse-y" class="package-info"></span>
+                                            <span class="package-info coord-x"></span>,<span class="package-info coord-y"></span>
                                         </div>
                                     </div>
                                     <div class="row ">
                                         <div class="col-sm-12 ">
                                             <span>Place: </span>
-                                            <span id="warehouse-place-name" class="package-info"></span>
+                                            <span class="package-info place-name"></span>
                                         </div>
                                     </div>
                                     <div class="row ">
                                         <div class="col-sm-12 ">
                                             <span>Couriers count:</span>
-                                            <span id="warehouse-couriers-number" class="package-info"></span>
+                                            <span class="package-info couriers-count"></span>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <span>Packages count:</span>
-                                            <span id="warehouse-packages-number" class="package-info"></span>
+                                            <span class="package-info packages-count"></span>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <span>Capacity for couriers:</span>
-                                            <span id="warehouse-capacity-couriers" class="package-info"></span>
+                                            <span class="package-info capacity-couriers"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -123,7 +123,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <span>Couriers:</span>
-                                    <span id="warehouse-couriers" class="package-info"></span>
+                                    <span class="package-info couriers-list"></span>
                                 </div>
                             </div>
 
@@ -135,15 +135,15 @@
                 </div>
                 <div class="tab-content-scrollable tab-pane fade" id="packages" role="tabpanel" aria-labelledby="nav-contact-tab">
                     <template id="package-template">
-                        <div id="package" class="container package">
+                        <div class="container map-element">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <h5 id="package-name" class=""></h5>
+                                    <h5 class="name"></h5>
                                 </div>
                                 <div class="col-sm-6">
 
-                                    <img class="small-icon float-right" src="Icons/remove.png" id="remove"/>
-                                    <img class="small-icon float-right" src="Icons/indicator.svg" id="center"/>
+                                    <img class="small-icon float-right remove-btn" src="Icons/remove.png"/>
+                                    <img class="small-icon float-right center-btn" src="Icons/indicator.svg"/>
                                 </div>
                             </div>
                             <div class="row">
@@ -155,25 +155,25 @@
                                     <div class="row ">
                                         <div class="col-sm-12 ">
                                             <span>Position:</span>
-                                            <span id="package-x" class="package-info"></span>,<span id="package-y" class="package-info"></span>
+                                            <span class="package-info coord-x"></span>,<span class="package-info coord-y"></span>
                                         </div>
                                     </div>
                                     <div class="row ">
                                         <div class="col-sm-12 ">
                                             <span>Place: </span>
-                                            <span id="place-name" class="package-info"></span>
+                                            <span class="package-info place-name"></span>
                                         </div>
                                     </div>
                                     <div class="row ">
                                         <div class="col-sm-12 ">
                                             <span>Warehouse:</span>
-                                            <span id="package-warehouse" class="package-info"></span>
+                                            <span class="package-info assigned-warehouse"></span>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <span>Courier:</span>
-                                            <span id="package-courier" class="package-info"></span>
+                                            <span class="package-info assigned-courier"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -181,7 +181,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <span>Route:</span>
-                                    <span id="package-route" class="package-info"></span>
+                                    <span class="package-info assigned-route"></span>
                                 </div>
                             </div>
 
@@ -191,52 +191,37 @@
             </div>
         </div>
         <div id="map" class="map">
-            <template id="insert-form-template">
-                <form id="elements-insert-form">
+            <template id="warehouse-form-template">
+                <form>
                     <div class="form-group">
                         <label></label>
-
-                        <input type="text" class="form-control" id="inserted-name" placeholder="Name">
+                        <input type="text" class="form-control name" placeholder="Name">
                     </div>
-
-                    <div class="form-group" id="inserted-couriers-form-group">
-                        <label>Couriers number:</label>
-                        <input type="number" class="form-control" id="inserted-couriers"  value="1" max="1" min="1">
-                    </div>
-                    <div class="form-group confirm-btn mx-auto">
-                        <input type="submit" class="form-control btn" id="elements-insert-form-btn"  value="Confirm">
-                    </div>
-
-
-                </form>
-            </template>
-
-            <template id="warehouse-edit-form-template">
-                <form id="warehouse-edit-form">
-                    <label>Place:</label>
                     <div class="form-group">
                         <label></label>
-
-                        <input type="text" class="form-control" id="edited-warehouse-name" placeholder="Name">
+                        <input type="text" class="form-control place">
                     </div>
-                    <div class="form-group" id="edited-couriers-form-group">
-                        <label>Couriers number:</label>
-                        <input type="number" class="form-control" id="edited-couriers"  value="1" max="1" min="1">
+                    <div class="form-group">
+                        <label>Couriers count:</label>
+                        <input type="number" class="form-control capacity-couriers" value="1" min="1">
                     </div>
                     <div class="form-group confirm-btn mx-auto">
-                        <input type="button" class="form-control btn" id="warehouse-edit-form-btn"  value="Confirm">
+                        <input type="submit" class="form-control btn" value="Confirm">
                     </div>
                 </form>
             </template>
-            <template id="package-edit-form-template">
-                <form id="package-edit-form">
-                    <label>Place:</label>
+            <template id="package-form-template">
+                <form>
                     <div class="form-group">
                         <label></label>
-                        <input type="text" class="form-control" id="edited-package-name" placeholder="Name">
+                        <input type="text" class="form-control name" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label></label>
+                        <input type="text" class="form-control place">
                     </div>
                     <div class="form-group confirm-btn mx-auto">
-                        <input type="button" class="form-control btn" id="package-edit-form-btn"  value="Confirm">
+                        <input type="submit" class="form-control btn" value="Confirm">
                     </div>
                 </form>
             </template>

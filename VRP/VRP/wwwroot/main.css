@@ -94,24 +94,24 @@ body {
 
 
 
-.package {
+.map-element, {
     width: 80%;
     padding: 10px;
     margin: 10px auto;
     background: var(--package);
 }
 
-.package .row span:first-of-type {
+.map-element .row span:first-of-type {
     font-weight: 600;
 }
 
-.package h5 {
+.map-element h5 {
     text-transform: uppercase;
     font-weight: 600;
 }
 
 
-    .package:after {
+    .map-element:after {
         content: " ";
         display: table;
         clear: both;

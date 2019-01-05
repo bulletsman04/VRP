@@ -46,73 +46,37 @@ class VrpHelper {
     }
 
     OnMapClick(event) {
-        // ToDo: Better remove whole popup
-     
         if (this.CurrentMarker !== null) {
             this.map.removeLayer(this.CurrentMarker);
             this.CurrentMarker.closePopup();
         }
-        this.PlaceMarker(event.latlng, $("input[name='pointType']:checked").val());
+        this.PlaceMarker({ Lat: event.latlng.lat, Lng: event.latlng.lng }, $("input[name='pointType']:checked").val());
     }
 
     PlaceMarker(latLng, type) {
-        var marker;
-        var element = new Object();
-        element.LatLng = { Lat: latLng.lat, Lng: latLng.lng };
+        var id;
         switch (type) {
         case "warehouse":
-            marker = VrpLibrary.warehouseMarker(this, element);
-            element.Id = this.WarehousesMaxid + 1;
-            this.AddElementsForm(marker, element, this.warehouses, type);
+            id = this.WarehousesMaxid + 1;
+            var warehouse = new Warehouse(this, id, latLng, true);
+            this.warehouses[id] = warehouse;
+            warehouse.BindMarker();
+            this.CurrentMarker = warehouse.Marker;
+            warehouse.Marker.openPopup();
             break;
         case "package":
-            marker = VrpLibrary.packageMarker(this, element);
-            element.Id = this.PackagesMaxid + 1;
-            this.AddElementsForm(marker, element, this.packages, type);
+            id = this.WarehousesMaxid + 1;
+            var pack = new Package(this, id, latLng, true);
+            this.packages[id] = pack;
+            pack.BindMarker();
+            this.CurrentMarker = pack.Marker;
+            pack.Marker.openPopup();
             break;
         default:
             return;
         }
     }
 
-    async AddElementsForm(marker, element,elements, type) {
-        await marker.bindPopup(VrpLibrary.insertForm, VrpLibrary.popupStyles);
-        marker.addTo(this.map).openPopup();
-        marker.on('popupclose',
-            event => {
-                marker.unbindPopup();
-                this.map.removeLayer(marker);
-            });
-        this.CurrentMarker = marker;
-        $(".leaflet-popup-content").find("#elements-insert-form-btn")
-            .on('click', event => this.AddElement(element, elements, marker,type));
-
-        if (type === "package") {
-            $(".leaflet-popup-content").find("#inserted-couriers-form-group").remove();
-        }
-    }
-
-    AddElement(element, elements, marker, type) {
-        this.CurrentMarker = null;
-        elements[element.Id] = element;
-        element.Name = $(".leaflet-popup-content").find("#inserted-name").val();
-        element.Marker = marker;
-        marker.off('popupclose');
-        element.Marker.closePopup();
-        element.Marker.unbindPopup();
-
-        if (type === "package") {
-            this.AddPackageToList(element);
-            this.PackagesMaxid++;
-            element.Marker.bindPopup(VrpLibrary.packageEditForm(element), VrpLibrary.popupStyles).addTo(this.map);
-        }
-        else if (type === "warehouse") {
-            this.AddWarehouseToList(element);
-            this.WarehousesMaxid++;
-            element.Marker.bindPopup(VrpLibrary.warehouseEditForm(element), VrpLibrary.popupStyles).addTo(this.map);
-        }
-    }
-    
     SendData() {
         $.ajax({
             type: 'POST',
@@ -120,34 +84,34 @@ class VrpHelper {
             data: JSON.stringify({
                 Warehouses: Object.values(this.warehouses).map(warehouse => (
                     {
-                        
                         Name: warehouse.Name,
+                        PlaceInfo: warehouse.Place,
+                        CapacityForCouriers: warehouse.CapacityForCouriers,
                         LatLng:
                         {
                             Lat: warehouse.LatLng.Lat,
                             Lng: warehouse.LatLng.Lng
                         }
-                    })),//.map(warehouse => ({Lat: warehouse.LatLng.Lat, Lng: warehouse.LatLng.Lng})),
+                    })),
                 Couriers: Object.values(this.couriers).map(courier => (
                     {
-                        
                         Name: courier.Name,
                         LatLng:
                         {
                             Lat: courier.LatLng.Lat,
                             Lng: courier.LatLng.Lng
                         }
-                    })),//.map(courier => ({ Lat: courier.LatLng.Lat, Lng: courier.LatLng.Lng })),
+                    })),
                 Packages: Object.values(this.packages).map(pack => (
                     {
-                        
                         Name: pack.Name,
+                        PlaceInfo: pack.Place,
                         LatLng:
                         {
                             Lat: pack.LatLng.Lat,
                             Lng: pack.LatLng.Lng
                         }
-                    }))//.map(pack => ({ Lat: pack.LatLng.Lat, Lng: pack.LatLng.Lng }))
+                    }))
             }),
             contentType: 'application/json',
             success: function(result) {
@@ -171,18 +135,19 @@ class VrpHelper {
                     if (warehouse.Id > vpr.WarehousesMaxid) {
                         vpr.WarehousesMaxid = warehouse.Id;
                     }
-                    vpr.warehouses[warehouse.Id] = warehouse;
-                    warehouse.Marker = VrpLibrary.warehouseMarker(vpr, warehouse);
-                    warehouse.Marker.bindPopup(VrpLibrary.warehouseEditForm(warehouse), VrpLibrary.popupStyles).addTo(vpr.map);
-                    warehouse.CouriersCount = 0;
-                    warehouse.PackagesCount = 0;
-                    vpr.AddWarehouseToList(warehouse);
+                    var newWarehouse = new Warehouse(vpr, warehouse.Id, warehouse.LatLng, false);
+                    vpr.warehouses[warehouse.Id] = newWarehouse;
+                    newWarehouse.Name = warehouse.Name;
+                    newWarehouse.Place = warehouse.PlaceInfo;
+                    newWarehouse.CapacityForCouriers = warehouse.CapacityForCouriers;
+                    newWarehouse.BindMarker();
                 });
                 vpr.GetCouriers();
             },
             error: function(error) {
                 var err = eval("(" + error.responseText + ")");
-                alert(err.Message);            }
+                alert(err.Message);
+            }
         });
     }
 
@@ -227,12 +192,13 @@ class VrpHelper {
                     if (pack.Id > vpr.PackagesMaxid) {
                         vpr.PackagesMaxid = pack.Id;
                     }
-                    vpr.packages[pack.Id] = pack;
-                    pack.Warehouse = vpr.warehouses[pack.WarehouseId];
-                    pack.Courier = vpr.couriers[pack.CourierId];
-                    pack.Marker = VrpLibrary.packageMarker(vpr, pack);
-                    pack.Marker.bindPopup(VrpLibrary.packageEditForm(pack), VrpLibrary.popupStyles).addTo(vpr.map);
-                    vpr.AddPackageToList(pack);
+                    var newPackage = new Package(vpr, pack.Id, pack.LatLng, false);
+                    vpr.packages[pack.Id] = newPackage;
+                    newPackage.Warehouse = vpr.warehouses[pack.WarehouseId];
+                    newPackage.Courier = vpr.couriers[pack.CourierId];
+                    newPackage.Name = pack.Name;
+                    newPackage.Place = pack.PlaceInfo;
+                    newPackage.BindMarker();
                 });
                 vpr.UpdateAfterReceivingData();
             },
@@ -253,62 +219,19 @@ class VrpHelper {
             container.find("#courier-packages-number").html(courier.PackagesCount);
         });
     }
-
-    AddPackageToList(item) {
-        var pack = VrpLibrary.packageElement;
-        pack.attr("id", "package" + item.Id);
-        pack.find("#center").on('click', event => this.EditItem(item));
-        pack.find("#center").attr("id", "center" + item.Id);
-        pack.find("#remove").on('click', event => this.RemovePackage(item));
-        pack.find("#remove").attr("id", "remove" + item.Id);
-        VrpLibrary.SetPackageToContainer(pack, item);
-        $("#packages").append(pack);
-    }
-
-    AddWarehouseToList(item) {
-        var warehouse = VrpLibrary.warehouseElement;
-        warehouse.attr("id", "warehouse" + item.Id);
-        warehouse.find("#center").on('click', event => this.EditItem(item));
-        warehouse.find("#center").attr("id", "center" + item.Id);
-        warehouse.find("#remove").on('click', event => this.RemoveWarehouse(item));
-        warehouse.find("#remove").attr("id", "remove" + item.Id);
-        VrpLibrary.SetWarehouseToContainer(warehouse, item);
-        $("#warehouses").append(warehouse);
-    }
-
-    EditPackageOnList(item) {
-        var pack = $("#package" + item.Id);
-        VrpLibrary.SetPackageToContainer(pack, item);
-    }
-
-    EditItem(item) {
-        this.map.setView(new L.LatLng(item.LatLng.Lat, item.LatLng.Lng), 14);
-    }
-
-    RemovePackage(pack) {
-        this.map.removeLayer(pack.Marker);
-        $("#package" + pack.Id).remove();
-        delete this.packages[pack.Id];
-    }
-
-    RemoveWarehouse(warehouse) {
-        this.map.removeLayer(warehouse.Marker);
-        $("#warehouse" + warehouse.Id).remove();
-        delete this.warehouses[warehouse.Id];
-    }
-
+    
     CalculateRoutes() {
         var vrp = this;
         var packages = Object.values(this.packages);
         var warehouses = Object.values(this.warehouses);
 
         var packagesLength = packages.length;
-        var warehousesLength = warehouses.length;
+        var couriersCount = 0;
+        warehouses.forEach(warehouse => couriersCount += warehouse.CapacityForCouriers);
 
+        var distances = new Array(packagesLength + couriersCount);
 
-        var distances = new Array(packagesLength + warehousesLength);
-
-        for (var i = 0; i < packagesLength + warehousesLength; i++) {
+        for (var i = 0; i < packagesLength + couriersCount; i++) {
             distances[i] = new Array(packagesLength);
         }
 
@@ -326,14 +249,16 @@ class VrpHelper {
 
         i = 0;
         warehouses.forEach(warehouse => {
-            j = 0;
-            packages.forEach(pack => {
-                distances[packagesLength + i][j] = vrp.GetDistanceBetweenPoints(
-                    { latLng: L.latLng([warehouse.LatLng.Lat, warehouse.LatLng.Lng]) },
-                    { latLng: L.latLng([pack.LatLng.Lat, pack.LatLng.Lng]) });
-                j++;
-            });
-            i++;
+            for (var k = 0; k < warehouse.CapacityForCouriers; k++) {
+                j = 0;
+                packages.forEach(pack => {
+                    distances[packagesLength + i][j] = vrp.GetDistanceBetweenPoints(
+                        { latLng: L.latLng([warehouse.LatLng.Lat, warehouse.LatLng.Lng]) },
+                        { latLng: L.latLng([pack.LatLng.Lat, pack.LatLng.Lng]) });
+                    j++;
+                });
+                i++;
+            }
         });
 
         Promise.all(distances.map(Promise.all.bind(Promise))).then(result => {
@@ -362,6 +287,7 @@ class VrpHelper {
             alert(error);
         });
     }
+
     GetDistanceBetweenPoints(latLng1, latLng2) {
         var coordinates = [];
         coordinates.push(latLng1);
@@ -380,7 +306,7 @@ class VrpHelper {
     }
 
     ShowRoutes(result) {
-
+        var warehouseNumber = 0, courierNumber = 0;
         for (var i = 0; i < result.length; i++) {
 
             var controller = L.Routing.control({
@@ -400,7 +326,12 @@ class VrpHelper {
             var packages = Object.values(this.packages);
             var warehouses = Object.values(this.warehouses);
 
-            var warehouse = warehouses[i];
+            while (courierNumber === warehouses[warehouseNumber].CapacityForCouriers) {
+                warehouseNumber++;
+                courierNumber = 0;
+            }
+            var warehouse = warehouses[warehouseNumber];
+            courierNumber++;
             coordinates.push(L.latLng([warehouse.LatLng.Lat, warehouse.LatLng.Lng]));
 
             var points = result[i];
@@ -433,8 +364,7 @@ class VrpHelper {
 
 
     }
-
-
+    
     ClearElements() {
 
         this.CouriersMaxid = 0;
@@ -449,8 +379,7 @@ class VrpHelper {
             this.RemovePackage(element);
         });
     }
-
-
+    
     addRemovingButton() {
         var button = document.createElement("button");
         button.innerHTML = "Add/remove route " + (this.routingControllersCount + 1);
@@ -474,157 +403,217 @@ class VrpHelper {
     }
 }
 
-class VrpLibrary {
-    static reflect(promise) {
-        return promise.then(
-            function(v) {
-                 return { v: v, status: "resolved" }
-            },
-            function(e) {
-                 return { e: e, status: "rejected" }
-            });
+class MapElement {
+    constructor(manager, id, latLng, isTemporary) {
+        this.Manager = manager;
+        this.Id = id;
+        this.LatLng = latLng;
+        this.IsTemporary = isTemporary;
     }
 
-    static warehouseMarker(manager, warehouse) {
-        var marker = L.marker({ lat: warehouse.LatLng.Lat, lng: warehouse.LatLng.Lng }, {
-            icon: L.icon({
-                iconUrl: 'icons/warehouse.ico',
-                iconSize: [40, 40],
-                iconAnchor: [20, 20],
-                popupAnchor: [0, -20]
-            }), draggable: true });
-        marker.on('drag',
-            event => {
-                warehouse.LatLng.Lat = event.target.getLatLng().lat;
-                warehouse.LatLng.Lng = event.target.getLatLng().lng;
-                VrpLibrary.SetWarehouseToContainer($("#warehouse" + warehouse.Id), warehouse);
-            });
-        return marker;
-    }
+    get GetIcon() { }
+    UpdateContainer() { }
+    UpdateForm() { }
 
-    static courierMarker(manager, courier) {
-        var marker = L.marker({ lat: courier.LatLng.Lat, lng: courier.LatLng.Lng }, {
-            icon: L.icon({
-                iconUrl: 'icons/courier.ico',
-                iconSize: [40, 40],
-                iconAnchor: [20, 20],
-                popupAnchor: [0, -20]
-            }), draggable: true
-        });
-        marker.on('drag',
-            event => {
-                courier.LatLng.Lat = event.target.getLatLng().lat;
-                courier.LatLng.Lng = event.target.getLatLng().lng;
-            });
-        return marker;
-    }
-
-    static packageMarker(manager, pack) {
-        var marker = L.marker({ lat: pack.LatLng.Lat, lng: pack.LatLng.Lng }, {
-            icon: L.icon({
-                iconUrl: 'icons/package.ico',
-                iconSize: [20, 20],
-                iconAnchor: [10, 10],
-                popupAnchor: [0, -10]
-            }), draggable: true
-        });
-        marker.on('drag',
-            event => {
-                pack.LatLng.Lat = event.target.getLatLng().lat;
-                pack.LatLng.Lng = event.target.getLatLng().lng;
-                VrpLibrary.SetPackageToContainer($("#package" + pack.Id), pack);
-            });
-        return marker;
-    }
-
-    static get insertForm() {
-        var clone = $("#insert-form-template").clone();
-        var content = clone.prop('content');
-        return $(content.firstElementChild).html();
-    }
-    static warehouseEditForm(warehouse) {
-        var clone = $("#warehouse-edit-form-template").clone();
-        var content = clone.prop('content');
-        var form = $(content.firstElementChild);
-        form.attr('id', 'warehouse-edit-form' + warehouse.Id);
-        form.find('#edited-warehouse-name').attr('id', 'edited-warehouse-name' + warehouse.Id);
-        form.find('#edited-warehouse-name' + warehouse.Id).attr('value', warehouse.Name);
-        form.find('#edited-couriers').attr('id', 'edited-couriers' + warehouse.Id);
-        form.find('#edited-couriers' + warehouse.Id).attr('value', 1);
-        form.find('#warehouse-edit-form-btn').attr('id', 'warehouse-edit-form-btn' + warehouse.Id);
-        $('body').on('click', '#warehouse-edit-form-btn' + warehouse.Id,
-            event => {
-                warehouse.Name = $('#edited-warehouse-name' + warehouse.Id).val();
-                VrpLibrary.SetWarehouseToContainer($('#warehouse' + warehouse.Id), warehouse);
-
-                var popupContent = $(warehouse.Marker.getPopup()._contentNode);
-                popupContent.find('#edited-warehouse-name' + warehouse.Id).attr('value', warehouse.Name);
-
-                warehouse.Marker.getPopup().setContent(popupContent.html());
-                warehouse.Marker.update();
-                warehouse.Marker.closePopup();
-            });
-        return form.html();
-    }
-    static packageEditForm(pack) {
-        var clone = $("#package-edit-form-template").clone();
-        var content = clone.prop('content');
-        var form = $(content.firstElementChild);
-        form.attr('id', 'package-edit-form' + pack.Id);
-        form.find('#edited-package-name').attr('id', 'edited-package-name' + pack.Id);
-        form.find('#edited-package-name' + pack.Id).attr('value', pack.Name);
-        form.find('#package-edit-form-btn').attr('id', 'package-edit-form-btn' + pack.Id);
-        $('body').on('click', '#package-edit-form-btn' + pack.Id,
-            event => {
-                pack.Name = $('#edited-package-name' + pack.Id).val();
-                VrpLibrary.SetPackageToContainer($('#package' + pack.Id), pack);
-
-                var popupContent = $(pack.Marker.getPopup()._contentNode);
-                popupContent.find('#edited-package-name' + pack.Id).attr('value', pack.Name);
-
-                pack.Marker.getPopup().setContent(popupContent.html());
-                pack.Marker.update();
-                pack.Marker.closePopup();
-            });
-        return form.html();
-    }
-    static get packageElement() {
-        var clone = $("#package-template").clone();
-        var content = clone.prop('content');
-        return $(content).find("#package");
-    }
-
-    static get warehouseElement() {
-        var clone = $("#warehouse-template").clone();
-        var content = clone.prop('content');
-        return $(content).find("#warehouse");
-    }
-
-    static SetCourierToContainer(container, courier) {
-        container.find("#courier-name").html(courier.Name);
-        container.find("#courier-x").html(courier.LatLng.Lng.toString().substring(0, 6));
-        container.find("#courier-y").html(courier.LatLng.Lat.toString().substring(0, 6));
-        if(courier.Warehouse !== undefined) container.find("#courier-warehouse").html(courier.Warehouse.Name);
-    }
-
-    static SetPackageToContainer(container, pack) {
-        container.find("#package-name").html(pack.Name);
-        container.find("#package-x").html(pack.LatLng.Lng.toString().substring(0, 6));
-        container.find("#package-y").html(pack.LatLng.Lat.toString().substring(0, 6));
-        container.find("#package-place-name").html(pack.PlaceInfo);
-        if(pack.Courier !== undefined) container.find("#package-courier").html(pack.Courier.Name);
-        if(pack.Warehouse !== undefined) container.find("#package-warehouse").html(pack.Warehouse.Name);
-    }
-
-    static SetWarehouseToContainer(container, warehouse) {
-        container.find("#warehouse-name").html(warehouse.Name);
-        container.find("#warehouse-x").html(warehouse.LatLng.Lng.toString().substring(0, 6));
-        container.find("#warehouse-y").html(warehouse.LatLng.Lat.toString().substring(0, 6));
-        container.find("#warehouse-place-name").html(warehouse.PlaceInfo);
-        container.find("#warehouse-capacity-couriers").html(warehouse.CapacityForCouriers);
-    }
-
-    static get popupStyles() {
+    static get PopupStyles() {
         return { minWidth: 300, autoPanPaddingBottomRight: (0, 0) };
+    }
+
+    get PopupContent() {
+        if (this.Marker === undefined) return undefined;
+        return $(this.Marker.getPopup().getContent());
+    }
+
+    BindMarker() {
+        this.Marker = L.marker({ lat: this.LatLng.Lat, lng: this.LatLng.Lng }, {
+            icon: this.GetIcon, draggable: true
+        });
+        this.Marker.addTo(this.Manager.map);
+        this.Marker.on('drag',
+            event => {
+                this.LatLng.Lat = event.target.getLatLng().lat;
+                this.LatLng.Lng = event.target.getLatLng().lng;
+                this.UpdateContainer();
+            });
+
+        if (!this.IsTemporary) this.BindContainer();
+        this.BindForm();
+        if (!this.IsTemporary) this.UpdateForm();
+
+        this.Marker.on('popupclose',
+            event => {
+                if (this.IsTemporary) {
+                    this.Manager.map.removeLayer(this.Marker);
+                }
+                this.Manager.CurrentMarker = null;
+            });
+    }
+    
+    Center() {
+        this.Manager.map.setView(new L.LatLng(this.LatLng.Lat, this.LatLng.Lng), 14);
+    }
+}
+
+class Warehouse extends MapElement {
+    constructor(manager, id, latLng, isTemporary) {
+        super(manager, id, latLng, isTemporary);
+    }
+
+    get GetIcon() {
+        return L.icon({
+            iconUrl: 'icons/warehouse.ico',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20]
+        });
+    }
+
+    BindForm() {
+        var clone = $("#warehouse-form-template").clone();
+        var content = clone.prop('content');
+        var form = $(content.firstElementChild);
+        form.find('.name').attr('value', this.Name);
+        form.find('.capacity-couriers').attr('value', this.CapacityForCouriers);
+        if (this.Place === undefined) form.find('.place').attr('value', $('#searchbox').val());
+        else form.find('.place').attr('value', this.Place);
+
+        var div = L.DomUtil.create('div', 'form');
+        div.innerHTML = form.html();
+        $('.form-control.btn', div).on('click', clickEvent => this.UpdateForm());
+        this.Marker.bindPopup(div, MapElement.PopupStyles);
+    }
+
+    UpdateForm() {
+        if (this.IsTemporary) {
+            this.IsTemporary = false;
+            this.BindContainer();
+            this.Manager.WarehousesMaxid++;
+        }
+
+        this.Name = this.PopupContent.find('.name').val();
+        this.Place = this.PopupContent.find('.place').val();
+        this.CapacityForCouriers = parseInt(this.PopupContent.find('.capacity-couriers').val());
+        this.UpdateContainer();
+
+        this.Marker.update();
+        this.Marker.closePopup();
+    }
+
+    BindContainer() {
+        var clone = $('#warehouse-template').clone();
+        var content = clone.prop('content');
+        this.Container = $(content).find('.map-element');
+        this.Container.find('.center').on('click', event => this.Center());
+        this.Container.find('.remove').on('click', event => this.Remove());
+        this.UpdateContainer();
+        $("#warehouses").append(this.Container);
+    }
+
+    UpdateContainer() {
+        this.Container.find('.name').html(this.Name);
+        this.Container.find('.coord-x').html(this.LatLng.Lng.toString().substring(0, 6));
+        this.Container.find('.coord-y').html(this.LatLng.Lat.toString().substring(0, 6));
+        this.Container.find('.place-name').html(this.Place);
+        this.Container.find('.capacity-couriers').html(this.CapacityForCouriers);
+    }
+
+    Remove() {
+        this.Manager.map.removeLayer(this.Marker);
+        this.Container.remove();
+        delete this.Manager.warehouses[this.Id];
+    }
+}
+
+class Package extends MapElement {
+    constructor(manager, id, latLng, isTemporary) {
+        super(manager, id, latLng, isTemporary);
+    }
+
+    get GetIcon() {
+        return L.icon({
+            iconUrl: 'icons/package.ico',
+            iconSize: [20, 20],
+            iconAnchor: [10, 10],
+            popupAnchor: [0, -10]
+        });
+    }
+
+    BindForm() {
+        var clone = $("#package-form-template").clone();
+        var content = clone.prop('content');
+        var form = $(content.firstElementChild);
+        form.find('.name').attr('value', this.Name);
+        if (this.Place === undefined) form.find('.place').attr('value', $('#searchbox').val());
+        else form.find('.place').attr('value', this.Place);
+
+        var div = L.DomUtil.create('div', 'form');
+        div.innerHTML = form.html();
+        $('.form-control.btn', div).on('click', clickEvent => this.UpdateForm());
+        this.Marker.bindPopup(div, MapElement.PopupStyles);
+    }
+
+    UpdateForm() {
+        if (this.IsTemporary) {
+            this.IsTemporary = false;
+            this.BindContainer();
+            this.Manager.PackagesMaxid++;
+        }
+
+        this.Name = this.PopupContent.find('.name').val();
+        this.Place = this.PopupContent.find('.place').val();
+        this.UpdateContainer();
+
+        this.Marker.update();
+        this.Marker.closePopup();
+    }
+
+    BindContainer() {
+        var clone = $('#package-template').clone();
+        var content = clone.prop('content');
+        this.Container = $(content).find('.map-element');
+        this.Container.find('.center').on('click', event => this.Center());
+        this.Container.find('.remove').on('click', event => this.Remove());
+        this.UpdateContainer();
+        $("#packages").append(this.Container);
+    }
+
+    UpdateContainer() {
+        this.Container.find('.name').html(this.Name);
+        this.Container.find('.coord-x').html(this.LatLng.Lng.toString().substring(0, 6));
+        this.Container.find('.coord-y').html(this.LatLng.Lat.toString().substring(0, 6));
+        this.Container.find('.place-name').html(this.Place);
+        if (this.Courier !== undefined) container.find('.assigned-courier').html(this.Courier.Name);
+        if (this.Warehouse !== undefined) container.find('.assigned-warehouse').html(this.Warehouse.Name);
+    }
+
+    Remove() {
+        this.Manager.map.removeLayer(this.Marker);
+        this.Container.remove();
+        delete this.Manager.warehouses[this.Id];
+    }
+}
+
+class Courier {
+    get GetIcon() {
+        return L.icon({
+            iconUrl: 'icons/courier.ico',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20]
+        });
+    }
+
+    UpdateContainer() {
+        this.Container.find('.name').html(this.Name);
+        this.Container.find('.coord-x').html(this.LatLng.Lng.toString().substring(0, 6));
+        this.Container.find('.coord-y').html(this.LatLng.Lat.toString().substring(0, 6));
+        this.Container.find('.place-name').html(this.Place);
+        if (this.Warehouse !== undefined) container.find('.courier-warehouse').html(this.Warehouse.Name);
+    }
+
+    Remove() {
+        this.Manager.map.removeLayer(this.Marker);
+        this.Container.remove();
+        delete this.Manager.couriers[this.Id];
     }
 }
