@@ -7,6 +7,6 @@ namespace VRP.Model
     [Table("Packages")]
     public class Package: MapElement
     {
-        
+        public string PlaceInfo { get; set; }
     }
 }

@@ -1,14 +1,14 @@
 ﻿$().ready(function() {
     var vrp = new VrpHelper('map',
-         'http://192.168.99.100:32768/styles/osm-bright/style.json',
-        'http://192.168.99.100:32769/route',
+         'http://89.70.244.118:27017/styles/osm-bright/style.json',
+        'http://89.70.244.118:27018/route',
         [52.237049, 21.017532],
         13);
     $('#applyButton').on('click', event => vrp.SendData());
     $('#clearButton').on('click', event => vrp.ClearElements());
     $('#calculateButton').on('click', event => vrp.CalculateRoutes());
 
-    vrp.GetData();
+    vrp.GetWarehouses();
 });
 
 class VrpHelper {
@@ -159,12 +159,6 @@ class VrpHelper {
         });
     }
 
-    GetData() {
-        this.GetWarehouses();
-        this.GetCouriers();
-        this.GetPackages();
-    }
-
     GetWarehouses() {
         var vpr = this;
         $.ajax({
@@ -180,8 +174,11 @@ class VrpHelper {
                     vpr.warehouses[warehouse.Id] = warehouse;
                     warehouse.Marker = VrpLibrary.warehouseMarker(vpr, warehouse);
                     warehouse.Marker.bindPopup(VrpLibrary.warehouseEditForm(warehouse), VrpLibrary.popupStyles).addTo(vpr.map);
+                    warehouse.CouriersCount = 0;
+                    warehouse.PackagesCount = 0;
                     vpr.AddWarehouseToList(warehouse);
                 });
+                vpr.GetCouriers();
             },
             error: function(error) {
                 var err = eval("(" + error.responseText + ")");
@@ -202,9 +199,13 @@ class VrpHelper {
                         vpr.CouriersMaxid = courier.Id;
                     }
                     vpr.couriers[courier.Id] = courier;
+                    courier.Warehouse = vpr.warehouses[courier.WarehouseId];
+                    courier.Warehouse.CouriersCount++;
                     courier.Marker = VrpLibrary.courierMarker(vpr, courier);
                     courier.Marker.addTo(vpr.map);
+                    courier.PackagesCount = 0;
                 });
+                vpr.GetPackages();
             },
             error: function(error) {
                 var err = eval("(" + error.responseText + ")");
@@ -226,16 +227,30 @@ class VrpHelper {
                     if (pack.Id > vpr.PackagesMaxid) {
                         vpr.PackagesMaxid = pack.Id;
                     }
-
                     vpr.packages[pack.Id] = pack;
+                    pack.Warehouse = vpr.warehouses[pack.WarehouseId];
+                    pack.Courier = vpr.couriers[pack.CourierId];
                     pack.Marker = VrpLibrary.packageMarker(vpr, pack);
                     pack.Marker.bindPopup(VrpLibrary.packageEditForm(pack), VrpLibrary.popupStyles).addTo(vpr.map);
                     vpr.AddPackageToList(pack);
                 });
+                vpr.UpdateAfterReceivingData();
             },
             error: function(error) {
                 var err = eval("(" + error.responseText + ")");
                 alert(err.Message);            }
+        });
+    }
+
+    UpdateAfterReceivingData() {
+        Object.values(this.warehouses).forEach(warehouse => {
+            var container = $("#warehouse" + warehouse.Id);
+            container.find("#warehouse-couriers-number").html(warehouse.CouriersCount);
+            container.find("#warehouse-packages-number").html(warehouse.PackagesCount);
+        });
+        Object.values(this.couriers).forEach(courier => {
+            var container = $("#courier" + courier.Id);
+            container.find("#courier-packages-number").html(courier.PackagesCount);
         });
     }
 
@@ -585,16 +600,28 @@ class VrpLibrary {
         return $(content).find("#warehouse");
     }
 
+    static SetCourierToContainer(container, courier) {
+        container.find("#courier-name").html(courier.Name);
+        container.find("#courier-x").html(courier.LatLng.Lng.toString().substring(0, 6));
+        container.find("#courier-y").html(courier.LatLng.Lat.toString().substring(0, 6));
+        if(courier.Warehouse !== undefined) container.find("#courier-warehouse").html(courier.Warehouse.Name);
+    }
+
     static SetPackageToContainer(container, pack) {
         container.find("#package-name").html(pack.Name);
         container.find("#package-x").html(pack.LatLng.Lng.toString().substring(0, 6));
         container.find("#package-y").html(pack.LatLng.Lat.toString().substring(0, 6));
+        container.find("#package-place-name").html(pack.PlaceInfo);
+        if(pack.Courier !== undefined) container.find("#package-courier").html(pack.Courier.Name);
+        if(pack.Warehouse !== undefined) container.find("#package-warehouse").html(pack.Warehouse.Name);
     }
 
     static SetWarehouseToContainer(container, warehouse) {
         container.find("#warehouse-name").html(warehouse.Name);
         container.find("#warehouse-x").html(warehouse.LatLng.Lng.toString().substring(0, 6));
         container.find("#warehouse-y").html(warehouse.LatLng.Lat.toString().substring(0, 6));
+        container.find("#warehouse-place-name").html(warehouse.PlaceInfo);
+        container.find("#warehouse-capacity-couriers").html(warehouse.CapacityForCouriers);
     }
 
     static get popupStyles() {

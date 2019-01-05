@@ -13,7 +13,7 @@ namespace VRP.Model
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [JsonConverter(typeof(MapElementConverter)), Column("Location")]
+        [JsonConverter(typeof(PointLatLngConverter)), Column("Location")]
         public Point LatLng { get; set; }
         public string Name { get; set; }
     }

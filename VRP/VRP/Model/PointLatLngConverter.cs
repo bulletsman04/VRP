@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace VRP.Model
 {
-    public class MapElementConverter : JsonConverter
+    public class PointLatLngConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
