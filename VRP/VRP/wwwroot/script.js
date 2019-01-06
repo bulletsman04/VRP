@@ -503,8 +503,8 @@ class Warehouse extends MapElement {
         var clone = $('#warehouse-template').clone();
         var content = clone.prop('content');
         this.Container = $(content).find('.map-element');
-        this.Container.find('.center').on('click', event => this.Center());
-        this.Container.find('.remove').on('click', event => this.Remove());
+        this.Container.find('.center-btn').on('click', event => this.Center());
+        this.Container.find('.remove-btn').on('click', event => this.Remove());
         this.UpdateContainer();
         $("#warehouses").append(this.Container);
     }
@@ -571,8 +571,8 @@ class Package extends MapElement {
         var clone = $('#package-template').clone();
         var content = clone.prop('content');
         this.Container = $(content).find('.map-element');
-        this.Container.find('.center').on('click', event => this.Center());
-        this.Container.find('.remove').on('click', event => this.Remove());
+        this.Container.find('.center-btn').on('click', event => this.Center());
+        this.Container.find('.remove-btn').on('click', event => this.Remove());
         this.UpdateContainer();
         $("#packages").append(this.Container);
     }
