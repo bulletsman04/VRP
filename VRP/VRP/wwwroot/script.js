@@ -163,12 +163,14 @@ class VrpHelper {
                     if (courier.Id > vpr.CouriersMaxid) {
                         vpr.CouriersMaxid = courier.Id;
                     }
-                    vpr.couriers[courier.Id] = courier;
-                    courier.Warehouse = vpr.warehouses[courier.WarehouseId];
-                    courier.Warehouse.CouriersCount++;
-                    courier.Marker = VrpLibrary.courierMarker(vpr, courier);
-                    courier.Marker.addTo(vpr.map);
-                    courier.PackagesCount = 0;
+                    var newCourier = new Package(vpr, courier.Id, courier.LatLng, false);
+                    vpr.couriers[courier.Id] = newCourier;
+                    newCourier.Warehouse = vpr.warehouses[courier.WarehouseId];
+                    newCourier.Warehouse.CouriersCount++;
+                    //newCourier.Marker = VrpLibrary.courierMarker(vpr, courier);
+                    //newCourier.Marker.addTo(vpr.map);
+                    newCourier.PackagesCount = 0;
+                    newCourier.BindContainer();
                 });
                 vpr.GetPackages();
             },
@@ -593,7 +595,10 @@ class Package extends MapElement {
     }
 }
 
-class Courier {
+class Courier extends MapElement {
+    constructor(manager, id, latLng, isTemporary) {
+        super(manager, id, latLng, isTemporary);
+    }
     get GetIcon() {
         return L.icon({
             iconUrl: 'icons/courier.ico',
@@ -601,6 +606,16 @@ class Courier {
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
         });
+    }
+
+    BindContainer() {
+        var clone = $('#courier-template').clone();
+        var content = clone.prop('content');
+        this.Container = $(content).find('.map-element');
+        this.Container.find('.center-btn').on('click', event => this.Center());
+        this.Container.find('.remove-btn').on('click', event => this.Remove());
+        this.UpdateContainer();
+        $("#couriers").append(this.Container);
     }
 
     UpdateContainer() {
