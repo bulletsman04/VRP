@@ -40,11 +40,16 @@
     font-size: 10pt;
 }
 
-.settings .btn:hover {
+.settings .btn:hover, .simulation-panel .btn:hover {
     background-color: var(--light_green);
     color: var(--tabs_font_active);
 }
 
+.simulation-panel .btn {
+    padding: 4px 4px;
+    font-size: 9pt;
+    margin-right: 4px;
+}
 .tab-content
 {
     /* ToDo: There is some kind of problem with that when trying to set overflow

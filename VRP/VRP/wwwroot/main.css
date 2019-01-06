@@ -30,15 +30,16 @@ body {
     height: 100%;
     display: grid;
     grid-template-columns: 1fr 2fr;
-    grid-template-rows: 60px calc(100vh - 60px);
+    grid-template-rows: 60px calc(100vh - 100px) 40px;
    
     grid-template-areas: 
                        "header settings"
-                       "item-list map";
+                       "item-list map"
+                        "item-list simulation-panel";
 
 }
 
-.header, .settings, .item-list, .map {
+.header, .settings, .item-list, .map,.simulation-panel {
     height: 100%;
     width: 100%;
     border: solid var(--main_borders);
@@ -57,12 +58,19 @@ body {
     border-width: 0px 0px 1px 1px;
 }
 
+.simulation-panel {
+    grid-area: simulation-panel;
+    border-width: 0px 0px 0px 1px;
+}
+
+
 .searchbox {
     padding-right: 5px;
 }
 .settings label {
     font-size: 10pt;
 }
+
 
 .type-added {
     padding-right: 3px;
@@ -215,6 +223,11 @@ input[type=radio] {
         border: none;
     }
 
+.align-items-center {
+    display: flex; 
+    align-items: center;  /*Aligns vertically center */
+    justify-content: center; /*Aligns horizontally center */
+}
 
 
 /*/* width */
