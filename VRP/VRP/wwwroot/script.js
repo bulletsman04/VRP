@@ -7,7 +7,7 @@
     $('#applyButton').on('click', event => vrp.SendData());
     $('#clearButton').on('click', event => vrp.ClearElements());
     $('#calculateButton').on('click', event => vrp.CalculateRoutes());
-
+    $('#startSimulation').on('click', event => vrp.StartSimulation());
     vrp.GetWarehouses();
 });
 
@@ -222,6 +222,7 @@ class VrpHelper {
     
     CalculateRoutes() {
         var vrp = this;
+        this.Routes = [];
         var packages = Object.values(this.packages);
         var warehouses = Object.values(this.warehouses);
 
@@ -305,7 +306,24 @@ class VrpHelper {
         return promise;
     }
 
-    ShowRoutes(result) {
+    GetDistance(controller, coordinates) {
+        var coords = [];
+        coordinates.forEach(coord => coords.push({ latLng: { lat: coord.lat, lng: coord.lng } }));
+        var router = controller.getRouter();
+        var promise = new Promise(async (resolve, reject) => {
+            await router.route(coords,
+                (err, routes) => {
+                    if (routes !== undefined) {
+                        this.Routes.push(routes[0]);
+                        resolve(routes[0].summary.totalDistance / 1000);
+                    } else
+                        reject(0);
+                });
+        });
+        return promise;
+    }
+
+    async ShowRoutes(result) {
         var warehouseNumber = 0, courierNumber = 0;
         for (var i = 0; i < result.length; i++) {
 
@@ -347,22 +365,12 @@ class VrpHelper {
             // coordinates.push(L.latLng([courier.LatLng.Lat, courier.LatLng.Lng]));
 
             controller.setWaypoints(coordinates);
-            var router = controller.getRouter();
 
-            var promise = new Promise((resolve, reject) => {
-                router.route(coordinates,
-                    (err, routes) => {
-
-                        if (routes !== undefined) {
-                            resolve(routes[0].summary.totalDistance / 1000);
-                        }
-
-                    });
+            await this.GetDistance(controller, coordinates).then(() => {
+                this.addRemovingButton();
             });
-            promise.then(this.addRemovingButton());
-        }
-
-
+        };
+        this.Simulator = new VrpSimulator(this, this.Routes);
     }
     
     ClearElements() {
@@ -400,6 +408,10 @@ class VrpHelper {
             this.routingControllers[1][index] = true;
         }
 
+    }
+
+    StartSimulation() {
+        if (this.Simulator !== undefined) this.Simulator.Run();
     }
 }
 
@@ -593,7 +605,13 @@ class Package extends MapElement {
     }
 }
 
-class Courier {
+class Courier extends MapElement{
+    constructor(manager, id, route, isTemporary) {
+        super(manager, id, route.coordinates[0], isTemporary);
+        this.Route = route;
+        this.CurrentPoint = 0;
+    }
+    
     get GetIcon() {
         return L.icon({
             iconUrl: 'icons/courier.ico',
@@ -601,6 +619,23 @@ class Courier {
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
         });
+    }
+
+    BindMarker() {
+        this.Marker = L.marker({ lat: this.LatLng.Lat, lng: this.LatLng.Lng }, {
+            icon: this.GetIcon
+        });
+        this.Marker.addTo(this.Manager.map);
+        this.BindContainer();
+    }
+
+    BindContainer() {
+        var clone = $('#courier-template').clone();
+        var content = clone.prop('content');
+        this.Container = $(content).find('.map-element');
+        this.Container.find('.center-btn').on('click', event => this.Center());
+        this.UpdateContainer();
+        $("#couriers").append(this.Container);
     }
 
     UpdateContainer() {
@@ -615,5 +650,72 @@ class Courier {
         this.Manager.map.removeLayer(this.Marker);
         this.Container.remove();
         delete this.Manager.couriers[this.Id];
+    }
+
+    Move(distance) {
+        if (this.Route.coordinates.length === this.CurrentPoint) return;
+        if (Math.abs(this.LatLng.Lat - this.Route.coordinates[this.CurrentPoint].Lat) < distance &&
+            Math.abs(this.LatLng.Lng - this.Route.coordinates[this.CurrentPoint].Lng) < distance) {
+            this.CurrentPoint++;
+            if (this.Route.coordinates.length === this.CurrentPoint) return;
+            var a =
+                (this.Route.coordinates[this.CurrentPoint - 1].Lng - this.Route.coordinates[this.CurrentPoint].Lng) /
+                (this.Route.coordinates[this.CurrentPoint - 1].Lat - this.Route.coordinates[this.CurrentPoint].Lat);
+            this.Factor = 1 / Math.sqrt(a * a + 1);
+        }
+        var dx = distance * this.Factor;
+        var dy = Math.sqrt(distance * distance - dx * dx);
+        if (this.LatLng.Lat > this.Route.coordinates[this.CurrentPoint].Lat)
+            dx = -dx;
+        if (this.LatLng.Lng > this.Route.coordinates[this.CurrentPoint].Lng)
+            dy = -dy;
+        this.LatLng.Lat += dx;
+        this.LatLng.Lng += dy;
+        this.Marker.setLatLng(new L.LatLng(this.LatLng.Lat, this.LatLng.Lng));
+        this.UpdateContainer();
+    }
+}
+
+class VrpSimulator {
+    constructor(manager, routes) {
+        this.Routes = routes;
+        this.Couriers = [];
+
+        var courierId = 0;
+        routes.forEach(route => {
+            route.coordinates = route.coordinates.map(coord => ({
+                Lat: coord.lat,
+                Lng: coord.lng
+            }));
+            this.Couriers.push(new Courier(manager, courierId++, route, false));
+        });
+        this.ChangeSpeed();
+    }
+
+    UpdateFrame() {
+        this.Couriers.forEach(courier => courier.Move(0.0001));
+    }
+
+    Run() {
+        this.Couriers.forEach(courier => courier.BindMarker());
+        this.Play();
+    }
+
+    Play() {
+        this.Loop = setInterval(() => this.UpdateFrame(), 1000/this.FramesPerSecond);
+    }
+
+    Pause() {
+        clearInterval(this.Loop);
+    }
+
+    Stop() {
+        clearInterval(this.Loop);
+        this.Couriers.forEach(courier => courier.Remove());
+    }
+
+    ChangeSpeed(factor) {
+        if (factor === undefined) this.FramesPerSecond = 60;
+        else this.FramesPerSecond *= factor;
     }
 }
