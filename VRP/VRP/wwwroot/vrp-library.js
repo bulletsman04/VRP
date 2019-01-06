@@ -1,4 +1,4 @@
-﻿$().ready(function () {
+﻿function googleLoaded() {
     var vrp = new VrpHelper('map',
         'http://89.70.244.118:27017/styles/osm-bright/style.json',
         'http://89.70.244.118:27018/route',
@@ -8,8 +8,9 @@
     $('#clearButton').on('click', event => vrp.ClearElements());
     $('#calculateButton').on('click', event => vrp.CalculateRoutes());
     $('#startSimulation').on('click', event => vrp.StartSimulation());
+    vrp.SetSearchBox();
     vrp.GetWarehouses();
-});
+}
 
 class VrpHelper {
     constructor(mapContainer, mapServer, graphHopperServer, initialView, initialZoom) {
@@ -53,12 +54,12 @@ class VrpHelper {
         this.PlaceMarker({ Lat: event.latlng.lat, Lng: event.latlng.lng }, $("input[name='pointType']:checked").val());
     }
 
-    PlaceMarker(latLng, type) {
+    PlaceMarker(latLng, type,placeName) {
         var id;
         switch (type) {
             case "warehouse":
                 id = this.WarehousesMaxid + 1;
-                var warehouse = new Warehouse(this, id, latLng, true);
+                var warehouse = new Warehouse(this, id, latLng, true,placeName);
                 this.warehouses[id] = warehouse;
                 warehouse.BindMarker();
                 this.CurrentMarker = warehouse.Marker;
@@ -66,7 +67,7 @@ class VrpHelper {
                 break;
             case "package":
                 id = this.WarehousesMaxid + 1;
-                var pack = new Package(this, id, latLng, true);
+                var pack = new Package(this, id, latLng, true, placeName);
                 this.packages[id] = pack;
                 pack.BindMarker();
                 this.CurrentMarker = pack.Marker;
@@ -75,6 +76,26 @@ class VrpHelper {
             default:
                 return;
         }
+    }
+
+    SetSearchBox() {
+     
+        var input = document.getElementById('searchbox');
+        var options = {
+            componentRestrictions: { country: 'pl' },
+            types: ['geocode']
+        };
+        this.Autocomplete = new google.maps.places.Autocomplete(input, options);
+        var vrp = this;
+        this.Autocomplete.addListener('place_changed', function() {
+            vrp.HandlePlaceChanged();
+        });
+    }
+
+    HandlePlaceChanged() {
+        var place = this.Autocomplete.getPlace();
+        var latLng = { Lat: place.geometry.location.lat(), Lng: place.geometry.location.lng() };
+        this.PlaceMarker(latLng, $("input[name='pointType']:checked").val(), place.formatted_address);
     }
 
     SendData() {

@@ -26,258 +26,261 @@
 
 </head>
 <body>
-    <div class="main-container">
-        <div class="header">
-            <h1  class="web-title text-center">Vehicle Routing Problem</h1>
+<div class="main-container">
+<div class="header">
+    <h1  class="web-title text-center">Vehicle Routing Problem</h1>
+</div>
+<div class="container-fluid settings">
+    <div class="row vertical-center-header ">
+        <div class="col-sm-3 searchbox">
+            <div class="form-group ">
+                <input type="text" class=" form-control" placeholder="" id="searchbox">
+            </div>
         </div>
-        <div class="container-fluid settings">
-            <div class="row vertical-center-header ">
-                <div class="col-sm-3 searchbox">
-                    <div class="form-group ">
-                        <input type="text" class=" form-control" placeholder="enter place name" id="searchbox">
+        <div class="vertical-center-header1 text-center  col-sm-4 type-added">
+            <span class="add-element-text">Add: </span>
+            <input type="radio" checked="checked" id="warehouseType" name="pointType" value="warehouse" />
+            <label for="warehouseType">Warehouse</label>
+            <input type="radio" id="packageType" name="pointType" value="package" />
+            <label for="packageType">Package</label>
+            <input type="radio" id="none" name="pointType" value="none" />
+            <label for="packageType">None</label>
+        </div>
+        <div class="col-sm-2 no-right-padding-col">
+            <button class="btn" id="applyButton">Apply</button>
+            <button class="btn" id="clearButton">Clear</button>
+
+
+        </div>
+        <div class=" col-sm-3 ">
+            <button class="btn" id="calculateButton">Show routes</button>
+            <button class="btn" id="startSimulation">Simulate</button>
+
+        </div>
+    </div>
+</div>
+<div class="item-list">
+    <nav>
+        <div class="nav nav-pills nav-justified" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link  active" id="nav-home-tab" data-toggle="tab" href="#warehouses" role="tab" aria-controls="nav-home" aria-selected="true">Warehouses</a>
+            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#couriers" role="tab" aria-controls="nav-profile" aria-selected="false">Couriers</a>
+            <a class="nav-item nav-link " id="nav-contact-tab" data-toggle="tab" href="#packages" role="tab" aria-controls="nav-contact" aria-selected="false">Packages</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+
+        <div class=" tab-content-scrollable tab-pane fade  show active" id="warehouses" role="tabpanel" aria-labelledby="nav-home-tab">
+            <template id="warehouse-template">
+                <div class="container map-element">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h5 class="name"></h5>
+                        </div>
+                        <div class="col-sm-6">
+
+                            <img class="small-icon float-right remove-btn" src="Icons/remove.png"/>
+                            <img class="small-icon float-right center-btn" src="Icons/indicator.svg"/>
+                        </div>
                     </div>
-                </div>
-                <div class="vertical-center-header1 text-center  col-sm-4 type-added">
-                    <span class="add-element-text">Add: </span>
-                    <input type="radio" checked="checked" id="warehouseType" name="pointType" value="warehouse" />
-                    <label for="warehouseType">Warehouse</label>
-                    <input type="radio" id="packageType" name="pointType" value="package" />
-                    <label for="packageType">Package</label>
-                    <input type="radio" id="none" name="pointType" value="none" />
-                    <label for="packageType">None</label>
-                </div>
-                <div class="col-sm-2 no-right-padding-col">
-                    <button class="btn" id="applyButton">Apply</button>
-                    <button class="btn" id="clearButton">Clear</button>
+                    <div class="row">
+                        <div class="col-sm-5 package-icon-container">
+                            <img alt="ikona paczki" class="package-icon" src="Icons/warehouse.svg"/>
+                        </div>
+                        <div class="col-sm-7 packages-info">
 
+                            <div class="row ">
+                                <div class="col-sm-12 ">
+                                    <span>Position:</span>
+                                    <span class="package-info coord-x"></span>,<span class="package-info coord-y"></span>
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-sm-12 ">
+                                    <span>Place: </span>
+                                    <span class="package-info place-name"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span>Packages count:</span>
+                                    <span class="package-info packages-count"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span>Capacity for couriers:</span>
+                                    <span class="package-info capacity-couriers"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span>Couriers:</span>
+                            <span class="package-info couriers-list"></span>
+                        </div>
+                    </div>
 
                 </div>
-                <div class=" col-sm-3 ">
-                    <button class="btn" id="calculateButton">Show routes</button>
-                    <button class="btn" id="startSimulation">Simulate</button>
-
-                </div>
-            </div>
+            </template>
         </div>
-        <div class="item-list">
-            <nav>
-                <div class="nav nav-pills nav-justified" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link  active" id="nav-home-tab" data-toggle="tab" href="#warehouses" role="tab" aria-controls="nav-home" aria-selected="true">Warehouses</a>
-                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#couriers" role="tab" aria-controls="nav-profile" aria-selected="false">Couriers</a>
-                    <a class="nav-item nav-link " id="nav-contact-tab" data-toggle="tab" href="#packages" role="tab" aria-controls="nav-contact" aria-selected="false">Packages</a>
-                </div>
-            </nav>
-            <div class="tab-content" id="nav-tabContent">
+        <div class="tab-content-scrollable tab-pane fade" id="packages" role="tabpanel" aria-labelledby="nav-contact-tab">
+            <template id="package-template">
+                <div class="container map-element">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h5 class="name"></h5>
+                        </div>
+                        <div class="col-sm-6">
 
-                <div class=" tab-content-scrollable tab-pane fade  show active" id="warehouses" role="tabpanel" aria-labelledby="nav-home-tab">
-                    <template id="warehouse-template">
-                        <div class="container map-element">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h5 class="name"></h5>
-                                </div>
-                                <div class="col-sm-6">
+                            <img class="small-icon float-right remove-btn" src="Icons/remove.png"/>
+                            <img class="small-icon float-right center-btn" src="Icons/indicator.svg"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 package-icon-container">
+                            <img alt="ikona paczki" class="package-icon" src="Icons/paczka_ikona.png"/>
+                        </div>
+                        <div class="col-sm-7 packages-info">
 
-                                    <img class="small-icon float-right remove-btn" src="Icons/remove.png"/>
-                                    <img class="small-icon float-right center-btn" src="Icons/indicator.svg"/>
+                            <div class="row ">
+                                <div class="col-sm-12 ">
+                                    <span>Position:</span>
+                                    <span class="package-info coord-x"></span>,<span class="package-info coord-y"></span>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-5 package-icon-container">
-                                    <img alt="ikona paczki" class="package-icon" src="Icons/warehouse.svg"/>
-                                </div>
-                                <div class="col-sm-7 packages-info">
-
-                                    <div class="row ">
-                                        <div class="col-sm-12 ">
-                                            <span>Position:</span>
-                                            <span class="package-info coord-x"></span>,<span class="package-info coord-y"></span>
-                                        </div>
-                                    </div>
-                                    <div class="row ">
-                                        <div class="col-sm-12 ">
-                                            <span>Place: </span>
-                                            <span class="package-info place-name"></span>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <span>Packages count:</span>
-                                            <span class="package-info packages-count"></span>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <span>Capacity for couriers:</span>
-                                            <span class="package-info capacity-couriers"></span>
-                                        </div>
-                                    </div>
+                            <div class="row ">
+                                <div class="col-sm-12 ">
+                                    <span>Place: </span>
+                                    <span class="package-info place-name"></span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <span>Couriers:</span>
-                                    <span class="package-info couriers-list"></span>
+                                    <span>Courier:</span>
+                                    <span class="package-info assigned-courier"></span>
                                 </div>
                             </div>
-
                         </div>
-                    </template>
-                </div>
-                <div class="tab-content-scrollable tab-pane fade" id="packages" role="tabpanel" aria-labelledby="nav-contact-tab">
-                    <template id="package-template">
-                        <div class="container map-element">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h5 class="name"></h5>
-                                </div>
-                                <div class="col-sm-6">
-
-                                    <img class="small-icon float-right remove-btn" src="Icons/remove.png"/>
-                                    <img class="small-icon float-right center-btn" src="Icons/indicator.svg"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-5 package-icon-container">
-                                    <img alt="ikona paczki" class="package-icon" src="Icons/paczka_ikona.png"/>
-                                </div>
-                                <div class="col-sm-7 packages-info">
-
-                                    <div class="row ">
-                                        <div class="col-sm-12 ">
-                                            <span>Position:</span>
-                                            <span class="package-info coord-x"></span>,<span class="package-info coord-y"></span>
-                                        </div>
-                                    </div>
-                                    <div class="row ">
-                                        <div class="col-sm-12 ">
-                                            <span>Place: </span>
-                                            <span class="package-info place-name"></span>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <span>Courier:</span>
-                                            <span class="package-info assigned-courier"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <span>Route:</span>
-                                    <span class="package-info assigned-route"></span>
-                                </div>
-                            </div>
-
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span>Route:</span>
+                            <span class="package-info assigned-route"></span>
                         </div>
-                    </template>
+                    </div>
+
                 </div>
+            </template>
+        </div>
                 
-                <div class="tab-content-scrollable tab-pane fade" id="couriers" role="tabpanel" aria-labelledby="nav-contact-tab">
-                    <template id="courier-template">
-                        <div class="container map-element">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h5 class="name"></h5>
-                                </div>
-                                <div class="col-sm-6">
+        <div class="tab-content-scrollable tab-pane fade" id="couriers" role="tabpanel" aria-labelledby="nav-contact-tab">
+            <template id="courier-template">
+                <div class="container map-element">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h5 class="name"></h5>
+                        </div>
+                        <div class="col-sm-6">
 
-                                    <img class="small-icon float-right remove-btn" src="Icons/remove.png" />
-                                    <img class="small-icon float-right center-btn" src="Icons/indicator.svg" />
+                            <img class="small-icon float-right remove-btn" src="Icons/remove.png" />
+                            <img class="small-icon float-right center-btn" src="Icons/indicator.svg" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 package-icon-container">
+                            <img alt="ikona kuriera" class="package-icon" src="Icons/courier.svg" />
+                        </div>
+                        <div class="col-sm-7 packages-info">
+
+                            <div class="row ">
+                                <div class="col-sm-12 ">
+                                    <span>Position:</span>
+                                    <span class="package-info coord-x"></span>,<span class="package-info coord-y"></span>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-5 package-icon-container">
-                                    <img alt="ikona kuriera" class="package-icon" src="Icons/courier.svg" />
-                                </div>
-                                <div class="col-sm-7 packages-info">
-
-                                    <div class="row ">
-                                        <div class="col-sm-12 ">
-                                            <span>Position:</span>
-                                            <span class="package-info coord-x"></span>,<span class="package-info coord-y"></span>
-                                        </div>
-                                    </div>
-                                    <div class="row ">
-                                        <div class="col-sm-12 ">
-                                            <span>Place: </span>
-                                            <span class="package-info place-name"></span>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <span>Warehouse:</span>
-                                            <span class="package-info courier-warehouse"></span>
-                                        </div>
-                                    </div>
+                            <div class="row ">
+                                <div class="col-sm-12 ">
+                                    <span>Place: </span>
+                                    <span class="package-info place-name"></span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <span>Route:</span>
-                                    <span class="package-info assigned-route"></span>
+                                    <span>Warehouse:</span>
+                                    <span class="package-info courier-warehouse"></span>
                                 </div>
                             </div>
-
                         </div>
-                    </template>
-                </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span>Route:</span>
+                            <span class="package-info assigned-route"></span>
+                        </div>
+                    </div>
 
-            </div>
+                </div>
+            </template>
         </div>
-    <div id="map" class="map">
-        <template id="warehouse-form-template">
-            <form>
-                <div class="form-group">
-                    <label></label>
-                    <input type="text" class="form-control name" placeholder="Name">
-                </div>
-                <div class="form-group">
-                    <label></label>
-                    <input type="text" class="form-control place">
-                </div>
-                <div class="form-group">
-                    <label>Couriers count:</label>
-                    <input type="number" class="form-control capacity-couriers" value="1" min="1">
-                </div>
-                <div class="form-group confirm-btn mx-auto">
-                    <input type="submit" class="form-control btn" value="Confirm">
-                </div>
-            </form>
-        </template>
-        <template id="package-form-template">
-            <form>
-                <div class="form-group">
-                    <label></label>
-                    <input type="text" class="form-control name" placeholder="Name">
-                </div>
-                <div class="form-group">
-                    <label></label>
-                    <input type="text" class="form-control place">
-                </div>
-                <div class="form-group confirm-btn mx-auto">
-                    <input type="submit" class="form-control btn" value="Confirm">
-                </div>
-            </form>
-        </template>
+
     </div>
-    <div id="simulation-panel" class="container simulation-panel">
-        <div class="row h-100">
-            <div class="col-sm-4 align-items-center mx-auto">
-                <button class="btn " disabled="disabled" id="pauseResumeButton">Pause</button>
-                <button class="btn " disabled="disabled" id="stopButton">Stop</button>
-                <button class="btn " disabled="disabled" id="speedUpButton">Slow down</button>
-                <button class="btn " disabled="disabled" id="slowDownButton">Speed up</button>
-
+</div>
+<div id="map" class="map">
+    <template id="warehouse-form-template">
+        <form>
+            <div class="form-group">
+                <label></label>
+                <input type="text" class="form-control name" placeholder="Name">
             </div>
+            <div class="form-group">
+                <label></label>
+                <input type="text" class="form-control place">
+            </div>
+            <div class="form-group">
+                <label>Couriers count:</label>
+                <input type="number" class="form-control capacity-couriers" value="1" min="1">
+            </div>
+            <div class="form-group confirm-btn mx-auto">
+                <input type="submit" class="form-control btn" value="Confirm">
+            </div>
+        </form>
+    </template>
+    <template id="package-form-template">
+        <form>
+            <div class="form-group">
+                <label></label>
+                <input type="text" class="form-control name" placeholder="Name">
+            </div>
+            <div class="form-group">
+                <label></label>
+                <input type="text" class="form-control place">
+            </div>
+            <div class="form-group confirm-btn mx-auto">
+                <input type="submit" class="form-control btn" value="Confirm">
+            </div>
+        </form>
+    </template>
+</div>
+<div id="simulation-panel" class="container simulation-panel">
+    <div class="row h-100">
+        <div class="col-sm-4 align-items-center mx-auto">
+            <button class="btn " disabled="disabled" id="pauseResumeButton">Pause</button>
+            <button class="btn " disabled="disabled" id="stopButton">Stop</button>
+            <button class="btn " disabled="disabled" id="speedUpButton">Slow down</button>
+            <button class="btn " disabled="disabled" id="slowDownButton">Speed up</button>
+
         </div>
-    </div >
+    </div>
+</div >
    
-    </div>
+</div>
+
 <!--<script src='script.js'></script>-->
 <script src='elements.js'></script>
 <script src='simulator.js'></script>
 <script src='vrp-library.js'></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBe9upN6Orfz0YKs62Te_tN40ZUHd8MxUo&libraries=places&callback=googleLoaded"
+        async defer></script>
 </body>
 </html>

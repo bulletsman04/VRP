@@ -1,9 +1,10 @@
 ﻿class MapElement {
-    constructor(manager, id, latLng, isTemporary) {
+    constructor(manager, id, latLng, isTemporary, placeName) {
         this.Manager = manager;
         this.Id = id;
         this.LatLng = latLng;
         this.IsTemporary = isTemporary;
+        this.Place = placeName;
     }
 
     get GetIcon() { }
@@ -50,8 +51,8 @@
 }
 
 class Warehouse extends MapElement {
-    constructor(manager, id, latLng, isTemporary) {
-        super(manager, id, latLng, isTemporary);
+    constructor(manager, id, latLng, isTemporary,placeName) {
+        super(manager, id, latLng, isTemporary,placeName);
     }
 
     get GetIcon() {
@@ -69,8 +70,8 @@ class Warehouse extends MapElement {
         var form = $(content.firstElementChild);
         form.find('.name').attr('value', this.Name);
         form.find('.capacity-couriers').attr('value', this.CapacityForCouriers);
-        if (this.Place === undefined) form.find('.place').attr('value', $('#searchbox').val());
-        else form.find('.place').attr('value', this.Place);
+        if (this.Place !== undefined) 
+            form.find('.place').attr('value', this.Place);
 
         var div = L.DomUtil.create('div', 'form');
         div.innerHTML = form.html();
@@ -120,8 +121,8 @@ class Warehouse extends MapElement {
 }
 
 class Package extends MapElement {
-    constructor(manager, id, latLng, isTemporary) {
-        super(manager, id, latLng, isTemporary);
+    constructor(manager, id, latLng, isTemporary, placeName) {
+        super(manager, id, latLng, isTemporary, placeName);
     }
 
     get GetIcon() {
