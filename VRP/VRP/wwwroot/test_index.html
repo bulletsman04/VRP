@@ -100,12 +100,6 @@
                                             <span class="package-info place-name"></span>
                                         </div>
                                     </div>
-                                    <div class="row ">
-                                        <div class="col-sm-12 ">
-                                            <span>Couriers count:</span>
-                                            <span class="package-info couriers-count"></span>
-                                        </div>
-                                    </div>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <span>Packages count:</span>
@@ -124,47 +118,6 @@
                                 <div class="col-sm-12">
                                     <span>Couriers:</span>
                                     <span class="package-info couriers-list"></span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </template>
-                </div>
-                <div class="tab-pane fade" id="couriers" role="tabpanel" aria-labelledby="nav-profile-tab">
-                    <template id="courier-template">
-                        <div class="container map-element">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h5 class="name"></h5>
-                                </div>
-                                <div class="col-sm-6">
-                                    <img class="small-icon float-right center-btn" src="Icons/indicator.svg" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-5 package-icon-container">
-                                    <img alt="ikona paczki" class="package-icon" src="Icons/paczka_ikona.png" />
-                                </div>
-                                <div class="col-sm-7 packages-info">
-
-                                    <div class="row ">
-                                        <div class="col-sm-12 ">
-                                            <span>Position:</span>
-                                            <span class="package-info coord-x"></span>,<span class="package-info coord-y"></span>
-                                        </div>
-                                    </div>
-                                    <div class="row ">
-                                        <div class="col-sm-12 ">
-                                            <span>Warehouse:</span>
-                                            <span class="package-info assigned-warehouse"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <span>Route:</span>
-                                    <span class="package-info assigned-route"></span>
                                 </div>
                             </div>
 
@@ -202,12 +155,6 @@
                                             <span class="package-info place-name"></span>
                                         </div>
                                     </div>
-                                    <div class="row ">
-                                        <div class="col-sm-12 ">
-                                            <span>Warehouse:</span>
-                                            <span class="package-info assigned-warehouse"></span>
-                                        </div>
-                                    </div>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <span>Courier:</span>
@@ -226,6 +173,57 @@
                         </div>
                     </template>
                 </div>
+                
+                <div class="tab-content-scrollable tab-pane fade" id="couriers" role="tabpanel" aria-labelledby="nav-contact-tab">
+                    <template id="courier-template">
+                        <div class="container map-element">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h5 class="name"></h5>
+                                </div>
+                                <div class="col-sm-6">
+
+                                    <img class="small-icon float-right remove-btn" src="Icons/remove.png" />
+                                    <img class="small-icon float-right center-btn" src="Icons/indicator.svg" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-5 package-icon-container">
+                                    <img alt="ikona kuriera" class="package-icon" src="Icons/courier.svg" />
+                                </div>
+                                <div class="col-sm-7 packages-info">
+
+                                    <div class="row ">
+                                        <div class="col-sm-12 ">
+                                            <span>Position:</span>
+                                            <span class="package-info coord-x"></span>,<span class="package-info coord-y"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row ">
+                                        <div class="col-sm-12 ">
+                                            <span>Place: </span>
+                                            <span class="package-info place-name"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <span>Warehouse:</span>
+                                            <span class="package-info courier-warehouse"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span>Route:</span>
+                                    <span class="package-info assigned-route"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+
             </div>
         </div>
         <div id="map" class="map">
