@@ -37,21 +37,20 @@
                 <input type="text" class=" form-control" placeholder="" id="searchbox">
             </div>
         </div>
-        <div class="vertical-center-header1 text-center  col-sm-3 type-added">
+        <div class="vertical-center-header1 text-center no-padding-col  col-sm-4 mx-auto">
             <span class="add-element-text" >Add:</span>
             <select class="form-control type-added-select" id="add">
                 <option value="warehouse">Warehouse</option>
                 <option value="package">Package</option>
                 <option value="none">None</option>
             </select>
-        </div>
-        <div class="col-sm-2 no-padding-col">
+       
             <button class="btn" id="applyButton">Save</button>
             <button class="btn" id="clearButton">Clear</button>
 
 
         </div>
-        <div class=" col-sm-4 no-padding-col ">
+        <div class=" col-sm-5  mx-auto ">
             <button class="btn" id="calculateButton">Calculate routes</button>
             <button class="btn" disabled="disabled" id="showButton" >Hide routes</button>
             <button class="btn" disabled="disabled" id="startSimulation">Simulate</button>
@@ -78,8 +77,8 @@
                         </div>
                         <div class="col-sm-6">
 
-                            <img class="small-icon float-right remove-btn" src="Icons/remove.png"/>
-                            <img class="small-icon float-right center-btn" src="Icons/indicator.svg"/>
+                            <img class="small-icon   float-right remove-btn" src="Icons/remove.png"/>
+                            <img class="small-icon indicator float-right center-btn" src="Icons/indicator.svg"/>
                         </div>
                     </div>
                     <div class="row">
@@ -134,7 +133,7 @@
                         <div class="col-sm-6">
 
                             <img class="small-icon float-right remove-btn" src="Icons/remove.png"/>
-                            <img class="small-icon float-right center-btn" src="Icons/indicator.svg"/>
+                            <img class="small-icon  indicator float-right center-btn" src="Icons/indicator.svg"/>
                         </div>
                     </div>
                     <div class="row">
@@ -184,7 +183,7 @@
                         <div class="col-sm-6">
 
                             <img class="small-icon float-right remove-btn" src="Icons/remove.png" />
-                            <img class="small-icon float-right center-btn" src="Icons/indicator.svg" />
+                            <img class="small-icon  indicator float-right center-btn" src="Icons/indicator.svg" />
                         </div>
                     </div>
                     <div class="row">
@@ -267,10 +266,10 @@
 <div id="simulation-panel" class="container-fluid simulation-panel">
     <div class="row h-100">
         <div class="col-sm-4 align-items-center mx-auto">
-            <button class="btn " disabled="disabled" id="pauseResumeButton">Pause</button>
-            <button class="btn " disabled="disabled" id="stopButton">Stop</button>
-            <button class="btn " disabled="disabled" id="speedUpButton">Slow down</button>
-            <button class="btn " disabled="disabled" id="slowDownButton">Speed up</button>
+            <img class="simulation-icon" id="pauseResumeButton" src="simulation-icons/pause_inactive.svg" />
+            <img class="simulation-icon" id="stopButton" src="simulation-icons/stop_inacive.svg" />
+            <img class="simulation-icon" id="speedUpButton" src="simulation-icons/speedup_inactive.svg" />
+            <img class="simulation-icon" id="slowDownButton" src="simulation-icons/speeddown_inactive.svg" />
 
         </div>
     </div>

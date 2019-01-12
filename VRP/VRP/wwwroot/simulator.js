@@ -66,7 +66,10 @@
     }
 
     EnableButtons() {
-        $(".simulation-panel").find(".btn").removeAttr("disabled");
+        $("#pauseResumeButton").attr('src', "simulation-icons/pause_partly_active.svg");
+        $("#stopButton").attr('src', "simulation-icons/stop_partly_active.svg");
+        $("#speedUpButton").attr('src', "simulation-icons/speedup_partly_active.svg");
+        $("#slowDownButton").attr('src', "simulation-icons/speeddown_partly_active.svg");
     }
 
     DisableButtons() {
