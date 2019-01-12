@@ -33,8 +33,8 @@ class VrpHelper {
         this.CurrentMarker = null;
         this.CenteredElement = null;
 
-        this.routingControllers = [[], []];
-        this.routingControllersCount = 0;
+        this.Routes = [];
+        this.Controllers = [];
 
         this.packages = {};
         this.couriers = {};
@@ -244,8 +244,8 @@ class VrpHelper {
     }
 
     CalculateRoutes() {
+        this.ClearRoutes();
         var vrp = this;
-        this.Routes = [];
         var packages = Object.values(this.packages);
         var warehouses = Object.values(this.warehouses);
 
@@ -300,7 +300,7 @@ class VrpHelper {
                 contentType: 'application/json',
                 dataType: "json",
                 success: function (result) {
-                    vrpHelper.ShowRoutes(result);
+                    vrpHelper.ApplyRoutes(result);
                 },
                 error: function (error) {
                     alert("buu");
@@ -346,7 +346,7 @@ class VrpHelper {
         return promise;
     }
 
-    async ShowRoutes(result) {
+    async ApplyRoutes(result) {
         var warehouseNumber = 0, courierNumber = 0;
         for (var i = 0; i < result.length; i++) {
 
@@ -357,10 +357,9 @@ class VrpHelper {
                     }),
                 createMarker: function () { return null; }
 
-            }).addTo(this.map);
+            });
 
-            this.routingControllers[0].push(controller);
-            this.routingControllers[1].push(true);
+            this.Controllers.push(controller);
 
             // controller.hide(); - hides window with directions
 
@@ -391,10 +390,20 @@ class VrpHelper {
             controller.setWaypoints(coordinates);
 
             await this.GetDistance(controller, coordinates).then(() => {
-                this.addRemovingButton();
+               // this.addRemovingButton();
             });
         };
+
+        $("#startSimulation").removeAttr("disabled");
+        $("#showButton").removeAttr("disabled");
+        this.ShowRoutes();
         this.Simulator = new VrpSimulator(this, this.Routes);
+    }
+
+    ClearRoutes() {
+        this.HideRoutes();
+        this.Routes = [];
+        this.Controllers = [];
     }
 
     ClearElements() {
@@ -419,19 +428,33 @@ class VrpHelper {
         this.routingControllersCount++;
         $("#settings").append(button);
     }
+    
 
-    addRemoveController(index) {
-        var controller = this.routingControllers[0][index];
-        var isShown = this.routingControllers[1][index];
+    ShowRoute(controller) {
+        controller.addTo(this.map);
+    }
 
-        if (isShown) {
-            this.map.removeControl(controller);
-            this.routingControllers[1][index] = false;
-        } else {
-            controller.addTo(this.map);
-            this.routingControllers[1][index] = true;
-        }
+    HideRoute(controller) {
+        this.map.removeControl(controller);
+    }
 
+    ShowRoutes() {
+        $("#showButton").html("Hide routes");
+        $("#showButton").off('click');
+        $("#showButton").on('click', this.HideRoutes.bind(this));
+        this.Controllers.forEach(controller => {
+            this.HideRoute(controller);
+            this.ShowRoute(controller);
+        });
+    }
+
+    HideRoutes() {
+        $("#showButton").html("Show routes");
+        $("#showButton").off('click');
+        $("#showButton").on('click',this.ShowRoutes.bind(this));
+        this.Controllers.forEach(controller => {
+            this.HideRoute(controller);
+        });
     }
 
     StartSimulation() {
