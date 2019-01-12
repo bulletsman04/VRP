@@ -420,11 +420,11 @@ class VrpHelper {
         this.WarehousesMaxid = 0;
 
         Object.values(this.warehouses).forEach(element => {
-            this.RemoveWarehouse(element);
+            element.Remove();
         });
 
         Object.values(this.packages).forEach(element => {
-            this.RemovePackage(element);
+            element.Remove();
         });
     }
 
