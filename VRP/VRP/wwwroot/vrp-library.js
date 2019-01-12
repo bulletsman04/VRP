@@ -31,6 +31,7 @@ class VrpHelper {
         });
 
         this.CurrentMarker = null;
+        this.CenteredElement = null;
 
         this.routingControllers = [[], []];
         this.routingControllersCount = 0;

@@ -47,6 +47,22 @@
 
     Center() {
         this.Manager.map.setView(new L.LatLng(this.LatLng.Lat, this.LatLng.Lng), 14);
+
+        if (this.Manager.CenteredElement !== null) {
+            this.Manager.CenteredElement.SetUndistinguished();
+        }
+
+        this.SetDistinguished();
+    }
+
+    SetDistinguished() {
+        this.Marker.setIcon(this.GetCenteredIcon);
+        this.Manager.CenteredElement = this;
+    }
+
+    SetUndistinguished() {
+        this.Marker.setIcon(this.GetIcon);
+        this.Manager.CenteredElement = null;
     }
 }
 
@@ -58,6 +74,15 @@ class Warehouse extends MapElement {
     get GetIcon() {
         return L.icon({
             iconUrl: 'icons/warehouse.ico',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20]
+        });
+    }
+
+    get GetCenteredIcon() {
+        return L.icon({
+            iconUrl: 'icons/warehouse.svg',
             iconSize: [40, 40],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
@@ -134,6 +159,15 @@ class Package extends MapElement {
         });
     }
 
+    get GetCenteredIcon() {
+        return L.icon({
+            iconUrl: 'icons/paczka_ikona.png',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20]
+        });
+    }
+
     BindForm() {
         var clone = $("#package-form-template").clone();
         var content = clone.prop('content');
@@ -199,6 +233,15 @@ class Courier extends MapElement {
     get GetIcon() {
         return L.icon({
             iconUrl: 'icons/courier.ico',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20]
+        });
+    }
+
+    get GetCenteredIcon() {
+        return L.icon({
+            iconUrl: 'icons/courier.svg',
             iconSize: [40, 40],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
