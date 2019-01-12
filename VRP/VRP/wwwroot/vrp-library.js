@@ -357,12 +357,10 @@ class VrpHelper {
                     }),
                 createMarker: function () { return null; }
 
-            });
+            }).addTo(this.map);
 
             this.Controllers.push(controller);
-
-      
-
+            
             var coordinates = [];
             var packages = Object.values(this.packages);
             var warehouses = Object.values(this.warehouses);
