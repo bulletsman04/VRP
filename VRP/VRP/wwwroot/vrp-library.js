@@ -361,7 +361,7 @@ class VrpHelper {
 
             this.Controllers.push(controller);
 
-            // controller.hide(); - hides window with directions
+      
 
             var coordinates = [];
             var packages = Object.values(this.packages);
@@ -445,6 +445,7 @@ class VrpHelper {
         this.Controllers.forEach(controller => {
             this.HideRoute(controller);
             this.ShowRoute(controller);
+            controller.hide();
         });
     }
 
@@ -454,6 +455,7 @@ class VrpHelper {
         $("#showButton").on('click',this.ShowRoutes.bind(this));
         this.Controllers.forEach(controller => {
             this.HideRoute(controller);
+            controller.hide();
         });
     }
 
