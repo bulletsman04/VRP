@@ -353,7 +353,8 @@ class VrpHelper {
                 router: L.Routing.graphHopper(undefined,
                     {
                         serviceUrl: this.GHServer
-                    })
+                    }),
+                createMarker: function () { return null; }
 
             }).addTo(this.map);
 
