@@ -52,7 +52,7 @@ class VrpHelper {
             this.map.removeLayer(this.CurrentMarker);
             this.CurrentMarker.closePopup();
         }
-        this.PlaceMarker({ Lat: event.latlng.lat, Lng: event.latlng.lng }, $("input[name='pointType']:checked").val());
+        this.PlaceMarker({ Lat: event.latlng.lat, Lng: event.latlng.lng }, $("#add").val());
     }
 
     PlaceMarker(latLng, type,placeName) {

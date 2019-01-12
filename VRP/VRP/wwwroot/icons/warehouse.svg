@@ -3,15 +3,14 @@
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 500 500" style="enable-background:new 0 0 500 500;" xml:space="preserve">
 <style type="text/css">
-	.st0{fill:none;stroke:#ECB42A;stroke-width:18.8053;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st0{fill:none;stroke:#EA872D;stroke-width:18.8053;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
 </style>
 <g>
-	<polyline class="st0" points="40.1,203.8 40.1,415.8 86.1,415.8 86.9,241.5 414,241.5 414.9,415.8 460,415.8 460,203.8 	"/>
-	<polyline class="st0" points="40.1,203.8 250,83 460,203.8 	"/>
-	<rect x="324.8" y="355.1" class="st0" width="54.5" height="60.7"/>
-	<rect x="270.3" y="355.1" class="st0" width="54.5" height="60.7"/>
-	<rect x="297.5" y="294.3" class="st0" width="54.5" height="60.7"/>
-	<line class="st0" x1="137.2" y1="415.8" x2="223.4" y2="415.8"/>
-	<rect x="151.3" y="355.1" class="st0" width="54.5" height="60.7"/>
+	<polygon class="st0" points="250,83.6 40,204.4 40,416.4 86,416.4 86.9,242.1 414,242.1 414.9,416.4 460,416.4 460,204.4 	"/>
+	<rect x="320" y="359.9" class="st0" width="54.5" height="60.7"/>
+	<rect x="265.5" y="359.9" class="st0" width="54.5" height="60.7"/>
+	<rect x="292.7" y="299.1" class="st0" width="54.5" height="60.7"/>
+	<line class="st0" x1="132" y1="420.9" x2="218.2" y2="420.9"/>
+	<rect x="146.5" y="359.9" class="st0" width="54.5" height="60.7"/>
 </g>
 </svg>

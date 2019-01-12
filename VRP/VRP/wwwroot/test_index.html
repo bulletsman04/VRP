@@ -37,22 +37,21 @@
                 <input type="text" class=" form-control" placeholder="" id="searchbox">
             </div>
         </div>
-        <div class="vertical-center-header1 text-center  col-sm-4 type-added">
-            <span class="add-element-text">Add: </span>
-            <input type="radio" checked="checked" id="warehouseType" name="pointType" value="warehouse" />
-            <label for="warehouseType">Warehouse</label>
-            <input type="radio" id="packageType" name="pointType" value="package" />
-            <label for="packageType">Package</label>
-            <input type="radio" id="none" name="pointType" value="none" />
-            <label for="packageType">None</label>
+        <div class="vertical-center-header1 text-center  col-sm-3 type-added">
+            <span class="add-element-text" >Add:</span>
+            <select class="form-control type-added-select" id="add">
+                <option value="warehouse">Warehouse</option>
+                <option value="package">Package</option>
+                <option value="none">None</option>
+            </select>
         </div>
-        <div class="col-sm-2 no-right-padding-col">
+        <div class="col-sm-2 no-padding-col">
             <button class="btn" id="applyButton">Save</button>
             <button class="btn" id="clearButton">Clear</button>
 
 
         </div>
-        <div class=" col-sm-3 ">
+        <div class=" col-sm-4 no-padding-col ">
             <button class="btn" id="calculateButton">Calculate routes</button>
             <button class="btn" disabled="disabled" id="showButton" >Hide routes</button>
             <button class="btn" disabled="disabled" id="startSimulation">Simulate</button>

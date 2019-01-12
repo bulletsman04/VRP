@@ -22,7 +22,7 @@ html,body {
 }
 
 body {
-    min-width: 1252px;
+    min-width: 1270px;
     margin: 0 auto;
 }
 
@@ -75,6 +75,11 @@ body {
 .type-added {
     padding-right: 3px;
     padding-left: 6px;
+}
+
+.type-added-select {
+    width: auto;
+    display: inline-block;
 }
 
 .item-list {
@@ -185,8 +190,6 @@ body {
 
 .vertical-center-header1 {
     height: 100%;
-    padding-top: 7px;
-    padding-bottom: 7px;
 }
 
 .add-element-text {
