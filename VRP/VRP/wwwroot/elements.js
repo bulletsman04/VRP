@@ -168,6 +168,15 @@ class Package extends MapElement {
         });
     }
 
+    get GetPickedIcon() {
+        return L.icon({
+            iconUrl: 'icons/paczka_ikona.png',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20]
+        });
+    }
+
     BindForm() {
         var clone = $("#package-form-template").clone();
         var content = clone.prop('content');
@@ -220,6 +229,10 @@ class Package extends MapElement {
         this.Manager.map.removeLayer(this.Marker);
         this.Container.remove();
         delete this.Manager.warehouses[this.Id];
+    }
+
+    SetPicked() {
+        this.Marker.setIcon(this.GetPickedIcon);
     }
 }
 
