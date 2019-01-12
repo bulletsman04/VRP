@@ -45,7 +45,7 @@
         clearInterval(this.Loop);
         this.Couriers.forEach(courier => courier.Remove());
         this.DisableButtons();
-        $("#startSimulation").find(".btn").removeAttr("disabled");
+        $("#startSimulation").removeAttr("disabled");
     }
 
     ChangeSpeed(factor) {
