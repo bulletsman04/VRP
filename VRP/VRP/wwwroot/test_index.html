@@ -226,41 +226,43 @@
 
     </div>
 </div>
-<div id="map" class="map">
-    <template id="warehouse-form-template">
-        <form>
-            <div class="form-group">
-                <label></label>
-                <input type="text" class="form-control name" placeholder="Name">
-            </div>
-            <div class="form-group">
-                <label></label>
-                <input type="text" class="form-control place">
-            </div>
-            <div class="form-group">
-                <label>Couriers count:</label>
-                <input type="number" class="form-control capacity-couriers" value="1" min="1">
-            </div>
-            <div class="form-group confirm-btn mx-auto">
-                <input type="submit" class="form-control btn" value="Confirm">
-            </div>
-        </form>
-    </template>
-    <template id="package-form-template">
-        <form>
-            <div class="form-group">
-                <label></label>
-                <input type="text" class="form-control name" placeholder="Name">
-            </div>
-            <div class="form-group">
-                <label></label>
-                <input type="text" class="form-control place">
-            </div>
-            <div class="form-group confirm-btn mx-auto">
-                <input type="submit" class="form-control btn" value="Confirm">
-            </div>
-        </form>
-    </template>
+<div id="map-container" class="map-container">
+    <div id="map" class="map">
+        <template id="warehouse-form-template">
+            <form>
+                <div class="form-group">
+                    <label></label>
+                    <input type="text" class="form-control name" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label></label>
+                    <input type="text" class="form-control place">
+                </div>
+                <div class="form-group">
+                    <label>Couriers count:</label>
+                    <input type="number" class="form-control capacity-couriers" value="1" min="1">
+                </div>
+                <div class="form-group confirm-btn mx-auto">
+                    <input type="submit" class="form-control btn" value="Confirm">
+                </div>
+            </form>
+        </template>
+        <template id="package-form-template">
+            <form>
+                <div class="form-group">
+                    <label></label>
+                    <input type="text" class="form-control name" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label></label>
+                    <input type="text" class="form-control place">
+                </div>
+                <div class="form-group confirm-btn mx-auto">
+                    <input type="submit" class="form-control btn" value="Confirm">
+                </div>
+            </form>
+        </template>
+    </div>
 </div>
 <div id="simulation-panel" class="container-fluid simulation-panel">
     <div class="row h-100">
