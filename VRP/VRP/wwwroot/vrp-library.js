@@ -96,7 +96,7 @@ class VrpHelper {
     HandlePlaceChanged() {
         var place = this.Autocomplete.getPlace();
         var latLng = { Lat: place.geometry.location.lat(), Lng: place.geometry.location.lng() };
-        this.PlaceMarker(latLng, $("input[name='pointType']:checked").val(), place.formatted_address);
+        this.PlaceMarker(latLng, $("#add").val(), place.formatted_address);
     }
 
     SendData() {
