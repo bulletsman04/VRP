@@ -70,8 +70,8 @@ class Warehouse extends MapElement {
         var form = $(content.firstElementChild);
         form.find('.name').attr('value', this.Name);
         form.find('.capacity-couriers').attr('value', this.CapacityForCouriers);
-        if (this.Place !== undefined) 
-            form.find('.place').attr('value', this.Place);
+        if (this.Place === undefined) form.find('.place').attr('value', $('#searchbox').val());
+        else form.find('.place').attr('value', this.Place);
 
         var div = L.DomUtil.create('div', 'form');
         div.innerHTML = form.html();
