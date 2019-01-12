@@ -382,6 +382,7 @@ class VrpHelper {
                 var packageC = packages[points[j]];
                 coordinates.push(L.latLng([packageC.LatLng.Lat, packageC.LatLng.Lng]));
 
+                // Setting route in package list element
                 var routePoint = $('<a/>').html(packageC.Name)
                     .addClass("route-element")
                     .on('click', packageC.Center.bind(packageC));

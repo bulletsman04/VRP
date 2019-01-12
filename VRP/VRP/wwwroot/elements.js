@@ -73,7 +73,7 @@ class Warehouse extends MapElement {
 
     get GetIcon() {
         return L.icon({
-            iconUrl: 'icons/warehouse.ico',
+            iconUrl: 'icons/map_warehouse.svg',
             iconSize: [40, 40],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
@@ -82,8 +82,8 @@ class Warehouse extends MapElement {
 
     get GetCenteredIcon() {
         return L.icon({
-            iconUrl: 'icons/warehouse.svg',
-            iconSize: [40, 40],
+            iconUrl: 'icons/map_warehouse.svg',
+            iconSize: [70, 70],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
         });
@@ -152,7 +152,7 @@ class Package extends MapElement {
 
     get GetIcon() {
         return L.icon({
-            iconUrl: 'icons/package.ico',
+            iconUrl: 'icons/map_package.svg',
             iconSize: [20, 20],
             iconAnchor: [10, 10],
             popupAnchor: [0, -10]
@@ -161,8 +161,8 @@ class Package extends MapElement {
 
     get GetCenteredIcon() {
         return L.icon({
-            iconUrl: 'icons/paczka_ikona.png',
-            iconSize: [40, 40],
+            iconUrl: 'icons/map_package_lightblue.svg',
+            iconSize: [70, 70],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
         });
@@ -171,7 +171,7 @@ class Package extends MapElement {
     get GetPickedIcon() {
         return L.icon({
             iconUrl: 'icons/paczka_ikona.png',
-            iconSize: [40, 40],
+            iconSize: [20, 20],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
         });
@@ -230,6 +230,20 @@ class Package extends MapElement {
         this.Container.find('.assigned-route').append(route.clone(true,true));
     }
 
+    AddShowHideRouteButton(routeController) {
+        var button = $('<button />').html('Show').addClass("show-hide");
+        this.Container.append(button);
+    }
+
+    ShowRoute(routeController) {
+
+        button.on('click', this.HideRoute(routeController));
+    }
+
+    HideRoute(routeController) {
+
+    }
+
     Remove() {
         this.Manager.map.removeLayer(this.Marker);
         this.Container.remove();
@@ -250,7 +264,7 @@ class Courier extends MapElement {
 
     get GetIcon() {
         return L.icon({
-            iconUrl: 'icons/courier.ico',
+            iconUrl: 'icons/map_courier.svg',
             iconSize: [40, 40],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
@@ -259,8 +273,8 @@ class Courier extends MapElement {
 
     get GetCenteredIcon() {
         return L.icon({
-            iconUrl: 'icons/courier.svg',
-            iconSize: [40, 40],
+            iconUrl: 'icons/map_courier.svg',
+            iconSize: [70, 70],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
         });
