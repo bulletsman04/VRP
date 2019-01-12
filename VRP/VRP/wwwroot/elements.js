@@ -225,6 +225,11 @@ class Package extends MapElement {
         if (this.Warehouse !== undefined) container.find('.assigned-warehouse').html(this.Warehouse.Name);
     }
 
+    UpdateRoute(route) {
+        this.Container.find('.assigned-route').html("");
+        this.Container.find('.assigned-route').append(route.clone(true,true));
+    }
+
     Remove() {
         this.Manager.map.removeLayer(this.Marker);
         this.Container.remove();

@@ -236,6 +236,13 @@ input[type=radio] {
     justify-content: center; /*Aligns horizontally center */
 }
 
+.route-element {
+    font-weight: normal;
+}
+.route-element:hover {
+    cursor: pointer;
+    font-weight: bold;
+}
 
 /*/* width */
 ::-webkit-scrollbar {

@@ -374,12 +374,20 @@ class VrpHelper {
             coordinates.push(L.latLng([warehouse.LatLng.Lat, warehouse.LatLng.Lng]));
 
             var points = result[i];
-
+            var route = $('<span/>');
+            route.append($('<a/>').html(warehouse.Name)
+                .addClass("route-element")
+                .on('click', warehouse.Center.bind(warehouse)));
             for (var j = 0; j < points.length; j++) {
-
                 var packageC = packages[points[j]];
-
                 coordinates.push(L.latLng([packageC.LatLng.Lat, packageC.LatLng.Lng]));
+
+                var routePoint = $('<a/>').html(packageC.Name)
+                    .addClass("route-element")
+                    .on('click', packageC.Center.bind(packageC));
+                route.append(" -> ");
+                route.append(routePoint);
+                packageC.UpdateRoute(route);
             }
 
             // Back to home
