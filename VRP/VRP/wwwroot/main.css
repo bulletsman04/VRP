@@ -265,6 +265,11 @@ input[type=radio] {
     height: 40px;
 }
 
+.simulation-icon-disabled {
+    display: none;
+}
+
+
 /*/* width */
 ::-webkit-scrollbar {
     width: 5px;
