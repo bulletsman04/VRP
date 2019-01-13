@@ -282,6 +282,10 @@ input[type=radio] {
     opacity: 0.5;
 }
 
+.show-hide {
+    font-size: 10pt;
+    padding: 2px 20px;
+}
 
 /*/* width */
 ::-webkit-scrollbar {

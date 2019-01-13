@@ -232,20 +232,27 @@ class Package extends MapElement {
     }
 
     AddShowHideRouteButton(routeController) {
-        var button = $('<button />').html('Show').addClass("show-hide");
+        var button = $('<button />').addClass("btn show-hide");
+        this.ShowRoute(routeController, button);
         this.Container.append(button);
     }
 
-    ShowRoute(routeController,button) {
+    ShowRoute(routeController, button) {
+        button.html("Hide");
         button.off('click');
-        button.on('click', this.HideRoute.bind(this,routeController,button));
-        routeController.addTo(this.map);
+        button.on('click', this.HideRoute.bind(this, routeController, button));
+        this.Manager.map.removeControl(routeController);
+        routeController.addTo(this.Manager.map);
+        routeController.hide();
     }
 
     HideRoute(routeController, button) {
+        button.html("Show");
         button.off('click');
         button.on('click', this.ShowRoute.bind(this, routeController, button));
-        this.manager.map.removeControl(routeController);
+        this.Manager.map.removeControl(routeController);
+        routeController.hide();
+
     }
 
     Remove() {
