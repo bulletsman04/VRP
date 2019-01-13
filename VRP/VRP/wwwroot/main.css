@@ -294,6 +294,10 @@ input[type=radio] {
     margin: 2px 2px;
 }
 
+.leaflet-routing-container-hide {
+    display: none !important;
+}
+
 /*/* width */
 ::-webkit-scrollbar {
     width: 5px;
