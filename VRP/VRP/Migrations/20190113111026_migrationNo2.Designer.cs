@@ -11,8 +11,8 @@ using VRP.Context;
 namespace VRP.Migrations
 {
     [DbContext(typeof(VrpGisDbContext))]
-    [Migration("20190105113601_No4")]
-    partial class No4
+    [Migration("20190113111026_migrationNo2")]
+    partial class migrationNo2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,7 +20,7 @@ namespace VRP.Migrations
             modelBuilder
                 .HasAnnotation("Npgsql:PostgresExtension:postgis", "'postgis', '', ''")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("VRP.Model.Courier", b =>
@@ -71,6 +71,8 @@ namespace VRP.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int>("CapacityForCouriers");
 
                     b.Property<Point>("LatLng")
                         .HasColumnName("Location");
