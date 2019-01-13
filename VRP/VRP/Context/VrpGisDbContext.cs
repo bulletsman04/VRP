@@ -10,7 +10,6 @@ namespace VRP.Context
         public VrpGisDbContext() { }
         public VrpGisDbContext(DbContextOptions<VrpGisDbContext> options) : base(options) { }
         public DbSet<Warehouse> Warehouses { get; set; }
-        public DbSet<Courier> Couriers { get; set; }
         public DbSet<Package> Packages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -21,7 +20,7 @@ namespace VRP.Context
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
 
-            builder.UseNpgsql("Host = 192.168.99.100; Port = 5432; Database = vrp; Username = bulletsman04; Password = 12345A",
+            builder.UseNpgsql("Host=89.70.244.118;Port=5432;Database=gis;Username=admin;Password=admin123",
                 o => o.UseNetTopologySuite());
         }
     }

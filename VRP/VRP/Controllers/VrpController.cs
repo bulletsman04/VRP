@@ -31,27 +31,22 @@ namespace VRP.Controllers
         [HttpGet, Route("createUserId")]
         public string CreateUserId() => Request.GetHashCode().ToString() + Request.HttpContext.GetHashCode();
 
-        [HttpGet, Route("getWarehouses")]
-        public string GetWarehouses() => Json(Db.Warehouses);
+        [HttpGet, Route("getWarehouses/{id}")]
+        public string GetWarehouses(string id) => Json(Db.Warehouses.Where(warehouse => warehouse.UserId == id));
 
-        [HttpGet, Route("getCouriers")]
-        public string GetCouriers() => Json(Db.Couriers);
+        [HttpGet, Route("getPackages/{id}")]
+        public string GetPackages(string id) => Json(Db.Packages.Where(package => package.UserId == id));
 
-        [HttpGet, Route("getPackages")]
-        public string GetPackages() => Json(Db.Packages);
-
-        [HttpPost]
-        public void Post([FromBody] Collections input)
+        [HttpPost, Route("{id}")]
+        public void Post(string id, [FromBody] Collections input)
         {
             Db.Warehouses.RemoveRange(Db.Warehouses);
-            Db.Couriers.RemoveRange(Db.Couriers);
             Db.Packages.RemoveRange(Db.Packages);
-            //Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Packages\"");
-            //Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Couriers\"");
-            //Db.Database.ExecuteSqlCommand("TRUNCATE TABLE public.\"Warehouses\"");
+
+            input.Warehouses.ForEach(warehouse => warehouse.UserId = id);
+            input.Packages.ForEach(package => package.UserId = id);
 
             Db.AddRange(input.Warehouses);
-            Db.AddRange(input.Couriers);
             Db.AddRange(input.Packages);
 
             Db.SaveChanges();

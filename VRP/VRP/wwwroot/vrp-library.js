@@ -16,7 +16,7 @@
 }
 
 function Main(userId) {
-    var vrp = new VrpHelper('map',
+    var vrp = new VrpHelper(userId, 'map',
         'http://89.70.244.118:27017/styles/klokantech-basic/style.json',
         'http://89.70.244.118:27018/route',
         [52.237049, 21.017532],
@@ -46,7 +46,8 @@ function ReadCookie(name) {
 }
 
 class VrpHelper {
-    constructor(mapContainer, mapServer, graphHopperServer, initialView, initialZoom) {
+    constructor(userId, mapContainer, mapServer, graphHopperServer, initialView, initialZoom) {
+        this.UserId = userId;
         this.map = L.map(mapContainer).setView(initialView, initialZoom);
 
         L.mapboxGL({
@@ -133,9 +134,10 @@ class VrpHelper {
     }
 
     SendData() {
+        var vpr = this;
         $.ajax({
             type: 'POST',
-            url: 'api/vrp',
+            url: 'api/vrp/' + vpr.UserId,
             data: JSON.stringify({
                 Warehouses: Object.values(this.warehouses).map(warehouse => (
                     {
@@ -146,15 +148,6 @@ class VrpHelper {
                         {
                             Lat: warehouse.LatLng.Lat,
                             Lng: warehouse.LatLng.Lng
-                        }
-                    })),
-                Couriers: Object.values(this.couriers).map(courier => (
-                    {
-                        Name: courier.Name,
-                        LatLng:
-                        {
-                            Lat: courier.LatLng.Lat,
-                            Lng: courier.LatLng.Lng
                         }
                     })),
                 Packages: Object.values(this.packages).map(pack => (
@@ -169,11 +162,9 @@ class VrpHelper {
                     }))
             }),
             contentType: 'application/json',
-            success: function (result) {
-                alert("udalo sie");
-            },
             error: function (error) {
-                alert("buu");
+                var err = eval("(" + error.responseText + ")");
+                alert(err.Message);
             }
         });
     }
@@ -182,7 +173,7 @@ class VrpHelper {
         var vpr = this;
         $.ajax({
             type: 'GET',
-            url: 'api/vrp/getWarehouses',
+            url: 'api/vrp/getWarehouses/' + vpr.UserId,
             dataType: 'json',
             contentType: 'application/json',
             success: function (result) {
@@ -196,36 +187,8 @@ class VrpHelper {
                     newWarehouse.Place = warehouse.PlaceInfo;
                     newWarehouse.CapacityForCouriers = warehouse.CapacityForCouriers;
                     newWarehouse.BindMarker();
+                    vpr.GetPackages();
                 });
-                vpr.GetCouriers();
-            },
-            error: function (error) {
-                var err = eval("(" + error.responseText + ")");
-                alert(err.Message);
-            }
-        });
-    }
-
-    GetCouriers() {
-        var vpr = this;
-        $.ajax({
-            type: 'GET',
-            url: 'api/vrp/getCouriers',
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function (result) {
-                result.forEach(courier => {
-                    if (courier.Id > vpr.CouriersMaxid) {
-                        vpr.CouriersMaxid = courier.Id;
-                    }
-                    vpr.couriers[courier.Id] = courier;
-                    courier.Warehouse = vpr.warehouses[courier.WarehouseId];
-                    courier.Warehouse.CouriersCount++;
-                    courier.Marker = VrpLibrary.courierMarker(vpr, courier);
-                    courier.Marker.addTo(vpr.map);
-                    courier.PackagesCount = 0;
-                });
-                vpr.GetPackages();
             },
             error: function (error) {
                 var err = eval("(" + error.responseText + ")");
@@ -238,7 +201,7 @@ class VrpHelper {
         var vpr = this;
         $.ajax({
             type: 'GET',
-            url: 'api/vrp/getPackages',
+            url: 'api/vrp/getPackages/' + vpr.UserId,
             dataType: 'json',
             contentType: 'application/json',
             success: function (result) {
@@ -277,6 +240,7 @@ class VrpHelper {
     }
 
     CalculateRoutes() {
+        $("#calculateButton").prop("disabled", true);
         this.ClearRoutes();
         var vrp = this;
         var packages = [];
@@ -466,6 +430,7 @@ class VrpHelper {
         $("#showButton").removeAttr("disabled");
         this.ShowRoutes();
         this.Simulator = new VrpSimulator(this, this.Routes, Object.values(this.couriers));
+        $("#calculateButton").prop("disabled", false);
     }
 
     ClearRoutes() {

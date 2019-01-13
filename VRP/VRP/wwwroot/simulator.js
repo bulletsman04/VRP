@@ -36,7 +36,7 @@
 
     Stop() {
         clearInterval(this.Loop);
-        this.Couriers.forEach(courier => courier.Remove());
+        this.Couriers.forEach(courier => courier.Reset());
         this.DisableButtons();
         $("#startSimulation").removeAttr("disabled");
     }
@@ -60,9 +60,14 @@
     EnableButtons() {
         this.EnableButton(this.PauseResume, 'pause', this.Pause.bind(this));
         this.EnableButton(this.StopB, 'stop', this.Stop.bind(this));
-        this.EnableButton(this.Up, 'speedup', this.ChangeAnimationSpeed.bind(this,2));
-        this.EnableButton(this.Down, 'speeddown', this.ChangeAnimationSpeed.bind(this, 1/2));
-
+        this.EnableButton(this.Up, 'speedup', event => {
+            this.ChangeAnimationSpeed(2);
+            this.ChangeMoveSpeed(2);
+        });
+        this.EnableButton(this.Down, 'speeddown', event => {
+            this.ChangeAnimationSpeed(0.5);
+            this.ChangeMoveSpeed(0.5);
+        });
     }
 
     DisableButtons() {

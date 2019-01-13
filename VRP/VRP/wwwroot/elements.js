@@ -40,7 +40,7 @@
         this.Marker.on('popupclose',
             event => {
                 if (this.IsTemporary) {
-                    this.Manager.map.removeLayer(this.Marker);
+                    this.Remove();
                 }
                 this.Manager.CurrentMarker = null;
             });
@@ -173,7 +173,7 @@ class Warehouse extends MapElement {
 
     Remove() {
         this.Manager.map.removeLayer(this.Marker);
-        this.Container.remove();
+        if(this.Container !== undefined) this.Container.remove();
         delete this.Manager.warehouses[this.Id];
     }
 }
@@ -274,7 +274,7 @@ class Package extends MapElement {
 
 class Courier extends MapElement {
     constructor(manager, id, route, isTemporary) {
-        super(manager, id, route.coordinates[0], isTemporary);
+        super(manager, id, { Lat: route.coordinates[0].Lat, Lng: route.coordinates[0].Lng }, isTemporary);
         this.Route = route;
         this.CurrentPoint = 0;
     }
@@ -326,6 +326,13 @@ class Courier extends MapElement {
         this.Manager.map.removeLayer(this.Marker);
         this.Container.remove();
         delete this.Manager.couriers[this.Id];
+    }
+
+    Reset() {
+        this.CurrentPoint = 0;
+        this.LatLng = { Lat: this.Route.coordinates[0].Lat, Lng: this.Route.coordinates[0].Lng };
+        this.Marker.setLatLng(new L.LatLng(this.LatLng.Lat, this.LatLng.Lng));
+        this.UpdateContainer();
     }
 
     Move(distance) {

@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace VRP.Migrations
 {
-    public partial class postgisMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,16 +12,20 @@ namespace VRP.Migrations
                 .Annotation("Npgsql:PostgresExtension:postgis", "'postgis', '', ''");
 
             migrationBuilder.CreateTable(
-                name: "Couriers",
+                name: "Warehouses",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Location = table.Column<Point>(nullable: true)
+                    UserId = table.Column<string>(nullable: true),
+                    Location = table.Column<Point>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    PlaceInfo = table.Column<string>(nullable: true),
+                    CapacityForCouriers = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Couriers", x => x.Id);
+                    table.PrimaryKey("PK_Warehouses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -30,32 +34,31 @@ namespace VRP.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Location = table.Column<Point>(nullable: true)
+                    UserId = table.Column<string>(nullable: true),
+                    Location = table.Column<Point>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    PlaceInfo = table.Column<string>(nullable: true),
+                    WarehouseId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Packages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Packages_Warehouses_WarehouseId",
+                        column: x => x.WarehouseId,
+                        principalTable: "Warehouses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Warehouses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Location = table.Column<Point>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Warehouses", x => x.Id);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Packages_WarehouseId",
+                table: "Packages",
+                column: "WarehouseId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Couriers");
-
             migrationBuilder.DropTable(
                 name: "Packages");
 

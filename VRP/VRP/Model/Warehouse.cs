@@ -10,8 +10,6 @@ namespace VRP.Model
     {
         [ForeignKey("WarehouseId")]
         public ICollection<Package> StoredPackages { get; set; }
-        [ForeignKey("WarehouseId")]
-        public ICollection<Courier> Couriers { get; set; }
         public string PlaceInfo { get; set; }
         public int CapacityForCouriers { get; set; }
     }

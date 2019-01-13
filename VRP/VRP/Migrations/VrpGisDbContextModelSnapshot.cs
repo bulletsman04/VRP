@@ -18,34 +18,13 @@ namespace VRP.Migrations
             modelBuilder
                 .HasAnnotation("Npgsql:PostgresExtension:postgis", "'postgis', '', ''")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            modelBuilder.Entity("VRP.Model.Courier", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Point>("LatLng")
-                        .HasColumnName("Location");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int?>("WarehouseId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.ToTable("Couriers");
-                });
 
             modelBuilder.Entity("VRP.Model.Package", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("CourierId");
 
                     b.Property<Point>("LatLng")
                         .HasColumnName("Location");
@@ -54,11 +33,11 @@ namespace VRP.Migrations
 
                     b.Property<string>("PlaceInfo");
 
+                    b.Property<string>("UserId");
+
                     b.Property<int?>("WarehouseId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourierId");
 
                     b.HasIndex("WarehouseId");
 
@@ -79,24 +58,15 @@ namespace VRP.Migrations
 
                     b.Property<string>("PlaceInfo");
 
+                    b.Property<string>("UserId");
+
                     b.HasKey("Id");
 
                     b.ToTable("Warehouses");
                 });
 
-            modelBuilder.Entity("VRP.Model.Courier", b =>
-                {
-                    b.HasOne("VRP.Model.Warehouse")
-                        .WithMany("Couriers")
-                        .HasForeignKey("WarehouseId");
-                });
-
             modelBuilder.Entity("VRP.Model.Package", b =>
                 {
-                    b.HasOne("VRP.Model.Courier")
-                        .WithMany("Packages")
-                        .HasForeignKey("CourierId");
-
                     b.HasOne("VRP.Model.Warehouse")
                         .WithMany("StoredPackages")
                         .HasForeignKey("WarehouseId");
