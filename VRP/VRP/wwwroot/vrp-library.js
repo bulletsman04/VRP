@@ -16,7 +16,8 @@
 }
 
 function Main(userId) {
-    var vrp = new VrpHelper(userId, 'map',
+    var vrp = new VrpHelper(userId,
+        'map',
         'http://89.70.244.118:27017/styles/klokantech-basic/style.json',
         'http://89.70.244.118:27018/route',
         [52.237049, 21.017532],
@@ -66,8 +67,8 @@ class VrpHelper {
 
         this.CurrentMarker = null;
         this.CenteredElement = null;
-        this.DistinguishedLine = null; 
-        this.DistinguishedController = null; 
+        this.DistinguishedLine = null;
+        this.DistinguishedController = null;
 
         this.Routes = [];
         this.Controllers = [];
@@ -92,32 +93,32 @@ class VrpHelper {
         this.PlaceMarker({ Lat: event.latlng.lat, Lng: event.latlng.lng }, $("#add").val());
     }
 
-    PlaceMarker(latLng, type,placeName) {
+    PlaceMarker(latLng, type, placeName) {
         var id;
         switch (type) {
-            case "warehouse":
-                id = this.WarehousesMaxid + 1;
-                var warehouse = new Warehouse(this, id, latLng, true,placeName);
-                this.warehouses[id] = warehouse;
-                warehouse.BindMarker();
-                this.CurrentMarker = warehouse.Marker;
-                warehouse.Marker.openPopup();
-                break;
-            case "package":
-                id = this.PackagesMaxid + 1;
-                var pack = new Package(this, id, latLng, true, placeName);
-                this.packages[id] = pack;
-                pack.BindMarker();
-                this.CurrentMarker = pack.Marker;
-                pack.Marker.openPopup();
-                break;
-            default:
-                return;
+        case "warehouse":
+            id = this.WarehousesMaxid + 1;
+            var warehouse = new Warehouse(this, id, latLng, true, placeName);
+            this.warehouses[id] = warehouse;
+            warehouse.BindMarker();
+            this.CurrentMarker = warehouse.Marker;
+            warehouse.Marker.openPopup();
+            break;
+        case "package":
+            id = this.PackagesMaxid + 1;
+            var pack = new Package(this, id, latLng, true, placeName);
+            this.packages[id] = pack;
+            pack.BindMarker();
+            this.CurrentMarker = pack.Marker;
+            pack.Marker.openPopup();
+            break;
+        default:
+            return;
         }
     }
 
     SetSearchBox() {
-     
+
         var input = document.getElementById('searchbox');
         var options = {
             componentRestrictions: { country: 'pl' },
@@ -125,9 +126,10 @@ class VrpHelper {
         };
         this.Autocomplete = new google.maps.places.Autocomplete(input, options);
         var vrp = this;
-        this.Autocomplete.addListener('place_changed', function() {
-            vrp.HandlePlaceChanged();
-        });
+        this.Autocomplete.addListener('place_changed',
+            function() {
+                vrp.HandlePlaceChanged();
+            });
     }
 
     HandlePlaceChanged() {
@@ -165,7 +167,7 @@ class VrpHelper {
                     }))
             }),
             contentType: 'application/json',
-            error: function (error) {
+            error: function(error) {
                 var err = eval("(" + error.responseText + ")");
                 alert(err.Message);
             }
@@ -179,7 +181,7 @@ class VrpHelper {
             url: 'api/vrp/getWarehouses/' + vpr.UserId,
             dataType: 'json',
             contentType: 'application/json',
-            success: function (result) {
+            success: function(result) {
                 result.forEach(warehouse => {
                     if (warehouse.Id > vpr.WarehousesMaxid) {
                         vpr.WarehousesMaxid = warehouse.Id;
@@ -193,7 +195,7 @@ class VrpHelper {
                     vpr.GetPackages();
                 });
             },
-            error: function (error) {
+            error: function(error) {
                 var err = eval("(" + error.responseText + ")");
                 alert(err.Message);
             }
@@ -207,7 +209,7 @@ class VrpHelper {
             url: 'api/vrp/getPackages/' + vpr.UserId,
             dataType: 'json',
             contentType: 'application/json',
-            success: function (result) {
+            success: function(result) {
                 result.forEach(pack => {
 
                     if (pack.Id > vpr.PackagesMaxid) {
@@ -223,7 +225,7 @@ class VrpHelper {
                 });
                 vpr.UpdateAfterReceivingData();
             },
-            error: function (error) {
+            error: function(error) {
                 var err = eval("(" + error.responseText + ")");
                 alert(err.Message);
             }
@@ -307,10 +309,10 @@ class VrpHelper {
                 data: JSON.stringify(routingArguments),
                 contentType: 'application/json',
                 dataType: "json",
-                success: function (result) {
+                success: function(result) {
                     vrpHelper.ApplyRoutes(result);
                 },
-                error: function (error) {
+                error: function(error) {
                     alert("buu");
                 }
             });
@@ -372,17 +374,18 @@ class VrpHelper {
                     {
                         serviceUrl: this.GHServer
                     }),
-                createMarker: function () { return null; }
+                createMarker: function() { return null; }
 
             }).addTo(this.map);
 
             this.Controllers.push(controller);
-            
+
             var coordinates = [];
             var packages = Object.values(this.packages);
             var warehouses = Object.values(this.warehouses);
 
-            while (courierNumber === warehouses[warehouseNumber].CapacityForCouriers || warehouses[warehouseNumber].IsTemporary) {
+            while (courierNumber === warehouses[warehouseNumber].CapacityForCouriers ||
+                warehouses[warehouseNumber].IsTemporary) {
                 warehouseNumber++;
                 courierNumber = 0;
             }
@@ -405,7 +408,7 @@ class VrpHelper {
                     .on('click', packageC.Center.bind(packageC));
                 route.append(" -> ");
                 route.append(routePoint);
-                packageC.Warehouse = warehouse; 
+                packageC.Warehouse = warehouse;
                 packageC.UpdateRoute(route);
             }
             warehouse.PackagesCount = points.length;
@@ -417,37 +420,42 @@ class VrpHelper {
 
 
             await this.GetDistance(controller, coordinates).then(() => {
-                this.couriers[i] = new Courier(this, i, {
-                    coordinates: this.Routes[this.Routes.length - 1].coordinates.map(coord => ({
-                        Lat: coord.lat,
-                        Lng: coord.lng
-                    }))
-                }, false, warehouse);
+                this.couriers[i] = new Courier(this,
+                    i,
+                    {
+                        coordinates: this.Routes[this.Routes.length - 1].coordinates.map(coord => ({
+                            Lat: coord.lat,
+                            Lng: coord.lng
+                        }))
+                    },
+                    false,
+                    warehouse);
 
 
-                var line = L.Routing.line(this.Routes[this.Routes.length - 1], {
-                    styles: [{ color: 'green', opacity: 1, weight: 5 }],
-                    addWaypoints: false,
-                    extendToWaypoints: false,
-                    routeWhileDragging: false,
-                    autoRoute: true,
-                    useZoomParameter: false,
-                    draggableWaypoints: false
-                });
+                var line = L.Routing.line(this.Routes[this.Routes.length - 1],
+                    {
+                        styles: [{ color: 'green', opacity: 1, weight: 5 }],
+                        addWaypoints: false,
+                        extendToWaypoints: false,
+                        routeWhileDragging: false,
+                        autoRoute: true,
+                        useZoomParameter: false,
+                        draggableWaypoints: false
+                    });
                 this.Lines.push(line);
                 for (var j = 0; j < points.length; j++) {
                     packages[points[j]].Courier = this.couriers[i];
-                   
+
                 }
-               
+
                 this.couriers[i].BindMarker();
                 this.couriers[i].UpdateRoute(route);
                 this.couriers[i].AddShowHideRouteButton(controller);
-                this.couriers[i].AddDistinguishRouteButton(line,controller);
+                this.couriers[i].AddDistinguishRouteButton(line, controller);
                 // this.addRemovingButton();
             });
 
-            
+
         };
 
         $("#startSimulation").removeAttr("disabled");
@@ -497,7 +505,7 @@ class VrpHelper {
         this.routingControllersCount++;
         $("#settings").append(button);
     }
-    
+
 
     ShowRoute(controller) {
         controller.addTo(this.map);
@@ -521,7 +529,7 @@ class VrpHelper {
     HideRoutes() {
         $("#showButton").html("Show routes");
         $("#showButton").off('click');
-        $("#showButton").on('click',this.ShowRoutes.bind(this));
+        $("#showButton").on('click', this.ShowRoutes.bind(this));
         this.Controllers.forEach(controller => {
             this.HideRoute(controller);
             controller.hide();

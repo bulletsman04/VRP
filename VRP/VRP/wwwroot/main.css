@@ -1,4 +1,6 @@
-﻿:root {
+﻿/* general */
+
+:root {
     --main_borders: black;
     --light_green: #42d248;
     --dark_green: #46a74a;
@@ -22,9 +24,9 @@ html, body {
     min-width: 1270px;
 }
 
-body {
-    margin: 0 auto;
-}
+body { margin: 0 auto; }
+
+/* grid */
 
 .main-container {
     height: 100%;
@@ -32,14 +34,13 @@ body {
     grid-template-columns: 1fr 2fr;
     grid-template-rows: 60px calc(100vh - 100px) 40px;
    
-    grid-template-areas: 
+    grid-template-areas:
                        "header settings"
                        "item-list map"
-                        "item-list simulation-panel";
-
+                       "item-list simulation-panel";
 }
 
-.header, .settings, .item-list, .map-container,.simulation-panel {
+.header, .settings, .item-list, .map-container, .simulation-panel {
     height: 100%;
     width: 100%;
     border: solid var(--main_borders);
@@ -47,16 +48,36 @@ body {
 }
 
 .header {
-    /*background: var(--red);*/
     grid-area: header;
-    border-width: 0px 0px 1px 0px;
-  
+    border-width: 0px 0px 1px 0px;  
 }
+
 .settings {
-    /*background: var(--blue);*/
     grid-area: settings;
     border-width: 0px 0px 1px 1px;
 }
+
+
+
+.simulation-panel {
+    grid-area: simulation-panel;
+    border-width: 0px 0px 0px 1px;
+}
+
+
+
+.item-list {
+    grid-area: item-list;
+    margin-top: 0px;
+}
+
+.map-container {
+    grid-area: map;
+    border-width: 0px 0px 0px 1px;
+}
+
+
+/*settings - elements*/
 
 .compute-buttons {
     padding-left: 2px;
@@ -65,21 +86,12 @@ body {
 
 .settings-routes-buttons {
     padding-top: 3px;
-    padding-bottom: 3px; 
+    padding-bottom: 3px;
 }
 
-.simulation-panel {
-    grid-area: simulation-panel;
-    border-width: 0px 0px 0px 1px;
-}
+.searchbox { padding-right: 5px; }
 
-
-.searchbox {
-    padding-right: 5px;
-}
-.settings label {
-    font-size: 10pt;
-}
+.settings label { font-size: 10pt; }
 
 
 .type-added {
@@ -91,66 +103,34 @@ body {
     width: auto;
     display: inline-block;
     font-size: 10pt;
-
 }
 
-.item-list {
-    /*background: var(--green);*/
-    grid-area: item-list;
-    margin-top: 0px;
-}
-.tab-content-scrollable {
-/* ToDo: look on ToDo in bootstrap_custom*/
-    height: calc(100vh - 100px);
-    overflow: auto;
-}
-.map-container {
-    /*background: var(--yellow);*/
-    grid-area: map;
-    border-width: 0px 0px 0px 1px;
-}
-
-.map {
-    
+.vertical-center-header {
     height: 100%;
-    width: calc(100% - 1px);
-    margin-left: 1px;
-}
-
-.web-title {
     padding-top: 10px;
     padding-bottom: 10px;
-    margin-left: 10px;
-    font-size: 2.0em;
 }
 
+.vertical-center-header1 { height: 100%; }
 
-
-.map-element {
-    width: 80%;
-    padding: 10px;
-    margin: 10px auto;
-    background: var(--package);
+.add-element-text {
+    margin: 0 1px 0 0;
+    font-weight: bold;
 }
 
-.map-element .row span:first-of-type {
-    font-weight: 600;
-}
-
-.map-element h5 {
-    text-transform: uppercase;
-    font-weight: 600;
-}
+input[type=radio] { margin: 0 0 0 5px; }
 
 
-    .map-element:after {
-        content: " ";
-        display: table;
-        clear: both;
-    }
+/
 
-.package-info {
-    
+/
+
+item-list -
+
+elements
+.tab-content-scrollable {
+    height: calc(100vh - 100px);
+    overflow: auto;
 }
 
 .package-icon-container:after {
@@ -176,10 +156,10 @@ body {
     border-bottom: 1px solid var(--dark_green);
     border-left: 1px solid var(--dark_green);
 }
+
 .package-icon {
     width: 100%;
     height: 90px;
-    /*border: 1px solid black;*/
 }
 
 
@@ -195,92 +175,16 @@ body {
     margin-top: -0.5px;
 }
 
-.small-icon:hover {
-    cursor: pointer;
-}
-
-/* ToDo: Better way? align-content-center ? */
-.vertical-center-header {
-    height: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-.vertical-center-header1 {
-    height: 100%;
-}
-
-.add-element-text {
-    margin: 0 1px 0 0;
-    font-weight: bold;
-}
-
-input[type=radio] {
-    margin: 0 0 0 5px;
-}
+.small-icon:hover { cursor: pointer; }
 
 
- /*ToDo: Better ?*/
-.no-left-padding-col {
-    padding-left: 0;
-}
-
-.no-right-padding-col {
-    padding-right: 0;
-}
-
-.no-padding-col {
-    padding-left: 0;
-    padding-right: 0;
-}
-
-.packages-info span {
-    margin: 0 3px;
-}
+.packages-info span { margin: 0 3px; }
 
 .packages-info .row > div {
     padding-left: 0;
     padding-right: 0;
 }
 
-.confirm-btn {
-    width: 35%;
-}
-
-    .confirm-btn input {
-        border: none;
-    }
-
-.align-items-center {
-    display: flex; 
-    align-items: center;  /*Aligns vertically center */
-    justify-content: center; /*Aligns horizontally center */
-}
-
-.route-element {
-    font-weight: normal;
-}
-.route-element:hover {
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.simulation-icon {
-    width: 40px;
-    height: 40px;
-}
-
-.simulation-icon:hover {
-    cursor: pointer;
-}
-
-.simulation-icon-disabled {
-    display: none;
-}
-
-.taken-package {
-    opacity: 0.5;
-}
 
 .show-hide {
     font-size: 10pt;
@@ -294,26 +198,115 @@ input[type=radio] {
     margin: 2px 2px;
 }
 
-.leaflet-routing-container-hide {
-    display: none !important;
+.route-element { font-weight: normal; }
+
+.route-element:hover {
+    cursor: pointer;
+    font-weight: bold;
 }
+
+/*map - elements*/
+
+.map {
+    
+    height: 100%;
+    width: calc(100% - 1px);
+    margin-left: 1px;
+}
+
+.web-title {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-left: 10px;
+    font-size: 2.0em;
+}
+
+
+.map-element {
+    width: 80%;
+    padding: 10px;
+    margin: 10px auto;
+    background: var(--package);
+}
+
+.map-element .row span:first-of-type { font-weight: 600; }
+
+.map-element h5 {
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+
+.map-element:after {
+    content: " ";
+    display: table;
+    clear: both;
+}
+
+.taken-package { opacity: 0.5; }
+
+/*simulation panel - elements*/
+
+.align-items-center {
+    display: flex;
+    align-items: center; /*Aligns vertically center */
+    justify-content: center; /*Aligns horizontally center */
+}
+
+.simulation-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.simulation-icon:hover { cursor: pointer; }
+
+.simulation-icon-disabled { display: none; }
+
+
+/* bootstrap - col add-ons */
+
+.no-left-padding-col { padding-left: 0; }
+
+.no-right-padding-col { padding-right: 0; }
+
+.no-padding-col {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* forms */
+
+.confirm-btn { width: 35%; }
+
+.confirm-btn input { border: none; }
+
+
+
+
+
+
+
+/* leaflet - customized */
+
+.leaflet-routing-container-hide { display: none !important; }
+
+
+/* Others */
 
 /*/* width */
-::-webkit-scrollbar {
-    width: 5px;
-}
+
+::-webkit-scrollbar { width: 5px; }
 
 /* Track */
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
+
+::-webkit-scrollbar-track { background: #f1f1f1; }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
-    background: #888;
-}
 
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }*/
+::-webkit-scrollbar-thumb { background: #888; }
+
+/* Handle on hover */
+
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+*/

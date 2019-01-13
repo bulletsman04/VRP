@@ -55,30 +55,33 @@
         else this.MoveDistance *= factor;
     }
 
-    
 
     EnableButtons() {
         this.EnableButton(this.PauseResume, 'pause', this.Pause.bind(this));
         this.EnableButton(this.StopB, 'stop', this.Stop.bind(this));
-        this.EnableButton(this.Up, 'speedup', event => {
-            this.ChangeAnimationSpeed(2);
-            this.ChangeMoveSpeed(2);
-        });
-        this.EnableButton(this.Down, 'speeddown', event => {
-            this.ChangeAnimationSpeed(0.5);
-            this.ChangeMoveSpeed(0.5);
-        });
+        this.EnableButton(this.Up,
+            'speedup',
+            event => {
+                this.ChangeAnimationSpeed(2);
+                this.ChangeMoveSpeed(2);
+            });
+        this.EnableButton(this.Down,
+            'speeddown',
+            event => {
+                this.ChangeAnimationSpeed(0.5);
+                this.ChangeMoveSpeed(0.5);
+            });
     }
 
     DisableButtons() {
-        
+
         this.DisableButton(this.PauseResume, 'pause');
         this.DisableButton(this.StopB, 'stop');
         this.DisableButton(this.Up, 'speedup');
         this.DisableButton(this.Down, 'speeddown');
     }
 
-    EnableButton(button, name,action) {
+    EnableButton(button, name, action) {
         button.attr('src', "simulation-icons/" + name + "_partly_active.svg");
         button.on('click', action);
         button.hover(event => button.attr('src', "simulation-icons/" + name + "_active.svg"),

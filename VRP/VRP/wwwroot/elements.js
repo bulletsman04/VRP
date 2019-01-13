@@ -8,9 +8,13 @@
         this.RouteButtons = [];
     }
 
-    get GetIcon() { }
-    UpdateContainer() { }
-    UpdateForm() { }
+    get GetIcon() {}
+
+    UpdateContainer() {
+    }
+
+    UpdateForm() {
+    }
 
     static get PopupStyles() {
         return { minWidth: 300, autoPanPaddingBottomRight: (0, 0) };
@@ -22,9 +26,11 @@
     }
 
     BindMarker() {
-        this.Marker = L.marker({ lat: this.LatLng.Lat, lng: this.LatLng.Lng }, {
-            icon: this.GetIcon, draggable: true
-        });
+        this.Marker = L.marker({ lat: this.LatLng.Lat, lng: this.LatLng.Lng },
+            {
+                icon: this.GetIcon,
+                draggable: true
+            });
         this.Marker.addTo(this.Manager.map);
         this.Marker.on('drag',
             event => {
@@ -102,16 +108,16 @@
 
     }
 
-    AddDistinguishRouteButton(line,controller) {
+    AddDistinguishRouteButton(line, controller) {
         this.Line = line;
         this.CanDistinguish = true;
         this.Container.find('.distinguish').remove();
         var button = $('<button />').addClass("btn distinguish").html("Distinguish");
-        button.on('click',this.DistinguishRoute.bind(this,line,controller));
+        button.on('click', this.DistinguishRoute.bind(this, line, controller));
         this.Container.append(button);
     }
 
-    DistinguishRoute(line,controller) {
+    DistinguishRoute(line, controller) {
         if (!this.CanDistinguish) {
             return;
         }
@@ -125,7 +131,7 @@
         //        return;
         //    }
         //}
-       
+
         //line.addTo(this.Manager.map);
         //controller.show();
         //this.Manager.DistinguishedLine = line;
@@ -134,19 +140,18 @@
         if (this.Manager.map.hasLayer(line)) {
             this.Manager.map.removeLayer(line);
             controller.hide();
-        }
-        else {
+        } else {
             line.addTo(this.Manager.map);
             controller.show();
         }
 
 
     }
-    
+
 }
 
 class Warehouse extends MapElement {
-    constructor(manager, id, latLng, isTemporary,placeName) {
+    constructor(manager, id, latLng, isTemporary, placeName) {
         super(manager, id, latLng, isTemporary, placeName);
     }
 
@@ -215,12 +220,13 @@ class Warehouse extends MapElement {
         this.Container.find('.coord-y').html(this.LatLng.Lat.toString().substring(0, 6));
         this.Container.find('.place-name').html(this.Place);
         this.Container.find('.capacity-couriers').html(this.CapacityForCouriers);
-        if(this.PackagesCount !== undefined && this.PackagesCount > 0) this.Container.find('.packages-count').html(this.PackagesCount);
+        if (this.PackagesCount !== undefined && this.PackagesCount > 0)
+            this.Container.find('.packages-count').html(this.PackagesCount);
     }
 
     Remove() {
         this.Manager.map.removeLayer(this.Marker);
-        if(this.Container !== undefined) this.Container.remove();
+        if (this.Container !== undefined) this.Container.remove();
         delete this.Manager.warehouses[this.Id];
     }
 }
@@ -307,7 +313,6 @@ class Package extends MapElement {
     }
 
 
-
     Remove() {
         this.Manager.map.removeLayer(this.Marker);
         this.Container.remove();
@@ -347,9 +352,10 @@ class Courier extends MapElement {
     }
 
     BindMarker() {
-        this.Marker = L.marker({ lat: this.LatLng.Lat, lng: this.LatLng.Lng }, {
-            icon: this.GetIcon
-        });
+        this.Marker = L.marker({ lat: this.LatLng.Lat, lng: this.LatLng.Lng },
+            {
+                icon: this.GetIcon
+            });
         this.Marker.addTo(this.Manager.map);
         this.BindContainer();
     }
@@ -391,7 +397,7 @@ class Courier extends MapElement {
             if (this.Route.coordinates.length === this.CurrentPoint) return;
             var a =
                 (this.Route.coordinates[this.CurrentPoint - 1].Lng - this.Route.coordinates[this.CurrentPoint].Lng) /
-                (this.Route.coordinates[this.CurrentPoint - 1].Lat - this.Route.coordinates[this.CurrentPoint].Lat);
+                    (this.Route.coordinates[this.CurrentPoint - 1].Lat - this.Route.coordinates[this.CurrentPoint].Lat);
             this.Factor = 1 / Math.sqrt(a * a + 1);
         }
         var dx = distance * this.Factor;
