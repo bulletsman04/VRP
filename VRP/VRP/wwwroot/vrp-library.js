@@ -17,7 +17,7 @@
 
 function Main(userId) {
     var vrp = new VrpHelper('map',
-        'http://89.70.244.118:27017/styles/osm-bright/style.json',
+        'http://89.70.244.118:27017/styles/klokantech-basic/style.json',
         'http://89.70.244.118:27018/route',
         [52.237049, 21.017532],
         13);
@@ -379,17 +379,18 @@ class VrpHelper {
                 (err, routes) => {
                     if (routes === undefined)
                         reject(0);
-
-                    var minTime = Number.MAX_SAFE_INTEGER;
-                    var bestRoute;
-                    routes.forEach(route => {
-                        if (route.summary.totalTime < minTime) {
-                            minTime = route.summary.totalTime;
-                            bestRoute = route;
-                        }
-                    });
-                    this.Routes.push(bestRoute);
-                    resolve(bestRoute.summary.totalDistance / 1000);
+                    else {
+                        var minTime = Number.MAX_SAFE_INTEGER;
+                        var bestRoute;
+                        routes.forEach(route => {
+                            if (route.summary.totalTime < minTime) {
+                                minTime = route.summary.totalTime;
+                                bestRoute = route;
+                            }
+                        });
+                        this.Routes.push(bestRoute);
+                        resolve(bestRoute.summary.totalDistance / 1000);
+                    }
                 });
         });
         return promise;
@@ -398,7 +399,7 @@ class VrpHelper {
     async ApplyRoutes(result) {
         var warehouseNumber = 0, courierNumber = 0;
         for (var i = 0; i < result.length; i++) {
-
+            if (result[i].length === 0) continue;
             var controller = L.Routing.control({
                 router: L.Routing.graphHopper(undefined,
                     {
