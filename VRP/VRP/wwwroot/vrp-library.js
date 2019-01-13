@@ -100,7 +100,7 @@ class VrpHelper {
                 warehouse.Marker.openPopup();
                 break;
             case "package":
-                id = this.WarehousesMaxid + 1;
+                id = this.PackagesMaxid + 1;
                 var pack = new Package(this, id, latLng, true, placeName);
                 this.packages[id] = pack;
                 pack.BindMarker();
