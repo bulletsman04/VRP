@@ -63,6 +63,11 @@ body {
     padding-right: 2px;
 }
 
+.settings-routes-buttons {
+    padding-top: 3px;
+    padding-bottom: 3px; 
+}
+
 .simulation-panel {
     grid-area: simulation-panel;
     border-width: 0px 0px 0px 1px;
