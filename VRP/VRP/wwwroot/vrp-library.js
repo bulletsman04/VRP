@@ -1,4 +1,21 @@
 ﻿function googleLoaded() {
+    var userId = ReadCookie("userId");
+    if (userId === null) {
+        $.ajax({
+            type: 'GET',
+            url: 'api/vrp/createUserId',
+            dataType: 'json',
+            contentType: 'application/json'
+        }).done(result => {
+            CreateCookie("userId", result);
+            Main(result);
+        });
+        return;
+    }
+    Main(userId);
+}
+
+function Main(userId) {
     var vrp = new VrpHelper('map',
         'http://89.70.244.118:27017/styles/osm-bright/style.json',
         'http://89.70.244.118:27018/route',
@@ -10,6 +27,22 @@
     $('#startSimulation').on('click', event => vrp.StartSimulation());
     vrp.SetSearchBox();
     vrp.GetWarehouses();
+}
+
+function CreateCookie(name, value) {
+    document.cookie = name + "=" + value;
+}
+
+
+function ReadCookie(name) {
+    var nameEq = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEq) === 0) return c.substring(nameEq.length, c.length);
+    }
+    return null;
 }
 
 class VrpHelper {
@@ -246,8 +279,16 @@ class VrpHelper {
     CalculateRoutes() {
         this.ClearRoutes();
         var vrp = this;
-        var packages = Object.values(this.packages);
-        var warehouses = Object.values(this.warehouses);
+        var packages = [];
+        Object.values(this.packages).forEach(pack => {
+            if (!pack.IsTemporary)
+                packages.push(pack);
+        })
+        var warehouses = [];
+        Object.values(this.warehouses).forEach(warehouse => {
+            if (!warehouse.IsTemporary)
+                warehouses.push(warehouse);
+        })
 
         var packagesLength = packages.length;
         var couriersCount = 0;
@@ -336,11 +377,19 @@ class VrpHelper {
         var promise = new Promise(async (resolve, reject) => {
             await router.route(coords,
                 (err, routes) => {
-                    if (routes !== undefined) {
-                        this.Routes.push(routes[0]);
-                        resolve(routes[0].summary.totalDistance / 1000);
-                    } else
+                    if (routes === undefined)
                         reject(0);
+
+                    var minTime = Number.MAX_SAFE_INTEGER;
+                    var bestRoute;
+                    routes.forEach(route => {
+                        if (route.summary.totalTime < minTime) {
+                            minTime = route.summary.totalTime;
+                            bestRoute = route;
+                        }
+                    });
+                    this.Routes.push(bestRoute);
+                    resolve(bestRoute.summary.totalDistance / 1000);
                 });
         });
         return promise;
@@ -365,7 +414,7 @@ class VrpHelper {
             var packages = Object.values(this.packages);
             var warehouses = Object.values(this.warehouses);
 
-            while (courierNumber === warehouses[warehouseNumber].CapacityForCouriers) {
+            while (courierNumber === warehouses[warehouseNumber].CapacityForCouriers || warehouses[warehouseNumber].IsTemporary) {
                 warehouseNumber++;
                 courierNumber = 0;
             }
@@ -397,14 +446,21 @@ class VrpHelper {
             controller.setWaypoints(coordinates);
 
             await this.GetDistance(controller, coordinates).then(() => {
-               // this.addRemovingButton();
+                this.couriers[i] = new Courier(this, i, {
+                    coordinates: this.Routes[this.Routes.length - 1].coordinates.map(coord => ({
+                        Lat: coord.lat,
+                        Lng: coord.lng
+                    }))
+                }, false);
+                this.couriers[i].BindMarker();
+                // this.addRemovingButton();
             });
         };
 
         $("#startSimulation").removeAttr("disabled");
         $("#showButton").removeAttr("disabled");
         this.ShowRoutes();
-        this.Simulator = new VrpSimulator(this, this.Routes);
+        this.Simulator = new VrpSimulator(this, this.Routes, Object.values(this.couriers));
     }
 
     ClearRoutes() {

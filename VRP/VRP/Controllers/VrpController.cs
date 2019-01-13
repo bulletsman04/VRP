@@ -28,6 +28,9 @@ namespace VRP.Controllers
             return json;
         }
 
+        [HttpGet, Route("createUserId")]
+        public string CreateUserId() => Request.GetHashCode().ToString() + Request.HttpContext.GetHashCode();
+
         [HttpGet, Route("getWarehouses")]
         public string GetWarehouses() => Json(Db.Warehouses);
 

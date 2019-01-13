@@ -1,25 +1,16 @@
 ﻿class VrpSimulator {
-    constructor(manager, routes) {
+    constructor(manager, routes, couriers) {
         this.Routes = routes;
-        this.Couriers = [];
-        
-        var courierId = 0;
-        routes.forEach(route => {
-            route.coordinates = route.coordinates.map(coord => ({
-                Lat: coord.lat,
-                Lng: coord.lng
-            }));
-            this.Couriers.push(new Courier(manager, courierId++, route, false));
-        });
-        this.ChangeSpeed();
+        this.Couriers = couriers;
+        this.ChangeAnimationSpeed();
+        this.ChangeMoveSpeed();
     }
 
     UpdateFrame() {
-        this.Couriers.forEach(courier => courier.Move(0.0001));
+        this.Couriers.forEach(courier => courier.Move(this.MoveDistance));
     }
 
     Run() {
-        this.Couriers.forEach(courier => courier.BindMarker());
         this.EnableButtons();
         this.Play();
         $("#startSimulation").attr("disabled", "disabled");
@@ -47,7 +38,7 @@
         $("#startSimulation").removeAttr("disabled");
     }
 
-    ChangeSpeed(factor) {
+    ChangeAnimationSpeed(factor) {
         if (factor === undefined) this.FramesPerSecond = 60;
         else {
             this.FramesPerSecond *= factor;
@@ -56,11 +47,16 @@
         }
     }
 
+    ChangeMoveSpeed(factor) {
+        if (factor === undefined) this.MoveDistance = 0.0001;
+        else this.MoveDistance *= factor;
+    }
+
     AssignActionsToButtons() {
         $("#pauseResumeButton").on('click', this.Pause.bind(this));
         $("#stopButton").on('click', this.Stop.bind(this));
-        $("#speedUpButton").on('click', this.ChangeSpeed.bind(this, 1/2));
-        $("#slowDownButton").on('click', this.ChangeSpeed.bind(this, 2));
+        $("#speedUpButton").on('click', this.ChangeAnimationSpeed.bind(this, 1/2));
+        $("#slowDownButton").on('click', this.ChangeAnimationSpeed.bind(this, 2));
 
     }
 
