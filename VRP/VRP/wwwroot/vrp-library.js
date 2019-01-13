@@ -437,6 +437,7 @@ class VrpHelper {
                     .on('click', packageC.Center.bind(packageC));
                 route.append(" -> ");
                 route.append(routePoint);
+                packageC.Warehouse = warehouse; 
                 packageC.UpdateRoute(route);
                 packageC.AddShowHideRouteButton(controller);
             }

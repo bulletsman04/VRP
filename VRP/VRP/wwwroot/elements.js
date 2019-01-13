@@ -222,13 +222,14 @@ class Package extends MapElement {
         this.Container.find('.coord-x').html(this.LatLng.Lng.toString().substring(0, 6));
         this.Container.find('.coord-y').html(this.LatLng.Lat.toString().substring(0, 6));
         this.Container.find('.place-name').html(this.Place);
-        if (this.Courier !== undefined) container.find('.assigned-courier').html(this.Courier.Name);
-        if (this.Warehouse !== undefined) container.find('.assigned-warehouse').html(this.Warehouse.Name);
+        if (this.Courier !== undefined) this.Container.find('.assigned-courier').html(this.Courier.Name);
+        if (this.Warehouse !== undefined) this.Container.find('.assigned-warehouse').html(this.Warehouse.Name);
     }
 
     UpdateRoute(route) {
         this.Container.find('.assigned-route').html("");
-        this.Container.find('.assigned-route').append(route.clone(true,true));
+        this.Container.find('.assigned-route').append(route.clone(true, true));
+        this.UpdateContainer();
     }
 
     AddShowHideRouteButton(routeController) {
@@ -313,7 +314,7 @@ class Courier extends MapElement {
         this.Container.find('.coord-x').html(this.LatLng.Lng.toString().substring(0, 6));
         this.Container.find('.coord-y').html(this.LatLng.Lat.toString().substring(0, 6));
         this.Container.find('.place-name').html(this.Place);
-        if (this.Warehouse !== undefined) container.find('.courier-warehouse').html(this.Warehouse.Name);
+        if (this.Warehouse !== undefined) this.Container.find('.courier-warehouse').html(this.Warehouse.Name);
     }
 
     Remove() {
