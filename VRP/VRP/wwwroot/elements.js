@@ -116,20 +116,29 @@
             return;
         }
 
-        if (this.Manager.DistinguishedLine !== null) {
-            this.Manager.map.removeLayer(this.Manager.DistinguishedLine);
-            this.Manager.DistinguishedController.hide();
-            if (this.Manager.DistinguishedLine == line) {
-                this.Manager.DistinguishedLine = null;
-                this.Manager.DistinguishedController = null;
-                return;
-            }
-        }
+        //if (this.Manager.DistinguishedLine !== null) {
+        //    this.Manager.map.removeLayer(this.Manager.DistinguishedLine);
+        //    this.Manager.DistinguishedController.hide();
+        //    if (this.Manager.DistinguishedLine == line) {
+        //        this.Manager.DistinguishedLine = null;
+        //        this.Manager.DistinguishedController = null;
+        //        return;
+        //    }
+        //}
        
-        line.addTo(this.Manager.map);
-        controller.show();
-        this.Manager.DistinguishedLine = line;
-        this.Manager.DistinguishedController = controller;
+        //line.addTo(this.Manager.map);
+        //controller.show();
+        //this.Manager.DistinguishedLine = line;
+        //this.Manager.DistinguishedController = controller;
+
+        if (this.Manager.map.hasLayer(line)) {
+            this.Manager.map.removeLayer(line);
+            controller.hide();
+        }
+        else {
+            line.addTo(this.Manager.map);
+            controller.show();
+        }
 
 
     }
