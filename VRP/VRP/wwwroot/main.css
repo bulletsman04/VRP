@@ -270,6 +270,10 @@ input[type=radio] {
     height: 40px;
 }
 
+.simulation-icon:hover {
+    cursor: pointer;
+}
+
 .simulation-icon-disabled {
     display: none;
 }

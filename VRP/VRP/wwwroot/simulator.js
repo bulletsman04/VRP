@@ -4,6 +4,10 @@
         this.Couriers = couriers;
         this.ChangeAnimationSpeed();
         this.ChangeMoveSpeed();
+        this.PauseResume = $("#pauseResumeButton");
+        this.StopB = $("#stopButton");
+        this.Up = $("#speedUpButton");
+        this.Down = $("#speedDownButton");
     }
 
     UpdateFrame() {
@@ -19,16 +23,15 @@
     Play() {
         this.Loop = setInterval(() => this.UpdateFrame(), 1000 / this.FramesPerSecond);
 
-        $("#pauseResumeButton").attr('src', "simulation-icons/play_partly_active.svg");
-        $("#pauseResumeButton").off('click');
-        $("#pauseResumeButton").on('click', this.Pause.bind(this));
+        this.DisableButton(this.PauseResume, 'play');
+        this.EnableButton(this.PauseResume, 'pause', this.Pause.bind(this));
     }
 
     Pause() {
         clearInterval(this.Loop);
-        $("#pauseResumeButton").attr('src', "simulation-icons/pause_partly_active.svg");
-        $("#pauseResumeButton").off('click');
-        $("#pauseResumeButton").on('click', this.Play.bind(this));
+
+        this.DisableButton(this.PauseResume, 'pause');
+        this.EnableButton(this.PauseResume, 'play', this.Play.bind(this));
     }
 
     Stop() {
@@ -52,41 +55,35 @@
         else this.MoveDistance *= factor;
     }
 
-    AssignActionsToButtons() {
-        $("#pauseResumeButton").on('click', this.Pause.bind(this));
-        $("#stopButton").on('click', this.Stop.bind(this));
-        $("#speedUpButton").on('click', this.ChangeAnimationSpeed.bind(this, 1/2));
-        $("#slowDownButton").on('click', this.ChangeAnimationSpeed.bind(this, 2));
-
-    }
-
-    RemoveActionsFromButtons() {
-        $("#pauseResumeButton").off('click');
-        $("#stopButton").off('click');
-        $("#speedUpButton").off('click');
-        $("#slowDownButton").off('click');
-    }
+    
 
     EnableButtons() {
-        $("#pauseResumeButton").attr('src', "simulation-icons/pause_partly_active.svg")
-            .hover(this.SetImage.bind($("#pauseResumeButton"), "simulation-icons/pause_active.svg")
-                );
-        $("#stopButton").attr('src', "simulation-icons/stop_partly_active.svg");
-        $("#speedUpButton").attr('src', "simulation-icons/speedup_partly_active.svg");
-        $("#slowDownButton").attr('src', "simulation-icons/speeddown_partly_active.svg");
-        this.AssignActionsToButtons();
+        this.EnableButton(this.PauseResume, 'pause', this.Pause.bind(this));
+        this.EnableButton(this.StopB, 'stop', this.Stop.bind(this));
+        this.EnableButton(this.Up, 'speedup', this.ChangeAnimationSpeed.bind(this,2));
+        this.EnableButton(this.Down, 'speeddown', this.ChangeAnimationSpeed.bind(this, 1/2));
+
     }
 
     DisableButtons() {
-        $("#pauseResumeButton").attr('src', "simulation-icons/pause_inactive.svg");
-        $("#stopButton").attr('src', "simulation-icons/stop_inactive.svg");
-        $("#speedUpButton").attr('src', "simulation-icons/speedup_inactive.svg");
-        $("#slowDownButton").attr('src', "simulation-icons/speeddown_inactive.svg");
-        this.RemoveActionsFromButtons();
+        
+        this.DisableButton(this.PauseResume, 'pause');
+        this.DisableButton(this.StopB, 'stop');
+        this.DisableButton(this.Up, 'speedup');
+        this.DisableButton(this.Down, 'speeddown');
     }
 
-    SetImage(path) {
-        this.attr('src', path);
+    EnableButton(button, name,action) {
+        button.attr('src', "simulation-icons/" + name + "_partly_active.svg");
+        button.on('click', action);
+        button.hover(event => button.attr('src', "simulation-icons/" + name + "_active.svg"),
+            event => button.attr('src', "simulation-icons/" + name + "_partly_active.svg"));
+    }
+
+    DisableButton(button, name) {
+        button.off('click');
+        button.off("mouseenter mouseleave");
+        button.attr('src', "simulation-icons/" + name + "_inactive.svg");
     }
 
 }
