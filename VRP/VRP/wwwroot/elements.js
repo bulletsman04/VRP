@@ -86,6 +86,8 @@
         this.Manager.map.removeControl(routeController);
         routeController.addTo(this.Manager.map);
         routeController.hide();
+
+        this.CanDistinguish = true;
     }
 
     HideRoute(routeController, button) {
@@ -95,6 +97,43 @@
         this.Manager.map.removeControl(routeController);
         routeController.hide();
 
+        this.CanDistinguish = false;
+        this.Manager.map.removeLayer(this.Line);
+
+    }
+
+    AddDistinguishRouteButton(line) {
+        this.Line = line;
+        this.CanDistinguish = true;
+        this.Container.find('.distinguish').remove();
+        var button = $('<button />').addClass("btn distinguish").html("Distinguish");
+        button.on('click',this.DistinguishRoute.bind(this,line));
+        this.Container.append(button);
+    }
+
+    DistinguishRoute(line) {
+        if (!this.CanDistinguish) {
+            return;
+        }
+
+        if (this.Manager.DistinguishedLine !== null) {
+            this.Manager.map.removeLayer(this.Manager.DistinguishedLine);
+
+            if (this.Manager.DistinguishedLine == line) {
+                this.Manager.DistinguishedLine = null;
+                return;
+            }
+        }
+        if (this.Manager.map.hasLayer(line)) {
+            this.Manager.map.removeLayer(line);
+        }
+        else {
+            line.addTo(this.Manager.map);
+            this.Manager.DistinguishedLine = line;
+        }
+        
+        
+       
     }
     
 }

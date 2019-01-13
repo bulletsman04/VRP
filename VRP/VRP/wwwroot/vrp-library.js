@@ -66,6 +66,7 @@ class VrpHelper {
 
         this.CurrentMarker = null;
         this.CenteredElement = null;
+        this.DistinguishedLine = null; 
 
         this.Routes = [];
         this.Controllers = [];
@@ -404,7 +405,6 @@ class VrpHelper {
                 route.append(routePoint);
                 packageC.Warehouse = warehouse; 
                 packageC.UpdateRoute(route);
-                packageC.AddShowHideRouteButton(controller);
             }
             warehouse.PackagesCount = points.length;
 
@@ -413,6 +413,7 @@ class VrpHelper {
 
             controller.setWaypoints(coordinates);
 
+
             await this.GetDistance(controller, coordinates).then(() => {
                 this.couriers[i] = new Courier(this, i, {
                     coordinates: this.Routes[this.Routes.length - 1].coordinates.map(coord => ({
@@ -420,14 +421,31 @@ class VrpHelper {
                         Lng: coord.lng
                     }))
                 }, false, warehouse);
+
+
+                var line = L.Routing.line(this.Routes[this.Routes.length - 1], {
+                    styles: [{ color: 'green', opacity: 1, weight: 5 }],
+                    addWaypoints: false,
+                    extendToWaypoints: false,
+                    routeWhileDragging: false,
+                    autoRoute: true,
+                    useZoomParameter: false,
+                    draggableWaypoints: false
+                });
+
                 for (var j = 0; j < points.length; j++) {
                     packages[points[j]].Courier = this.couriers[i];
+                   
                 }
+               
                 this.couriers[i].BindMarker();
                 this.couriers[i].UpdateRoute(route);
                 this.couriers[i].AddShowHideRouteButton(controller);
+                this.couriers[i].AddDistinguishRouteButton(line);
                 // this.addRemovingButton();
             });
+
+            
         };
 
         $("#startSimulation").removeAttr("disabled");
