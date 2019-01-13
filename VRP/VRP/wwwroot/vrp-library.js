@@ -67,6 +67,7 @@ class VrpHelper {
         this.CurrentMarker = null;
         this.CenteredElement = null;
         this.DistinguishedLine = null; 
+        this.DistinguishedController = null; 
 
         this.Routes = [];
         this.Controllers = [];
@@ -441,7 +442,7 @@ class VrpHelper {
                 this.couriers[i].BindMarker();
                 this.couriers[i].UpdateRoute(route);
                 this.couriers[i].AddShowHideRouteButton(controller);
-                this.couriers[i].AddDistinguishRouteButton(line);
+                this.couriers[i].AddDistinguishRouteButton(line,controller);
                 // this.addRemovingButton();
             });
 

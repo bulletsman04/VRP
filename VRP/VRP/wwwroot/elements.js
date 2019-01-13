@@ -102,38 +102,36 @@
 
     }
 
-    AddDistinguishRouteButton(line) {
+    AddDistinguishRouteButton(line,controller) {
         this.Line = line;
         this.CanDistinguish = true;
         this.Container.find('.distinguish').remove();
         var button = $('<button />').addClass("btn distinguish").html("Distinguish");
-        button.on('click',this.DistinguishRoute.bind(this,line));
+        button.on('click',this.DistinguishRoute.bind(this,line,controller));
         this.Container.append(button);
     }
 
-    DistinguishRoute(line) {
+    DistinguishRoute(line,controller) {
         if (!this.CanDistinguish) {
             return;
         }
 
         if (this.Manager.DistinguishedLine !== null) {
             this.Manager.map.removeLayer(this.Manager.DistinguishedLine);
-
+            this.Manager.DistinguishedController.hide();
             if (this.Manager.DistinguishedLine == line) {
                 this.Manager.DistinguishedLine = null;
+                this.Manager.DistinguishedController = null;
                 return;
             }
         }
-        if (this.Manager.map.hasLayer(line)) {
-            this.Manager.map.removeLayer(line);
-        }
-        else {
-            line.addTo(this.Manager.map);
-            this.Manager.DistinguishedLine = line;
-        }
-        
-        
        
+        line.addTo(this.Manager.map);
+        controller.show();
+        this.Manager.DistinguishedLine = line;
+        this.Manager.DistinguishedController = controller;
+
+
     }
     
 }
