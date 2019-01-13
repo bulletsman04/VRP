@@ -73,7 +73,7 @@ class Warehouse extends MapElement {
 
     get GetIcon() {
         return L.icon({
-            iconUrl: 'icons/map_warehouse.svg',
+            iconUrl: 'icons/warehouse.ico',
             iconSize: [40, 40],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
@@ -82,7 +82,7 @@ class Warehouse extends MapElement {
 
     get GetCenteredIcon() {
         return L.icon({
-            iconUrl: 'icons/map_warehouse.svg',
+            iconUrl: 'icons/warehouse.ico',
             iconSize: [70, 70],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
@@ -152,7 +152,7 @@ class Package extends MapElement {
 
     get GetIcon() {
         return L.icon({
-            iconUrl: 'icons/map_package.svg',
+            iconUrl: 'icons/package.ico',
             iconSize: [20, 20],
             iconAnchor: [10, 10],
             popupAnchor: [0, -10]
@@ -161,7 +161,7 @@ class Package extends MapElement {
 
     get GetCenteredIcon() {
         return L.icon({
-            iconUrl: 'icons/map_package_lightblue.svg',
+            iconUrl: 'icons/package.ico',
             iconSize: [70, 70],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
@@ -170,10 +170,11 @@ class Package extends MapElement {
 
     get GetPickedIcon() {
         return L.icon({
-            iconUrl: 'icons/paczka_ikona.png',
-            iconSize: [20, 20],
+            iconUrl: 'icons/package.ico',
+            iconSize: [10, 10],
             iconAnchor: [20, 20],
-            popupAnchor: [0, -20]
+            popupAnchor: [0, -20],
+            className: 'taken-package'
         });
     }
 
