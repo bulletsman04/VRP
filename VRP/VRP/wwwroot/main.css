@@ -121,13 +121,7 @@ body { margin: 0 auto; }
 input[type=radio] { margin: 0 0 0 5px; }
 
 
-/
-
-/
-
-item-list -
-
-elements
+/*item-list - elements*/
 .tab-content-scrollable {
     height: calc(100vh - 100px);
     overflow: auto;
@@ -188,13 +182,13 @@ elements
 
 .show-hide {
     font-size: 10pt;
-    padding: 2px 20px;
+    padding: 2px 5px;
     margin: 2px 2px;
 }
 
 .distinguish {
     font-size: 10pt;
-    padding: 2px 20px;
+    padding: 2px 5px;
     margin: 2px 2px;
 }
 
