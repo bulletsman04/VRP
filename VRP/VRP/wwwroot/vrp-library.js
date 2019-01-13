@@ -406,6 +406,7 @@ class VrpHelper {
                 packageC.UpdateRoute(route);
                 packageC.AddShowHideRouteButton(controller);
             }
+            warehouse.PackagesCount = points.length;
 
             // Back to home
             // coordinates.push(L.latLng([courier.LatLng.Lat, courier.LatLng.Lng]));
@@ -418,7 +419,10 @@ class VrpHelper {
                         Lat: coord.lat,
                         Lng: coord.lng
                     }))
-                }, false);
+                }, false, warehouse);
+                for (var j = 0; j < points.length; j++) {
+                    packages[points[j]].Courier = this.couriers[i];
+                }
                 this.couriers[i].BindMarker();
                 this.couriers[i].UpdateRoute(route);
                 this.couriers[i].AddShowHideRouteButton(controller);
@@ -431,6 +435,18 @@ class VrpHelper {
         this.ShowRoutes();
         this.Simulator = new VrpSimulator(this, this.Routes, Object.values(this.couriers));
         $("#calculateButton").prop("disabled", false);
+        Object.values(this.warehouses).forEach(warehouse => {
+            if (!warehouse.IsTemporary)
+                warehouse.UpdateContainer();
+        });
+        Object.values(this.couriers).forEach(courier => {
+            if (!courier.IsTemporary)
+                courier.UpdateContainer();
+        });
+        Object.values(this.packages).forEach(pack => {
+            if (!pack.IsTemporary)
+                pack.UpdateContainer();
+        });
     }
 
     ClearRoutes() {

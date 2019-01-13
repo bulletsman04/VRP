@@ -169,6 +169,7 @@ class Warehouse extends MapElement {
         this.Container.find('.coord-y').html(this.LatLng.Lat.toString().substring(0, 6));
         this.Container.find('.place-name').html(this.Place);
         this.Container.find('.capacity-couriers').html(this.CapacityForCouriers);
+        if(this.PackagesCount !== undefined && this.PackagesCount > 0) this.Container.find('.packages-count').html(this.PackagesCount);
     }
 
     Remove() {
@@ -273,10 +274,12 @@ class Package extends MapElement {
 }
 
 class Courier extends MapElement {
-    constructor(manager, id, route, isTemporary) {
+    constructor(manager, id, route, isTemporary, warehouse) {
         super(manager, id, { Lat: route.coordinates[0].Lat, Lng: route.coordinates[0].Lng }, isTemporary);
         this.Route = route;
         this.CurrentPoint = 0;
+        this.Warehouse = warehouse;
+        this.Name = "Courier" + id;
     }
 
     get GetIcon() {
@@ -318,7 +321,6 @@ class Courier extends MapElement {
         this.Container.find('.name').html(this.Name);
         this.Container.find('.coord-x').html(this.LatLng.Lng.toString().substring(0, 6));
         this.Container.find('.coord-y').html(this.LatLng.Lat.toString().substring(0, 6));
-        this.Container.find('.place-name').html(this.Place);
         if (this.Warehouse !== undefined) this.Container.find('.courier-warehouse').html(this.Warehouse.Name);
     }
 
