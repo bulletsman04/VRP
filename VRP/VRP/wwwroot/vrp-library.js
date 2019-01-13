@@ -71,6 +71,7 @@ class VrpHelper {
 
         this.Routes = [];
         this.Controllers = [];
+        this.Lines = [];
 
         this.packages = {};
         this.couriers = {};
@@ -433,7 +434,7 @@ class VrpHelper {
                     useZoomParameter: false,
                     draggableWaypoints: false
                 });
-
+                this.Lines.push(line);
                 for (var j = 0; j < points.length; j++) {
                     packages[points[j]].Courier = this.couriers[i];
                    
@@ -524,6 +525,9 @@ class VrpHelper {
         this.Controllers.forEach(controller => {
             this.HideRoute(controller);
             controller.hide();
+        });
+        this.Lines.forEach(line => {
+            this.map.removeLayer(line);
         });
     }
 
