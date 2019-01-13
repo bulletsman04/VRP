@@ -235,13 +235,16 @@ class Package extends MapElement {
         this.Container.append(button);
     }
 
-    ShowRoute(routeController) {
-
-        button.on('click', this.HideRoute(routeController));
+    ShowRoute(routeController,button) {
+        button.off('click');
+        button.on('click', this.HideRoute.bind(this,routeController,button));
+        routeController.addTo(this.map);
     }
 
-    HideRoute(routeController) {
-
+    HideRoute(routeController, button) {
+        button.off('click');
+        button.on('click', this.ShowRoute.bind(this, routeController, button));
+        this.manager.map.removeControl(routeController);
     }
 
     Remove() {

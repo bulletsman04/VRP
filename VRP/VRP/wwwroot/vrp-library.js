@@ -438,6 +438,7 @@ class VrpHelper {
                 route.append(" -> ");
                 route.append(routePoint);
                 packageC.UpdateRoute(route);
+                packageC.AddShowHideRouteButton(controller);
             }
 
             // Back to home
