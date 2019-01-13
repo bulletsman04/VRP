@@ -455,6 +455,8 @@ class VrpHelper {
                     }))
                 }, false);
                 this.couriers[i].BindMarker();
+                this.couriers[i].UpdateRoute(route);
+                this.couriers[i].AddShowHideRouteButton(controller);
                 // this.addRemovingButton();
             });
         };

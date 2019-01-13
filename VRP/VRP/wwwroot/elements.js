@@ -5,6 +5,7 @@
         this.LatLng = latLng;
         this.IsTemporary = isTemporary;
         this.Place = placeName;
+        this.RouteButtons = [];
     }
 
     get GetIcon() { }
@@ -64,6 +65,38 @@
         this.Marker.setIcon(this.GetIcon);
         this.Manager.CenteredElement = null;
     }
+
+    UpdateRoute(route) {
+        this.Container.find('.assigned-route').html("");
+        this.Container.find('.assigned-route').append(route.clone(true, true));
+        this.UpdateContainer();
+    }
+
+    AddShowHideRouteButton(routeController) {
+        this.Container.find('.show-hide').remove();
+        var button = $('<button />').addClass("btn show-hide");
+        this.ShowRoute(routeController, button);
+        this.Container.append(button);
+    }
+
+    ShowRoute(routeController, button) {
+        button.html("Hide");
+        button.off('click');
+        button.on('click', this.HideRoute.bind(this, routeController, button));
+        this.Manager.map.removeControl(routeController);
+        routeController.addTo(this.Manager.map);
+        routeController.hide();
+    }
+
+    HideRoute(routeController, button) {
+        button.html("Show");
+        button.off('click');
+        button.on('click', this.ShowRoute.bind(this, routeController, button));
+        this.Manager.map.removeControl(routeController);
+        routeController.hide();
+
+    }
+    
 }
 
 class Warehouse extends MapElement {
@@ -226,35 +259,7 @@ class Package extends MapElement {
         if (this.Warehouse !== undefined) this.Container.find('.assigned-warehouse').html(this.Warehouse.Name);
     }
 
-    UpdateRoute(route) {
-        this.Container.find('.assigned-route').html("");
-        this.Container.find('.assigned-route').append(route.clone(true, true));
-        this.UpdateContainer();
-    }
 
-    AddShowHideRouteButton(routeController) {
-        var button = $('<button />').addClass("btn show-hide");
-        this.ShowRoute(routeController, button);
-        this.Container.append(button);
-    }
-
-    ShowRoute(routeController, button) {
-        button.html("Hide");
-        button.off('click');
-        button.on('click', this.HideRoute.bind(this, routeController, button));
-        this.Manager.map.removeControl(routeController);
-        routeController.addTo(this.Manager.map);
-        routeController.hide();
-    }
-
-    HideRoute(routeController, button) {
-        button.html("Show");
-        button.off('click');
-        button.on('click', this.ShowRoute.bind(this, routeController, button));
-        this.Manager.map.removeControl(routeController);
-        routeController.hide();
-
-    }
 
     Remove() {
         this.Manager.map.removeLayer(this.Marker);
