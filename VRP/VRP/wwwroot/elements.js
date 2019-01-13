@@ -5,6 +5,7 @@
         this.LatLng = latLng;
         this.IsTemporary = isTemporary;
         this.Place = placeName;
+        this.RouteButtons = [];
     }
 
     get GetIcon() { }
@@ -64,6 +65,38 @@
         this.Marker.setIcon(this.GetIcon);
         this.Manager.CenteredElement = null;
     }
+
+    UpdateRoute(route) {
+        this.Container.find('.assigned-route').html("");
+        this.Container.find('.assigned-route').append(route.clone(true, true));
+        this.UpdateContainer();
+    }
+
+    AddShowHideRouteButton(routeController) {
+        this.Container.find('.show-hide').remove();
+        var button = $('<button />').addClass("btn show-hide");
+        this.ShowRoute(routeController, button);
+        this.Container.append(button);
+    }
+
+    ShowRoute(routeController, button) {
+        button.html("Hide");
+        button.off('click');
+        button.on('click', this.HideRoute.bind(this, routeController, button));
+        this.Manager.map.removeControl(routeController);
+        routeController.addTo(this.Manager.map);
+        routeController.hide();
+    }
+
+    HideRoute(routeController, button) {
+        button.html("Show");
+        button.off('click');
+        button.on('click', this.ShowRoute.bind(this, routeController, button));
+        this.Manager.map.removeControl(routeController);
+        routeController.hide();
+
+    }
+    
 }
 
 class Warehouse extends MapElement {
@@ -73,7 +106,7 @@ class Warehouse extends MapElement {
 
     get GetIcon() {
         return L.icon({
-            iconUrl: 'icons/map_warehouse.svg',
+            iconUrl: 'icons/warehouse.ico',
             iconSize: [40, 40],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
@@ -82,7 +115,7 @@ class Warehouse extends MapElement {
 
     get GetCenteredIcon() {
         return L.icon({
-            iconUrl: 'icons/map_warehouse.svg',
+            iconUrl: 'icons/warehouse.ico',
             iconSize: [70, 70],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
@@ -152,7 +185,7 @@ class Package extends MapElement {
 
     get GetIcon() {
         return L.icon({
-            iconUrl: 'icons/map_package.svg',
+            iconUrl: 'icons/package.ico',
             iconSize: [20, 20],
             iconAnchor: [10, 10],
             popupAnchor: [0, -10]
@@ -161,7 +194,7 @@ class Package extends MapElement {
 
     get GetCenteredIcon() {
         return L.icon({
-            iconUrl: 'icons/map_package_lightblue.svg',
+            iconUrl: 'icons/package.ico',
             iconSize: [70, 70],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
@@ -170,10 +203,11 @@ class Package extends MapElement {
 
     get GetPickedIcon() {
         return L.icon({
-            iconUrl: 'icons/paczka_ikona.png',
-            iconSize: [20, 20],
+            iconUrl: 'icons/package.ico',
+            iconSize: [10, 10],
             iconAnchor: [20, 20],
-            popupAnchor: [0, -20]
+            popupAnchor: [0, -20],
+            className: 'taken-package'
         });
     }
 
@@ -221,28 +255,11 @@ class Package extends MapElement {
         this.Container.find('.coord-x').html(this.LatLng.Lng.toString().substring(0, 6));
         this.Container.find('.coord-y').html(this.LatLng.Lat.toString().substring(0, 6));
         this.Container.find('.place-name').html(this.Place);
-        if (this.Courier !== undefined) container.find('.assigned-courier').html(this.Courier.Name);
-        if (this.Warehouse !== undefined) container.find('.assigned-warehouse').html(this.Warehouse.Name);
+        if (this.Courier !== undefined) this.Container.find('.assigned-courier').html(this.Courier.Name);
+        if (this.Warehouse !== undefined) this.Container.find('.assigned-warehouse').html(this.Warehouse.Name);
     }
 
-    UpdateRoute(route) {
-        this.Container.find('.assigned-route').html("");
-        this.Container.find('.assigned-route').append(route.clone(true,true));
-    }
 
-    AddShowHideRouteButton(routeController) {
-        var button = $('<button />').html('Show').addClass("show-hide");
-        this.Container.append(button);
-    }
-
-    ShowRoute(routeController) {
-
-        button.on('click', this.HideRoute(routeController));
-    }
-
-    HideRoute(routeController) {
-
-    }
 
     Remove() {
         this.Manager.map.removeLayer(this.Marker);
@@ -302,7 +319,7 @@ class Courier extends MapElement {
         this.Container.find('.coord-x').html(this.LatLng.Lng.toString().substring(0, 6));
         this.Container.find('.coord-y').html(this.LatLng.Lat.toString().substring(0, 6));
         this.Container.find('.place-name').html(this.Place);
-        if (this.Warehouse !== undefined) container.find('.courier-warehouse').html(this.Warehouse.Name);
+        if (this.Warehouse !== undefined) this.Container.find('.courier-warehouse').html(this.Warehouse.Name);
     }
 
     Remove() {

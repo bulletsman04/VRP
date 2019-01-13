@@ -63,6 +63,11 @@ body {
     padding-right: 2px;
 }
 
+.settings-routes-buttons {
+    padding-top: 3px;
+    padding-bottom: 3px; 
+}
+
 .simulation-panel {
     grid-area: simulation-panel;
     border-width: 0px 0px 0px 1px;
@@ -265,10 +270,22 @@ input[type=radio] {
     height: 40px;
 }
 
+.simulation-icon:hover {
+    cursor: pointer;
+}
+
 .simulation-icon-disabled {
     display: none;
 }
 
+.taken-package {
+    opacity: 0.5;
+}
+
+.show-hide {
+    font-size: 10pt;
+    padding: 2px 20px;
+}
 
 /*/* width */
 ::-webkit-scrollbar {

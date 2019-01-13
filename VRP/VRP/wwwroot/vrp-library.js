@@ -100,7 +100,7 @@ class VrpHelper {
                 warehouse.Marker.openPopup();
                 break;
             case "package":
-                id = this.WarehousesMaxid + 1;
+                id = this.PackagesMaxid + 1;
                 var pack = new Package(this, id, latLng, true, placeName);
                 this.packages[id] = pack;
                 pack.BindMarker();
@@ -438,7 +438,9 @@ class VrpHelper {
                     .on('click', packageC.Center.bind(packageC));
                 route.append(" -> ");
                 route.append(routePoint);
+                packageC.Warehouse = warehouse; 
                 packageC.UpdateRoute(route);
+                packageC.AddShowHideRouteButton(controller);
             }
 
             // Back to home
@@ -454,6 +456,8 @@ class VrpHelper {
                     }))
                 }, false);
                 this.couriers[i].BindMarker();
+                this.couriers[i].UpdateRoute(route);
+                this.couriers[i].AddShowHideRouteButton(controller);
                 // this.addRemovingButton();
             });
         };
