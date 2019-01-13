@@ -68,7 +68,7 @@
 
 class Warehouse extends MapElement {
     constructor(manager, id, latLng, isTemporary,placeName) {
-        super(manager, id, latLng, isTemporary,placeName);
+        super(manager, id, latLng, isTemporary, placeName);
     }
 
     get GetIcon() {
