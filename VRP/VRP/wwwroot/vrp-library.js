@@ -428,6 +428,7 @@ class VrpHelper {
                             Lng: coord.lng
                         }))
                     },
+                    this.Routes[this.Routes.length - 1].waypointIndices,
                     false,
                     warehouse);
 
@@ -443,11 +444,12 @@ class VrpHelper {
                         draggableWaypoints: false
                     });
                 this.Lines.push(line);
+                var packagesForCourier = [];
                 for (var j = 0; j < points.length; j++) {
                     packages[points[j]].Courier = this.couriers[i];
-
+                    packagesForCourier.push(packages[points[j]]);
                 }
-
+                this.couriers[i].Packages = packagesForCourier;
                 this.couriers[i].BindMarker();
                 this.couriers[i].UpdateRoute(route);
                 this.couriers[i].AddShowHideRouteButton(controller);

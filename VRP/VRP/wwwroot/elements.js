@@ -325,12 +325,14 @@ class Package extends MapElement {
 }
 
 class Courier extends MapElement {
-    constructor(manager, id, route, isTemporary, warehouse) {
+    constructor(manager, id, route, packagesIndices, isTemporary, warehouse) {
         super(manager, id, { Lat: route.coordinates[0].Lat, Lng: route.coordinates[0].Lng }, isTemporary);
         this.Route = route;
         this.CurrentPoint = 0;
+        this.CurrentPackage = 0;
         this.Warehouse = warehouse;
         this.Name = "Courier" + id;
+        this.PackagesIndices = packagesIndices;
     }
 
     get GetIcon() {
@@ -393,7 +395,13 @@ class Courier extends MapElement {
         if (this.Route.coordinates.length === this.CurrentPoint) return;
         if (Math.abs(this.LatLng.Lat - this.Route.coordinates[this.CurrentPoint].Lat) < distance &&
             Math.abs(this.LatLng.Lng - this.Route.coordinates[this.CurrentPoint].Lng) < distance) {
+            if (this.PackagesIndices[this.CurrentPackage] < this.CurrentPoint) {
+                if (this.CurrentPoint === 0) this.Warehouse.SetPicked();
+                else this.Packages[this.CurrentPackage].SetPicked();
+                this.CurrentPackage++;
+            }
             this.CurrentPoint++;
+
             if (this.Route.coordinates.length === this.CurrentPoint) return;
             var a =
                 (this.Route.coordinates[this.CurrentPoint - 1].Lng - this.Route.coordinates[this.CurrentPoint].Lng) /
