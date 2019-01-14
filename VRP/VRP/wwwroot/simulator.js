@@ -1,5 +1,6 @@
 ﻿class VrpSimulator {
     constructor(manager, routes, couriers) {
+        this.Manager = manager;
         this.Routes = routes;
         this.Couriers = couriers;
         this.ChangeAnimationSpeed();
@@ -39,6 +40,7 @@
         this.Couriers.forEach(courier => courier.Reset());
         this.DisableButtons();
         $("#startSimulation").removeAttr("disabled");
+        this.Manager.UnpickElements();
     }
 
     ChangeAnimationSpeed(factor) {

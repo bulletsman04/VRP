@@ -29,8 +29,10 @@
         this.Marker = L.marker({ lat: this.LatLng.Lat, lng: this.LatLng.Lng },
             {
                 icon: this.GetIcon,
-                draggable: true
+                draggable: true,
+                zIndexOffset: 1000
             });
+        this.LastIcon = this.GetIcon;
         this.Marker.addTo(this.Manager.map);
         this.Marker.on('drag',
             event => {
@@ -68,7 +70,7 @@
     }
 
     SetUndistinguished() {
-        this.Marker.setIcon(this.GetIcon);
+        this.Marker.setIcon(this.LastIcon);
         this.Manager.CenteredElement = null;
     }
 
@@ -166,8 +168,8 @@ class Warehouse extends MapElement {
 
     get GetCenteredIcon() {
         return L.icon({
-            iconUrl: 'icons/warehouse.ico',
-            iconSize: [70, 70],
+            iconUrl: 'icons/warehouse-marked.ico',
+            iconSize: [40, 40],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
         });
@@ -244,10 +246,12 @@ class Warehouse extends MapElement {
 
     SetPicked() {
         this.Marker.setIcon(this.GetPickedIcon);
+        this.LastIcon = this.GetPickedIcon;
     }
 
     SetUnpicked() {
         this.Marker.setIcon(this.GetIcon);
+        this.LastIcon = this.GetIcon;
     }
 }
 
@@ -267,10 +271,10 @@ class Package extends MapElement {
 
     get GetCenteredIcon() {
         return L.icon({
-            iconUrl: 'icons/package.ico',
-            iconSize: [70, 70],
-            iconAnchor: [20, 20],
-            popupAnchor: [0, -20]
+            iconUrl: 'icons/package-marked.ico',
+            iconSize: [20, 20],
+            iconAnchor: [10, 10],
+            popupAnchor: [0, -10]
         });
     }
 
@@ -278,8 +282,8 @@ class Package extends MapElement {
         return L.icon({
             iconUrl: 'icons/package.ico',
             iconSize: [20, 20],
-            iconAnchor: [20, 20],
-            popupAnchor: [0, -20],
+            iconAnchor: [10, 10],
+            popupAnchor: [0, -10],
             className: 'taken-package'
         });
     }
@@ -341,10 +345,12 @@ class Package extends MapElement {
 
     SetPicked() {
         this.Marker.setIcon(this.GetPickedIcon);
+        this.LastIcon = this.GetPickedIcon;
     }
 
     SetUnpicked() {
         this.Marker.setIcon(this.GetIcon);
+        this.LastIcon = this.GetIcon;
     }
 }
 
@@ -361,7 +367,7 @@ class Courier extends MapElement {
 
     get GetIcon() {
         return L.icon({
-            iconUrl: 'icons/map_courier.svg',
+            iconUrl: 'icons/courier.ico',
             iconSize: [40, 40],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
@@ -370,8 +376,8 @@ class Courier extends MapElement {
 
     get GetCenteredIcon() {
         return L.icon({
-            iconUrl: 'icons/map_courier.svg',
-            iconSize: [70, 70],
+            iconUrl: 'icons/courier-marked.ico',
+            iconSize: [40, 40],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20]
         });
@@ -382,6 +388,7 @@ class Courier extends MapElement {
             {
                 icon: this.GetIcon
             });
+        this.LastIcon = this.GetIcon;
         this.Marker.addTo(this.Manager.map);
         this.BindContainer();
     }
@@ -409,6 +416,7 @@ class Courier extends MapElement {
     }
 
     Reset() {
+        this.CurrentPackage = 0;
         this.CurrentPoint = 0;
         this.LatLng = { Lat: this.Route.coordinates[0].Lat, Lng: this.Route.coordinates[0].Lng };
         this.Marker.setLatLng(new L.LatLng(this.LatLng.Lat, this.LatLng.Lng));
@@ -419,9 +427,9 @@ class Courier extends MapElement {
         if (this.Route.coordinates.length === this.CurrentPoint) return;
         if (Math.abs(this.LatLng.Lat - this.Route.coordinates[this.CurrentPoint].Lat) < distance &&
             Math.abs(this.LatLng.Lng - this.Route.coordinates[this.CurrentPoint].Lng) < distance) {
-            if (this.PackagesIndices[this.CurrentPackage] < this.CurrentPoint) {
+            if (this.PackagesIndices[this.CurrentPackage] === this.CurrentPoint) {
                 if (this.CurrentPoint === 0) this.Warehouse.SetPicked();
-                else this.Packages[this.CurrentPackage].SetPicked();
+                else this.Packages[this.CurrentPackage - 1].SetPicked();
                 this.CurrentPackage++;
             }
             this.CurrentPoint++;

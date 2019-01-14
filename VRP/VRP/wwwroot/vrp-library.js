@@ -101,6 +101,7 @@ class VrpHelper {
             var warehouse = new Warehouse(this, id, latLng, true, placeName);
             this.warehouses[id] = warehouse;
             warehouse.BindMarker();
+            warehouse.Marker.zIndexOffset = 1;
             this.CurrentMarker = warehouse.Marker;
             warehouse.Marker.openPopup();
             break;
@@ -479,10 +480,19 @@ class VrpHelper {
         });
     }
 
+    UnpickElements() {
+        Object.values(this.warehouses).forEach(warehouse => warehouse.SetUnpicked());
+        Object.values(this.packages).forEach(pack => pack.SetUnpicked());
+    }
+
     ClearRoutes() {
         this.HideRoutes();
         this.Routes = [];
         this.Controllers = [];
+        if (this.couriers !== undefined)
+            Object.values(this.couriers).forEach(courier => courier.Remove());
+        this.couriers = {};
+        this.UnpickElements();
     }
 
     ClearElements() {
