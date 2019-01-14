@@ -173,6 +173,18 @@ class Warehouse extends MapElement {
         });
     }
 
+    get GetPickedIcon() {
+        return L.icon({
+            iconUrl: 'icons/warehouse.ico',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20],   
+            className: 'taken-package'
+        });
+    }
+
+ 
+
     BindForm() {
         var clone = $("#warehouse-form-template").clone();
         var content = clone.prop('content');
@@ -229,6 +241,14 @@ class Warehouse extends MapElement {
         if (this.Container !== undefined) this.Container.remove();
         delete this.Manager.warehouses[this.Id];
     }
+
+    SetPicked() {
+        this.Marker.setIcon(this.GetPickedIcon);
+    }
+
+    SetUnpicked() {
+        this.Marker.setIcon(this.GetIcon);
+    }
 }
 
 class Package extends MapElement {
@@ -257,7 +277,7 @@ class Package extends MapElement {
     get GetPickedIcon() {
         return L.icon({
             iconUrl: 'icons/package.ico',
-            iconSize: [10, 10],
+            iconSize: [20, 20],
             iconAnchor: [20, 20],
             popupAnchor: [0, -20],
             className: 'taken-package'
@@ -321,6 +341,10 @@ class Package extends MapElement {
 
     SetPicked() {
         this.Marker.setIcon(this.GetPickedIcon);
+    }
+
+    SetUnpicked() {
+        this.Marker.setIcon(this.GetIcon);
     }
 }
 
