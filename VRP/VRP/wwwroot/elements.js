@@ -322,6 +322,10 @@ class Package extends MapElement {
     SetPicked() {
         this.Marker.setIcon(this.GetPickedIcon);
     }
+
+    SetUnpicked() {
+        this.Marker.setIcon(this.GetIcon);
+    }
 }
 
 class Courier extends MapElement {
